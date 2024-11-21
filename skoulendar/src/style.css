@@ -1,22 +1,14 @@
 body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  margin: 0;
+  margin: 20px;
+  justify-content: center;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  text-align: center;
   color: #ffe83dde;
   background-color: #106679;
 }
 
 h1 {
-  font-size: 50px;
+  font-size: 60px;
 }
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
