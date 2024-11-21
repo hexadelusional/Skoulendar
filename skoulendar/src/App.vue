@@ -12,14 +12,14 @@
   nav{
     display: flex;
     justify-content: space-around;
-    border: 2px solid #ffe83dde;
+    border: 2px solid #ffa600de;
     border-radius: 10px;
     padding: 10px;
   }
   .head{
     font-size: 20px;
     text-decoration: none;
-    color: #ffe83dde;
+    color: #ffa600de;
   }
   .head:hover{
     color: #fff5a7de;

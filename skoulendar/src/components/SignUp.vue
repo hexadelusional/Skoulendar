@@ -29,30 +29,30 @@
     padding: 10px;
     margin: 10px;
     width: 100%;
-    border: solid 2px #53c2db;
+    border: solid 2px #ffd890ad;
     border-radius: 10px;
-    color: #0a4b5a;
+    color: #ffa600de;
   }
   input:hover{
     background-color: #e0e9ec;
   }
   input:focus{
     outline: none;
-    border: solid 2px #003453d3;
+    border: solid 2px #b17300de;
   }
   button{
     padding: 15px;
     margin: 10px;
-    border: solid 2px #53c2db;
+    border: solid 2px #ffe5b4ad;
     border-radius: 10px;
-    color: #0a4b5a;
+    color: #ffa600de;
     font-size: 15px;
   }
   button:hover{
-      background-color: #8ad9ea;
-      border: solid 2px #26869b;
+      background-color: #e4c68ead;
+      border: solid 2px #ffa600ad;
   }
   ::placeholder{
-    color: #248094;
+    color: #ffa600ad;
   }
 </style>
