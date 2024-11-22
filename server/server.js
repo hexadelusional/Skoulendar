@@ -21,7 +21,32 @@ app.get('/', (req, res) => {
 });
 
 // API routes for login
-const users = [{ IDnumber: 'test', password: 'test' }];
+const users = [{ IDnumber: 'number', password: 'password', email: 'caca@caca.com' }];
+
+// API route for signup
+app.post('/signup', (req, res) => {
+    const { IDnumber, email, password, confirmPassword } = req.body;
+
+    // Validate required fields
+    if (!IDnumber || !email || !password || !confirmPassword) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    // Check if the ID number is already taken
+    const existingUser = users.find(u => u.IDnumber === IDnumber);
+    if (existingUser) {
+        return res.status(409).json({ message: 'ID number is already registered' });
+    }
+
+    // Add the new user
+    users.push({ IDnumber, email, password });
+    res.status(201).json({ message: 'You registered successfully' });
+});
 
 app.post('/logged', (req, res) => {
     const { IDnumber, password } = req.body;
@@ -42,6 +67,11 @@ app.get('/session', (req, res) => {
     } else {
         res.status(401).json({ message: 'No session' });
     }
+});
+
+// Endpoint to retrieve the list of users (for debugging purposes)
+app.get('/users', (req, res) => {
+    res.status(200).json(users);
 });
 
 // Catch-all Vue routes

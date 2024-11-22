@@ -36,7 +36,7 @@ input{
   color: #ffa600de;
 }
 input:hover{
-  background-color: #e0e9ec;
+  background-color: #faf1e3;
 }
 input:focus{
   outline: none;
@@ -45,14 +45,15 @@ input:focus{
 button{
   padding: 15px;
   margin: 10px;
-  border: solid 2px #ffe5b4ad;
+  border: solid 2px #ffda96ad;
+  background-color: #f5ebdaad;
   border-radius: 10px;
   color: #ffa600;
   font-size: 15px;
 }
 button:hover{
     background-color: #e4c68ead;
-    border: solid 2px #ffa600;
+    border: solid 2px #ffca67;
 }
 ::placeholder{
   color: #ffa600;
