@@ -3,6 +3,9 @@ The Ultimate School Calendar
 
 By AdèlandÉlodie
 
+## Don't forget to install the latest versions of the node_modules for frontend & backend
+```npm install```
+
 ## Don't forget to start the frontend AND the backend
 To start the frontend : ```cd Skoulendar/skoulendar``` & ```npm run dev```
 To start the backend : ```cd Skoulendar/server``` & ```nodemon start```
