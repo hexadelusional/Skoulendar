@@ -5,15 +5,21 @@
             Skoulendar leads the way !
         </h1>
         <Chad/>
+        <Users/>
     </div>
 </template>  
 
 <script setup>
-    import Chad from './Chad.vue'
+  import Chad from './Chad.vue'
+  import Users from './Users.vue'
+
 </script>
 
 <style scoped>
   div{
     margin: 10% auto;
+  }
+  h1{
+    font-size: 50px;
   }
 </style>

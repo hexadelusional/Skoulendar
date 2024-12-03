@@ -3,12 +3,9 @@ The Ultimate School Calendar
 
 By AdèlandÉlodie
 
-## To start project from server:
-go to Skoulendar/server and write in terminal ```bash node server.js```
-
-## Each time a modification is made in the vue project, for it to be acknoleged by the server : 
-go to Skoulendar/skoulendar and write in terminal ```bash npm run build```
-
+## Don't forget to start the frontend AND the backend
+To start the frontend : ```cd Skoulendar/skoulendar``` & ```npm run dev```
+To start the backend : ```cd Skoulendar/server``` & ```nodemon start```
 
 ## To implement:
  

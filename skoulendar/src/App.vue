@@ -13,16 +13,17 @@
   nav{
     display: flex;
     justify-content: space-around;
-    border: 2px solid #ffa60085;
+    border: 1px solid #82aeffe9;
+    background-color: #c8dbfee3;
     border-radius: 10px;
     padding: 10px;
   }
   .head{
     font-size: 20px;
     text-decoration: none;
-    color: #ffa600;
+    color: #005da0;
   }
   .head:hover{
-    color: #ffe30d;
+    color: #5698c7;
   }
 </style>

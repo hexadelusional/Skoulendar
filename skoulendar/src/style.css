@@ -5,8 +5,8 @@ body {
   display: flex;
   flex-direction: column;
   text-align: center;
-  color: #ffa600;
-  background-color: #fff0c2;
+  color: #005da0;
+  background-color: #d5e4ff;
 }
 
 h1 {
@@ -31,30 +31,30 @@ input{
   padding: 10px;
   margin: 10px;
   width: 100%;
-  border: solid 2px #ffd890ad;
+  border: solid 2px #4998cf;
   border-radius: 10px;
-  color: #ffa600de;
+  color: #005da0;
 }
 input:hover{
-  background-color: #faf1e3;
+  background-color: #e3edff;
 }
 input:focus{
   outline: none;
-  border: solid 2px #ffa600;
+  border: solid 2px #005da0;
 }
 button{
   padding: 15px;
   margin: 10px;
-  border: solid 2px #ffda96ad;
-  background-color: #f5ebdaad;
+  border: solid 2px #2c7cb5;
+  background-color: #e3edff;
   border-radius: 10px;
-  color: #ffa600;
+  color: #005da0;
   font-size: 15px;
 }
 button:hover{
-    background-color: #e4c68ead;
-    border: solid 2px #ffca67;
+    background-color: #d2dae9;
+    border: solid 2px #2c7cb5;
 }
 ::placeholder{
-  color: #ffa600;
+  color: #005da0;
 }

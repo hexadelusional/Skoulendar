@@ -1,71 +1,86 @@
 <template>
     <div class="form">
-        <h1>Sign Up</h1>
-        <form @submit.prevent="signup">
-            <input v-model="IDnumber" type="text" placeholder="ID Number" required />
-            <input v-model="email" type="text" placeholder="E-mail" required />
-            <input v-model="password" type="password" placeholder="Password" required />
-            <input v-model="confirmPassword" type="password" placeholder="Confirm password" required />
-            <button type="submit">Sign Up</button>
-        </form>
-        <p v-if="error" class="error">{{ error }}</p>
-        <p v-if="success" class="success">{{ success }}</p>
+      <h1>Sign Up</h1>
+      <form @submit.prevent="signup">
+        <!-- ID Number Input -->
+        <input v-model="IDnumber" type="text" placeholder="ID Number" :class="{'error': idError}" />
+        <span v-if="idError" class="error">ID Number is required and must be a number</span>
+  
+        <!-- Password Input -->
+        <input v-model="password" type="password" placeholder="Password" />
+  
+        <!-- Confirm Password Input -->
+        <input v-model="confirmPassword" type="password" placeholder="Confirm password" />
+        <span v-if="passwordError" class="error">Passwords do not match</span>
+  
+        <!-- Submit Button -->
+        <button type="submit">Sign Up</button>
+      </form>
+  
+      <!-- Signup Status -->
+      <p v-if="signupStatus" :class="{'success': signupStatus.success, 'error': !signupStatus.success}">
+        {{ signupStatus.message }}
+      </p>
     </div>
-</template>
-
-<script setup>
-import { ref } from 'vue';
-
-const IDnumber = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-const error = ref(null);
-const success = ref(null);
-
-async function signup() {
-    error.value = null;
-    success.value = null;
-
-    // Basic client-side validation for password match
-    if (password.value !== confirmPassword.value) {
-        error.value = 'Passwords do not match';
-        return;
+  </template>
+  
+  <script setup>
+    import { ref } from 'vue';
+    import Authentification from '../services/authentication.js';
+  
+    const IDnumber = ref('');
+    const password = ref('');
+    const confirmPassword = ref('');
+    const idError = ref(false); 
+    const passwordError = ref(false); // To track password match error
+    const signupStatus = ref(null);
+  
+    // Function to validate ID number
+    function validateID() {
+      if (!IDnumber.value || isNaN(IDnumber.value)) {
+        idError.value = true;
+        return false;
+      } else {
+        idError.value = false;
+        return true;
+      }
     }
-
-    try {
-        const response = await fetch('http://localhost:1234/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                IDnumber: IDnumber.value,
-                email: email.value,
-                password: password.value,
-                confirmPassword: confirmPassword.value,
-            }),
+  
+    // Function to check if passwords match
+    function validatePasswordMatch() {
+      if (password.value !== confirmPassword.value) {
+        passwordError.value = true;
+        return false;
+      } else {
+        passwordError.value = false;
+        return true;
+      }
+    }
+  
+    // Signup function
+    async function signup() {
+      if (!validateID() || !validatePasswordMatch()) {
+        return; // Stop if validation fails
+      }
+  
+      try {
+        const response = await Authentification.signup({
+          IDnumber: IDnumber.value,
+          password: password.value
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'An error occurred');
-        }
-
-        const data = await response.json();
-        success.value = data.message;
-    } catch (err) {
-        error.value = err.message;
+        signupStatus.value = response; // Show success message
+      } catch (error) {
+        signupStatus.value = error; // Show error message
+      }
     }
-}
-</script>
-
-<style scoped>
-.error {
-    color: rgb(255, 94, 0);
-}
-
-.success {
-    color: rgb(55, 128, 0);
-}
-</style>
+  </script>
+  
+  <style scoped>
+    .error {
+      color: rgb(255, 94, 0);
+    }
+    .success {
+      color: rgb(55, 128, 0);
+    }
+  </style>
+  

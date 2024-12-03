@@ -1,66 +1,75 @@
 <template>
     <div class="form">
-        <h1>Log In</h1>
-        <form @submit.prevent="login">
-            <input type="text" v-model="IDnumber" placeholder="ID Number" required>
-            <input type="password" v-model="password" placeholder="Password" required>
-            <button type="submit">Log In</button>
-        </form>
-        <p v-if="error" class="error">{{ error }}</p>
-        <p v-if="success" class="success">{{ success }}</p>
+      <h1>Log In</h1>
+      <form @submit.prevent="login">
+        <input 
+          type="text" 
+          v-model="IDnumber" 
+          placeholder="ID Number"
+          :class="{'error': idError}" 
+        />
+        <span v-if="idError" class="error">ID Number is required and must be a number</span>
+  
+        <input 
+          type="password" 
+          v-model="password" 
+          placeholder="Password" 
+        />
+  
+        <button type="submit">Log In</button>
+      </form>
+  
+      <!-- Display login status message -->
+      <p v-if="loginStatus" :class="{'success': loginStatus.success, 'error': !loginStatus.success}">
+        {{ loginStatus.message }}
+      </p>
     </div>
-</template>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-
-const IDnumber = ref('');
-const password = ref('');
-const error = ref('');
-const success = ref('');
-
-async function login() {
-    error.value = '';    // Reset error before each login attempt
-    success.value = '';  // Reset success message
-
-    try {
-        const response = await fetch('http://localhost:1234/logged', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ IDnumber: IDnumber.value, password: password.value }),
+  </template>
+  
+  <script setup>
+    import { ref } from 'vue';
+    import Authentification from '../services/authentication.js';
+  
+    const IDnumber = ref('');
+    const password = ref('');
+    const idError = ref(false); 
+    const loginStatus = ref(null); 
+  
+    // To check if IDnumber is valid
+    function validateID() {
+      if (!IDnumber.value || isNaN(IDnumber.value)) {
+        idError.value = true; // Set error
+        return false;
+      } else {
+        idError.value = false; // Clear error
+        return true;
+      }
+    }
+  
+    async function login() {
+      if (!validateID()) {
+        return; // Stopping execution
+      }
+      // Calling the authentication service
+      try {
+        const response = await Authentification.login({
+          IDnumber: IDnumber.value,
+          password: password.value
         });
-
-        if (!response.ok) {
-            throw new Error('Invalid credentials or other error occurred');
-        }
-
-        const data = await response.json();
-        success.value = data.message; // Show success message
-        localStorage.setItem('IDnumber', IDnumber.value); // Store IDnumber in local storage
-    } catch (err) {
-        error.value = err.message || 'An unexpected error occurred.';
+        loginStatus.value = response;
+      } catch (error) {
+        // Handling login failure
+        loginStatus.value = error;
+      }
     }
-}
-
-function checkSession() {
-    const storedUser = localStorage.getItem('IDnumber');
-    if (storedUser) {
-        IDnumber.value = storedUser; // Set the IDnumber from local storage
-    }
-}
-
-onMounted(() => {
-    checkSession();
-});
-</script>
-
-<style scoped>
-.error {
+  </script>
+  
+  <style scoped>
+    .error {
     color: rgb(255, 94, 0);
-}
-.success {
-    color: rgb(55, 128, 0);
-}
-</style>
+    }
+    .success {
+        color: rgb(55, 128, 0);
+    }
+  </style>
+  

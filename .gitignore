@@ -1,6 +1,5 @@
 /.idea/
 /skoulendar/node_modules/
 /skoulendar/.vscode/
-/skoulendar/package.json/
 /skoulendar/package-lock.json/
 /skoulendar/vite.config.js/
