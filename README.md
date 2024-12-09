@@ -16,11 +16,27 @@ mysql -u root -p skoulendar < db_init.sql
 ## To populate the database
 mysql -u root -p skoulendar < db_populate.sql
 
+
+
+
 ## To implement:
  
-- connexion interface for 3 profiles (Admin, Teacher, Student)
-- timetable viewing page (for everyone)
-- homework assigned viewing page & ticking checkbox if completed (for student)
-- giving homework page & viewing submission (for teacher)
-- list of students, teachers, lessons (for admin creation, modification, deletion)
+
+ adele
+- hash passwords
+- edit & delete users
+
+
+elodie
+- timetable viewing page
+- adding/deleting lessons
+
+
+elodie
+- homework assigned viewing page & ticking checkbox if completed (user version)
+
+
+adele
+- giving homework page & viewing submission (teacher version)
+
 - notifications (for everyone)
