@@ -1,9 +1,12 @@
 /* Run this file to create the tables of the Skoulendar database */
 
-CREATE TABLE users IF NOT EXISTS(
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY,
     name VARCHAR(50),
+    surname VARCHAR(50),
     password VARCHAR(20),
-    surname VARCHAR(50)
+    status VARCHAR(10)
 );
 

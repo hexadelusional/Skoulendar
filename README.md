@@ -10,6 +10,12 @@ By AdèlandÉlodie
 To start the frontend : ```cd Skoulendar/skoulendar``` & ```npm run dev```
 To start the backend : ```cd Skoulendar/server``` & ```nodemon start```
 
+## To create the database
+mysql -u root -p skoulendar < db_init.sql
+
+## To populate the database
+mysql -u root -p skoulendar < db_populate.sql
+
 ## To implement:
  
 - connexion interface for 3 profiles (Admin, Teacher, Student)
