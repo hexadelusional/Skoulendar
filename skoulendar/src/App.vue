@@ -2,7 +2,7 @@
   <div>
     <nav>
       <router-link class="head" to="/"><strong>Home</strong></router-link>
-      <router-link class="head" to="/signup"><strong>Sign Up</strong></router-link>
+      <router-link class="head" to="/users"><strong>Users</strong></router-link>
       <router-link class="head" to="/login"><strong>Log In</strong></router-link>
     </nav>
     <router-view></router-view>

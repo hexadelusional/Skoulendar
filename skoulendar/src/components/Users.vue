@@ -2,11 +2,12 @@
     <div>
       <h3>Users List</h3>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-      <button class="add">&plus;</button>
+      <button class="add" @click="openAddWindow">&plus; Add User</button>
       <table v-if="users.length > 0">
         <thead>
           <tr>
             <th>ID Number</th>
+            <th>Status</th>
             <th>Name</th>
             <th>Surname</th>
             <th>Password</th>
@@ -16,6 +17,7 @@
         <tbody>
           <tr v-for="user in users" :key="user.id">
             <td>{{ user.id }}</td>
+            <td>{{ user.status }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.surname }}</td>
             <td>{{ user.password }}</td> 
@@ -26,20 +28,69 @@
           </tr>
         </tbody>
       </table>
+      <!-- Add User Window -->
+      <div v-if="isAddwindowOpen" class="window">
+            <div class="window-content">
+                <span class="cross" @click="closeAddWindow">&times;</span>
+                <h4>Add User</h4>
+                <form @submit.prevent="addUser">
+                    <label>Status:</label>
+                    <br>
+                    <div class="status-options">
+                        <input type="radio" id="admin" value="Admin" v-model="newUser.status" required />
+                        <label for="admin">Admin</label>
+
+                        <input type="radio" id="student" value="Student" v-model="newUser.status" required />
+                        <label for="student">Student</label>
+
+                        <input type="radio" id="teacher" value="Teacher" v-model="newUser.status" required />
+                        <label for="teacher">Teacher</label>
+                    </div>
+
+                    <br>
+                    <label for="name">Name:</label>
+                    <input type="text" v-model="newUser.name" required />
+                    <br>
+                    <label for="surname">Surname:</label>
+                    <input type="text" v-model="newUser.surname" required />
+                    <br>
+                    <label for="password">Password:</label>
+                    <input type="text" v-model="newUser.password" required />
+                    <br>
+                    <button type="submit">Add User</button>
+                </form>
+            </div>
+      </div>
+      <!-- Existing Edit User Window -->
       <div v-if="isEditwindowOpen" class="window">
         <div class="window-content">
             <span class="cross" @click="closeEditWindow">&times;</span>
             <h4>Edit User</h4>
             <form @submit.prevent="updateUser">
+                <label>Status:</label>
+                <br>
+                <div class="status-options">
+                    <input type="radio" id="admin" value="Admin" v-model="editableUser.status" required disabled 
+                        :checked="editableUser.status === 'Admin'" />
+                    <label for="admin">Admin</label>
+
+                    <input type="radio" id="student" value="Student" v-model="editableUser.status" required disabled 
+                        :checked="editableUser.status === 'Student'" />
+                    <label for="student">Student</label>
+
+                    <input type="radio" id="teacher" value="Teacher" v-model="editableUser.status" required disabled 
+                        :checked="editableUser.status === 'Teacher'" />
+                    <label for="teacher">Teacher</label>
+                </div>
                 <label for="name">Name:</label>
                 <input type="text" v-model="editableUser.name" required />
-                <br />
+                <br>
                 <label for="surname">Surname:</label>
                 <input type="text" v-model="editableUser.surname" required />
-                <br />
+                <br>
                 <label for="password">Password:</label>
                 <input type="text" v-model="editableUser.password" required />
-                <br />
+                <br>
                 <button type="submit">Update User</button>
             </form>
         </div>
@@ -51,27 +102,27 @@
     import { ref, onMounted } from 'vue';
     import axios from 'axios';
     
-    const users = ref([]); 
-    const errorMessage = ref(''); 
-    const isEditwindowOpen = ref(false); 
-    const editableUser = ref({ id: null, name: '', surname: '', password: '' }); // data for editing user
+    const users = ref([]);
+    const errorMessage = ref('');
+    const isEditwindowOpen = ref(false);
+    const isAddwindowOpen = ref(false);
+    const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '' }); // data for editing user
+    const newUser = ref({ name: '', surname: '', password: '', status: '' }); // data for adding a new user
 
     // fetch users from the API
     async function fetchUsers() {
-        try {
+    try {
         const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:1234/api/users', {
             headers: { Authorization: `Bearer ${token}` }
         });
-    
-        console.log('Response data:', response.data);
-        users.value = response.data; 
-    
-        } catch (error) {
+        console.log('Fetched users:', response.data); 
+        users.value = response.data;
+    } catch (error) {
         console.error('Error fetching users:', error);
         errorMessage.value = 'Unable to fetch users. Please try again later.';
-        }
-    }  
+    }
+}
 
     function editUser(user) {
         editableUser.value = { ...user };
@@ -85,17 +136,49 @@
     async function updateUser() {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:1234/api/users/${editableUser.value.id}`, editableUser.value, {
-            headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axios.put(
+                `http://localhost:1234/api/users/${editableUser.value.id}`,
+                editableUser.value,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const updatedUser = { ...users.value.find(user => user.id === editableUser.value.id), ...response.data };
 
             const index = users.value.findIndex(user => user.id === editableUser.value.id);
-            users.value[index] = response.data; 
+            users.value[index] = updatedUser; 
 
             closeEditWindow(); 
         } catch (error) {
             console.error('Error updating user:', error);
             errorMessage.value = 'Unable to update user. Please try again later.';
+        }
+    }
+
+    
+    function openAddWindow() {
+        isAddwindowOpen.value = true;
+    }
+
+    function closeAddWindow() {
+        isAddwindowOpen.value = false;
+        resetNewUser();
+    }
+
+    function resetNewUser() {
+        newUser.value = { name: '', surname: '', password: '', status: '' };
+    }
+    async function addUser() {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('http://localhost:1234/api/users', newUser.value, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            await fetchUsers();
+            closeAddWindow();
+        } catch (error) {
+            console.error('Error adding user:', error);
+            errorMessage.value = 'Unable to add user. Please try again later.';
         }
     }
 
@@ -184,4 +267,10 @@
         font-size: 25px;
         font-weight: bold;
     }
+    .status-options {
+        display: flex;  
+        gap: 15px;   
+        align-items: center;
+    }
+
 </style>
