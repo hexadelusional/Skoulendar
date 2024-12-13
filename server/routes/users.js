@@ -18,19 +18,29 @@ router.get('/', (req, res) => {
 // editing users
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, surname, password, status } = req.body;
+    const { name, surname, password } = req.body;  // Removed status from destructuring
 
     try {
+        // Hash the password only if it is provided
         let hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
 
-        const query = `
-            UPDATE users
-            SET name = ?, surname = ?, ${hashedPassword ? 'password = ?, ' : ''} status = ?
-            WHERE id = ?
-        `;
+        // Build the update query
+        const queryParts = ['UPDATE users SET name = ?, surname = ?,'];
+        const values = [name, surname];
         
-        const values = hashedPassword ? [name, surname, hashedPassword, status, id] : [name, surname, status, id];
+        // Conditional inclusion of hashed password
+        if (hashedPassword) {
+            queryParts.push('password = ?'); // Add password update part
+            values.push(hashedPassword); // Add hashed password to values
+        }
 
+        // Always add the WHERE clause 
+        queryParts.push('WHERE id = ?'); 
+        values.push(id);  // Include the user ID 
+
+        const query = queryParts.join(' '); // Join without the trailing comma
+
+        // Execute the update query
         database.query(query, values, (err, results) => {
             if (err) {
                 console.error('Error updating user:', err);
@@ -41,13 +51,15 @@ router.put('/:id', async (req, res) => {
                 return res.status(404).json({ message: 'User not found.' });
             }
 
-            res.status(200).json({ id, name, surname, status });
+            // Responding back with the updated user info (excluding status)
+            res.status(200).json({ id, name, surname });
         });
     } catch (error) {
         console.error('Hashing error:', error);
         res.status(500).json({ message: 'Error hashing password' });
     }
 });
+
 
 // creating users
 router.post('/', async (req, res) => {
@@ -93,7 +105,35 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+
+// Searching users by name or surname
+router.get('/search', (req, res) => {
+    const { query } = req; // Extract query parameters from the request
+    const nameOrSurname = query.nameOrSurname; // Use `nameOrSurname` as the search parameter
+
+    // If no search term is provided, return an error
+    if (!nameOrSurname) {
+        return res.status(400).json({ message: 'Search term is required' });
+    }
+
+    // SQL query to search for users by name or surname
+    const sqlQuery = `
+        SELECT * FROM users 
+        WHERE name LIKE ? OR surname LIKE ?`;
+    
+    // Escaping the user input to prevent SQL injection
+    const searchTerm = `%${nameOrSurname}%`;
+
+    database.query(sqlQuery, [searchTerm, searchTerm], (err, results) => {
+        if (err) {
+            console.error('Error fetching users:', err.message);
+            return res.status(500).json({ message: 'Error fetching users' });
+        }
+
+        res.json(results);
+    });
+});
+
+
 export default router;
-
-
 

@@ -4,7 +4,7 @@
 INSERT INTO users (id, name, surname, password, status) VALUES
 (1, 'Adele', 'Chamoux', '160305', "Admin"),
 (2, 'Elodie', 'Dufflaut', '050304', "Admin"),
-(3, 'Coline', 'Sorrin', '151104', "Student"),
+(3, 'Coline', 'Sorin', '151104', "Student"),
 (4, 'Iri', 'Rasoloarivalona', '161616', "Student"),
 (5, 'Paul', 'Leflon', '252525', "Student"),
 (6, 'Matteo', 'Launay', '121314', "Student"),
