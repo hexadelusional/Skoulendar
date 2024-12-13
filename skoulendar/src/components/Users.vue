@@ -289,7 +289,7 @@ onMounted(() => {
         display: flex;
         justify-content: space-evenly;
         flex-direction: row;
-        margin: 30px 400px 30px 400px;
+        margin: 30px 20% 30px 20%;
     }
     .add{
         font-size: 15px;

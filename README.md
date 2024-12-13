@@ -23,8 +23,8 @@ password for id 2 : 050304
  
 
  adele
-- hash passwords
-- edit & delete users
+- hash passwords done
+- edit & delete users done
 
 
 elodie
