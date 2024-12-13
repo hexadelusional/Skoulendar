@@ -16,15 +16,15 @@ mysql -u root -p skoulendar < db_init.sql
 ## To populate the database
 mysql -u root -p skoulendar < db_populate.sql
 
-
-
+password for id 1 : 160305
+password for id 2 : 050304
 
 ## To implement:
  
 
  adele
-- hash passwords
-- edit & delete users
+- hash passwords done
+- edit & delete users done
 
 
 elodie

@@ -31,29 +31,30 @@ input{
   padding: 10px;
   margin: 10px;
   width: 100%;
-  border: solid 2px #4998cf;
+  border: solid 2px #5987a896;
   border-radius: 10px;
-  color: #005da0;
+  background-color: #cee5f979;
+  color: #005da0b3;
 }
 input:hover{
-  background-color: #e3edff;
+  background-color: rgba(189, 218, 244, 0.647);
 }
 input:focus{
   outline: none;
-  border: solid 2px #005da0;
+  border: solid 2px #2b7cb6ae;
 }
 button{
   padding: 15px;
   margin: 10px;
-  border: solid 2px #2c7cb5;
-  background-color: #e3edff;
+  border: solid 2px #bacaeb;
+  background-color: #c8d6f3;
   border-radius: 10px;
   color: #005da0;
   font-size: 15px;
 }
 button:hover{
-    background-color: #d2dae9;
-    border: solid 2px #2c7cb5;
+    background-color: #b0d4ee;
+    border: solid 2px #2b7cb6ae;
 }
 ::placeholder{
   color: #005da0;

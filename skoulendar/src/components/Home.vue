@@ -11,8 +11,6 @@
 
 <script setup>
   import Chad from './Chad.vue'
-  import Users from './Users.vue'
-
 </script>
 
 <style scoped>
