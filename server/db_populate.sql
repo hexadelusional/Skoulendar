@@ -38,4 +38,13 @@ DELETE FROM homework;
 INSERT INTO homework (id, title, description, due_date, class_id, teacher_id) VALUES
 (1, 'Taylor series', "Solve the 10 last finite expansion problems. It's easy, isn't it ?", '2024-12-20', 1, 8), -- Zahraa Mohsen's class
 (2, 'Physics Lab Report', 'Write a report about ZZE RESISTANCE IN PARALLEL WIZ ZZE CAPACITOR.', '2024-12-22', 2, 9), -- Elias Hatem's class
-(3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et écrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
+(3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et ecrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
+
+
+INSERT INTO homework_status (student_id, homework_id, completed) VALUES
+(1, 1, TRUE),  -- Student 1 has completed Homework 1 (Taylor Series)
+(1, 2, FALSE), -- Student 1 has not completed Homework 2 (Physics Lab Report)
+(2, 1, FALSE), -- Student 2 has not completed Homework 1 (Taylor Series)
+(2, 3, TRUE),  -- Student 2 has completed Homework 3 (Dossier Thematique)
+(3, 2, TRUE),  -- Student 3 has completed Homework 2 (Physics Lab Report)
+(3, 3, FALSE); -- Student 3 has not completed Homework 3 (Dossier Thematique)

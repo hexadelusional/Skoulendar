@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS homework;
 DROP TABLE IF EXISTS class_list;
 DROP TABLE IF EXISTS classes;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS homework_status;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,7 +38,15 @@ CREATE TABLE IF NOT EXISTS homework (
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- pour rendre plus joli la base et trim les longs espaces qui gachent tout
+CREATE TABLE IF NOT EXISTS homework_status (
+    student_id INT NOT NULL,
+    homework_id INT NOT NULL,
+    completed BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (student_id, homework_id),
+    FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (homework_id) REFERENCES homework(id) ON DELETE CASCADE
+);
+
 DELIMITER //
 
 CREATE TRIGGER before_insert_users
@@ -77,4 +86,3 @@ BEGIN
 END; //
 
 DELIMITER ;
-

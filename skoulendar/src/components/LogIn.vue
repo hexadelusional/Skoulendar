@@ -100,13 +100,7 @@ const login = async () => {
     Cookies.set('role', userData.user.status, { path: '/' }); // Set role cookie
     Cookies.set('username', userData.user.name, { path: '/' }); // Set username cookie
     Cookies.set('authToken', userData.token, { path: '/' }); // Set token cookie if applicable
-
-    // Optional: Display cookies after login for debugging
-    console.log("Cookies after login:", {
-      role: Cookies.get('role'),
-      username: Cookies.get('username'),
-      authToken: Cookies.get('authToken'),
-    });
+    Cookies.set('studentId', userData.user.id, { path: '/' }); // Assuming the ID is in userData.user.id
 
     // Automatically redirect to the home page after successful login
     window.location.reload(); // Trigger page reload to update navigation
@@ -140,6 +134,7 @@ const logOut = () => {
   Cookies.remove('role', { path: '/' });
   Cookies.remove('username', { path: '/' });
   Cookies.remove('authToken', { path: '/' });
+  Cookies.remove('studentId', { path: '/' });
 
   // Call logOut from useAuth to clear session state
   auth.logOut();
