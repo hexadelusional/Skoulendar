@@ -56,6 +56,6 @@ INSERT INTO homework (id, title, description, deadline, class_id, lesson_id, tea
 
 /* Insert data into `homework_status` table */
 INSERT INTO homework_status (student_id, homework_id, completed) VALUES
-(3, 1, TRUE),  
-(4, 2, FALSE), 
+(3, 1, TRUE),
+(4, 2, FALSE),
 (5, 3, TRUE);

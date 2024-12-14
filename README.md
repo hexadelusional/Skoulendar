@@ -17,7 +17,7 @@ mysql -u root -p skoulendar < db_init.sql
 mysql -u root -p skoulendar < db_populate.sql
 
 password for id 1 : 160305
-password for id 2 : 050304
+password for id 2 : 040304
 
 ## To implement:
  
