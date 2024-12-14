@@ -16,8 +16,8 @@
             <input type="date" v-model="homework.due_date" placeholder="Due Date" />
         </div>
 
-        <button @click="submitHomework" :disabled="isSubmitting">Submit Homework</button>
-        <div v-if="isSubmitting">Submitting homework...</div>
+        <button @click="submitHomework" :disabled="isSubmitting">Assign Homework</button>
+        <div v-if="isSubmitting">Assigning homework...</div>
     </div>
 </template>
 

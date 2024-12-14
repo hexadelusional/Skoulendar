@@ -1,6 +1,5 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import Cookies from 'js-cookie'; // <-- Import it here
+import Cookies from 'js-cookie'; // Import cookies for session management
 
 import Home from '../components/Home.vue';
 import LogIn from '../components/LogIn.vue';
@@ -22,7 +21,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const role = Cookies.get('role'); // Get the user's role
+    const role = Cookies.get('role'); // Get the user's role from cookies
     console.log(`Navigating to: ${to.name}, role: ${role}`); // Debugging
 
     // Allow access to /login for all users (authenticated or not)
@@ -37,14 +36,19 @@ router.beforeEach((to, from, next) => {
 
     // Redirect authenticated users trying to access other routes to role-specific views
     if (role) {
-      if (to.name === 'Users' && role !== 'Admin') {
-        return next({ name: 'Home' }); // Prevent access if not an Admin
-      }
+      // Redirect Teachers to HomeworkGiving route if they try to access HomeworkViewing or Users
       if (to.name === 'HomeworkGiving' && role !== 'Teacher') {
         return next({ name: 'Home' }); // Prevent access if not a Teacher
       }
+
+      // Redirect Students to HomeworkViewing route if they try to access HomeworkGiving or Users
       if (to.name === 'HomeworkViewing' && role !== 'Student') {
         return next({ name: 'Home' }); // Prevent access if not a Student
+      }
+
+      // Admin access to Users route
+      if (to.name === 'Users' && role !== 'Admin') {
+        return next({ name: 'Home' }); // Prevent access if not an Admin
       }
     }
 
@@ -55,6 +59,5 @@ router.beforeEach((to, from, next) => {
 
     next(); // Allow all other navigation
 });
-
 
 export default router;

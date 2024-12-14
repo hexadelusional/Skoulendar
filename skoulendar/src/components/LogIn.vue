@@ -80,6 +80,9 @@ const login = async () => {
       message: "Welcome back <strong>" + userData.user.name + "</strong> 😃!",
     };
 
+    localStorage.setItem('loginStatus', JSON.stringify(loginStatus.value));
+
+
     // Clear input fields after successful login
     id.value = '';
     password.value = '';
@@ -105,6 +108,14 @@ const login = async () => {
       authToken: Cookies.get('authToken'),
     });
 
+    // Automatically redirect to the home page after successful login
+    window.location.reload(); // Trigger page reload to update navigation
+    // Retrieve loginStatus from localStorage if available
+    const savedLoginStatus = JSON.parse(localStorage.getItem('loginStatus'));
+    if (savedLoginStatus) {
+      loginStatus.value = savedLoginStatus;
+    }
+
   } catch (error) {
     // Handle error response
     if (error.response && error.response.status === 401) {
@@ -123,6 +134,7 @@ const login = async () => {
   }
 };
 
+// Logout function
 const logOut = () => {
   // Clear session cookies
   Cookies.remove('role', { path: '/' });
@@ -141,9 +153,8 @@ const logOut = () => {
   // Redirect the user to the login page
   router.push({ name: 'login' }); // Use the router instance
 };
-
-
 </script>
+
 
 <style scoped>
 .error {

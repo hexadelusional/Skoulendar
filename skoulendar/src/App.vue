@@ -5,14 +5,24 @@
         <strong><i class="fa-solid fa-house"></i></strong>
       </router-link>
 
-      <router-link class="head" to="/users">
+      <!-- Only show the 'Users' link if the user is an Admin -->
+      <router-link v-if="isAdmin" class="head" to="/users">
         <strong>Users</strong>
+      </router-link>
+
+      <!-- Only show the 'HomeworkGiving' link if the user is a Teacher -->
+      <router-link v-if="isTeacher" class="head" to="/homeworkGiving">
+        <strong>Homework</strong>
+      </router-link>
+      
+      <!-- Only show the 'HomeworkViewing' link if the user is a Student -->
+      <router-link v-if="isStudent" class="head" to="/homeworkViewing">
+        <strong>Homework</strong>
       </router-link>
 
       <router-link class="head" to="/login">
         <strong><i class="fa-solid fa-right-from-bracket"></i></strong>
       </router-link>
-
     </nav>
 
     <router-view></router-view>
@@ -20,16 +30,24 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useAuth } from './composable/useAuth.js';
+import Cookies from 'js-cookie';
 
-const auth = useAuth();
+// Reactive role state (initially from cookies or auth state)
+const role = ref(Cookies.get('role'));
 
-onMounted(() => {
-  auth.checkAuthState(); // Refresh session state when app loads
+// Watch for changes in the role
+const isAdmin = computed(() => role.value === 'Admin');
+const isTeacher = computed(() => role.value === 'Teacher');
+const isStudent = computed(() => role.value === 'Student');
+
+
+// Update role when authentication state changes
+watch(() => Cookies.get('role'), (newRole) => {
+  role.value = newRole;  // Update the role reactively when the cookie changes
 });
 </script>
-
 
 <style scoped>
 nav {
