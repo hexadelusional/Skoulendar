@@ -26,61 +26,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import axios from 'axios';
 
-export default {
-  data() {
-    return {
-      id: '',
-      password: '',
-      idError: false,
-      loginStatus: null,
+// Reactive state variables
+const id = ref('');
+const password = ref('');
+const idError = ref(false);
+const loginStatus = ref(null);
+
+// Login function to handle login logic
+const login = async () => {
+  idError.value = !id.value; // Ensure there’s an ID provided
+
+  if (idError.value) {
+    return; // Exit if there's an error
+  }
+
+  try {
+    const response = await axios.post('http://localhost:1234/api/auth/login', {
+      id: id.value,
+      password: password.value,
+    });
+
+    // Handle successful login
+    loginStatus.value = {
+      success: true,
+      message: "Login successful! Welcome " + response.data.user.name + " 😃",
     };
-  },
-  methods: {
-    async login() {
-      this.idError = !this.id; // Ensure there’s an ID provided
 
-      if (this.idError) {
-        return; // Exit if there's an error
-      }
+    // Clear input fields after successful login
+    id.value = '';
+    password.value = '';
+    idError.value = false;
 
-      try {
-        const response = await axios.post('http://localhost:1234/api/auth/login', {
-          id: this.id,
-          password: this.password,
-        });
+    // Handle post-login actions, like redirecting if needed
 
-        // Handle successful login
-        this.loginStatus = {
-          success: true,
-          message: "Login successful! Welcome " + response.data.user.name + " 😃",
-        };
-
-        // Clear input fields after successful login
-        this.id = '';
-        this.password = '';
-        this.idError = false;
-
-        // Handle post-login actions, like redirecting if needed
-
-      } catch (error) {
-        // Handle error response
-        if (error.response && error.response.status === 401) {
-          this.loginStatus = {
-            success: false,
-            message: error.response.data.message || "Login has failed, please check your credentials... 😬",
-          };
-        } else {
-          this.loginStatus = {
-            success: false,
-            message: "An error occurred while logging in... 😬",
-          };
-        }
-      }
-    },
-  },
+  } catch (error) {
+    // Handle error response
+    if (error.response && error.response.status === 401) {
+      loginStatus.value = {
+        success: false,
+        message: error.response.data.message || "Login has failed, please check your credentials... 😬",
+      };
+    } else {
+      loginStatus.value = {
+        success: false,
+        message: "An error occurred while logging in... 😬",
+      };
+    }
+  }
 };
 </script>
 

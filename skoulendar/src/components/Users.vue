@@ -91,141 +91,141 @@
   
 <script setup>
     import { ref, onMounted } from 'vue';
-import axios from 'axios';
+    import axios from 'axios';
 
-const users = ref([]);
-const filteredUsers = ref([]);
-const errorMessage = ref('');
-const searchTerm = ref('');
+    const users = ref([]);
+    const filteredUsers = ref([]);
+    const errorMessage = ref('');
+    const searchTerm = ref('');
 
-const isEditwindowOpen = ref(false);
-const isAddwindowOpen = ref(false);
-const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '' }); // data for editing user
-const newUser = ref({ name: '', surname: '', password: '', status: '' }); // data for adding a new user
+    const isEditwindowOpen = ref(false);
+    const isAddwindowOpen = ref(false);
+    const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '' }); // data for editing user
+    const newUser = ref({ name: '', surname: '', password: '', status: '' }); // data for adding a new user
 
-async function fetchUsers() {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:1234/api/users', {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+    async function fetchUsers() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:1234/api/users', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
 
-        users.value = response.data;
-        filteredUsers.value = response.data; // Initialize the filtered users
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        errorMessage.value = 'Unable to fetch users. Please try again later.';
-    }
-}
-
-async function searchUsers() {
-    if (!searchTerm.value) {
-        // If the search term is empty, reset the filtered users
-        filteredUsers.value = users.value;
-        return;
+            users.value = response.data;
+            filteredUsers.value = response.data; // Initialize the filtered users
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            errorMessage.value = 'Unable to fetch users. Please try again later.';
+        }
     }
 
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:1234/api/users/search`, {
-            headers: { Authorization: `Bearer ${token}` },
-            params: { nameOrSurname: searchTerm.value } // Send the search term as a query parameter
-        });
+    async function searchUsers() {
+        if (!searchTerm.value) {
+            // If the search term is empty, reset the filtered users
+            filteredUsers.value = users.value;
+            return;
+        }
 
-        filteredUsers.value = response.data; // Update filtered users with search results
-    } catch (error) {
-        console.error('Error searching users:', error);
-        errorMessage.value = 'Unable to search users. Please try again later.';
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:1234/api/users/search`, {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { nameOrSurname: searchTerm.value } // Send the search term as a query parameter
+            });
+
+            filteredUsers.value = response.data; // Update filtered users with search results
+        } catch (error) {
+            console.error('Error searching users:', error);
+            errorMessage.value = 'Unable to search users. Please try again later.';
+        }
     }
-}
 
-function editUser(user) {
-    editableUser.value = { ...user };
-    isEditwindowOpen.value = true;
-}
+    function editUser(user) {
+        editableUser.value = { ...user };
+        isEditwindowOpen.value = true;
+    }
 
-function closeEditWindow() {
-    isEditwindowOpen.value = false;
-}
+    function closeEditWindow() {
+        isEditwindowOpen.value = false;
+    }
 
-async function updateUser() {
-    try {
-        const token = localStorage.getItem('token');
-        const { id, name, surname, password } = editableUser.value;
-        const payload = { name, surname, ...(password ? { password } : {}) };
+    async function updateUser() {
+        try {
+            const token = localStorage.getItem('token');
+            const { id, name, surname, password } = editableUser.value;
+            const payload = { name, surname, ...(password ? { password } : {}) };
 
-        const response = await axios.put(
-            `http://localhost:1234/api/users/${id}`, 
-            payload, 
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
+            const response = await axios.put(
+                `http://localhost:1234/api/users/${id}`, 
+                payload, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
+            const index = users.value.findIndex(user => user.id === id);
+            users.value[index] = updatedUser; // Update the user in the list
+            closeEditWindow(); // Close the edit window
+        } catch (error) {
+            console.error('Error updating user:', error);
+            errorMessage.value = 'Unable to update user. Please try again later.';
+        }
+    }
+
+    function openAddWindow() {
+        isAddwindowOpen.value = true;
+    }
+
+    function closeAddWindow() {
+        isAddwindowOpen.value = false;
+        resetNewUser();
+    }
+
+    function resetNewUser() {
+        newUser.value = { name: '', surname: '', password: '', status: '' };
+    }
+
+    async function addUser() {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('http://localhost:1234/api/users', newUser.value, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            await fetchUsers();
+            closeAddWindow();
+        } catch (error) {
+            console.error('Error adding user:', error);
+            errorMessage.value = 'Unable to add user. Please try again later.';
+        }
+    }
+
+    // Delete user by id
+    async function deleteUser(userId) {
+        console.log(`Attempting to delete user with ID: ${userId}`);
         
-        const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
-        const index = users.value.findIndex(user => user.id === id);
-        users.value[index] = updatedUser; // Update the user in the list
-        closeEditWindow(); // Close the edit window
-    } catch (error) {
-        console.error('Error updating user:', error);
-        errorMessage.value = 'Unable to update user. Please try again later.';
-    }
-}
+        if (!confirm("Are you sure you want to delete this user?")) {
+            return;
+        }
 
-function openAddWindow() {
-    isAddwindowOpen.value = true;
-}
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:1234/api/users/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
 
-function closeAddWindow() {
-    isAddwindowOpen.value = false;
-    resetNewUser();
-}
+            // Update both the full user list and the filtered user list
+            users.value = users.value.filter(user => user.id !== userId);
+            filteredUsers.value = filteredUsers.value.filter(user => user.id !== userId);
 
-function resetNewUser() {
-    newUser.value = { name: '', surname: '', password: '', status: '' };
-}
-
-async function addUser() {
-    try {
-        const token = localStorage.getItem('token');
-        await axios.post('http://localhost:1234/api/users', newUser.value, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        await fetchUsers();
-        closeAddWindow();
-    } catch (error) {
-        console.error('Error adding user:', error);
-        errorMessage.value = 'Unable to add user. Please try again later.';
-    }
-}
-
-// Delete user by id
-async function deleteUser(userId) {
-    console.log(`Attempting to delete user with ID: ${userId}`);
-    
-    if (!confirm("Are you sure you want to delete this user?")) {
-        return;
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            console.error('Error response:', error.response);
+            errorMessage.value = 'Unable to delete user. Please try again later.';
+        }
     }
 
-    try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:1234/api/users/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-
-        // Update both the full user list and the filtered user list
-        users.value = users.value.filter(user => user.id !== userId);
-        filteredUsers.value = filteredUsers.value.filter(user => user.id !== userId);
-
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        console.error('Error response:', error.response);
-        errorMessage.value = 'Unable to delete user. Please try again later.';
-    }
-}
-
-// Fetch users on component mount
-onMounted(() => {
-    fetchUsers();
-});
+    // Fetch users on component mount
+    onMounted(() => {
+        fetchUsers();
+    });
 
 </script>
 
