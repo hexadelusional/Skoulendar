@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
+
 // Login route
 router.post('/login', (req, res) => {
     const { id, password } = req.body;
@@ -51,29 +52,5 @@ router.post('/login', (req, res) => {
     });
 });
 
-async function hashExistingPasswords() {
-  // Fetch all users
-  database.query('SELECT id, password FROM users', async (err, users) => {
-    if (err) {
-      console.error('Error fetching users:', err);
-      return;
-    }
-    for (const user of users) {
-      if (!user.password.startsWith('\$2y$')) { 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        // Update the database with the new hashed password
-        database.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, user.id], (updateErr) => {
-          if (updateErr) {
-            console.error(`Error updating user ${user.id}:`, updateErr);
-          } else {
-            console.log(`Updated user ID ${user.id} with a hashed password.`);
-          }
-        });
-      }
-    }
-  });
-}
-hashExistingPasswords();
 
 export default router;
