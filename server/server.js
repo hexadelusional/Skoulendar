@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import sql from 'mysql2';
-import database from './routes/database.js';
-import authentication from './routes/authentication.js';
 import users from './routes/users.js';
+import authentication from './routes/authentication.js';
+import homework from './routes/homework.js';
+import classes from './routes/classes.js'; 
+import classList from './routes/classList.js';
+
 import { checkAndHashPasswords } from './routes/hashed.js'; 
 
 
@@ -16,6 +18,11 @@ app.use(express.json());
 
 app.use('/api/auth', authentication); 
 app.use('/api/users', users);
+app.use('/api/homework', homework);
+app.use('/api/classes', classes);
+app.use('/api/classList', classList);
+
+
 
 checkAndHashPasswords()
     .then(() => {

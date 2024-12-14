@@ -27,7 +27,7 @@ form{
   justify-content: center;
   width: 80%;
 }
-input{
+input, textarea{
   padding: 10px;
   margin: 10px;
   width: 100%;
@@ -36,13 +36,19 @@ input{
   background-color: #cee5f979;
   color: #005da0b3;
 }
-input:hover{
+input:hover, textarea:hover{
   background-color: rgba(189, 218, 244, 0.647);
 }
 input:focus{
   outline: none;
   border: solid 2px #2b7cb6ae;
 }
+textarea:focus {
+  outline: none;
+  border: solid 2px #2b7cb6ae;
+  box-shadow: 0 0 1px #031725c5; /* Box shadow for focus indication */
+}
+
 button{
   padding: 15px;
   margin: 10px;
@@ -58,4 +64,19 @@ button:hover{
 }
 ::placeholder{
   color: #005da0;
+}
+
+select{
+  margin: 15px;
+  padding: 8px;
+  border: 2px solid #acbbda;
+  border-radius: 10px;
+}
+textarea{
+  margin: 15px;
+  padding: 8px;
+  width: 500px;
+  height: 100px;
+  border: 2px solid #acbbda;
+  border-radius: 10px;
 }

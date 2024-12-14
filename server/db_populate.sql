@@ -21,8 +21,21 @@ INSERT INTO classes (id, name, teacher_id) VALUES
 (2, 'General Electricity', 9), -- Elias Hatem
 (3, 'Communication skills', 10); -- Clara Boissier
 
+
+DELETE FROM class_list; 
+
+INSERT INTO class_list (student_id, class_id) VALUES
+(3, 1),  -- Coline Sorin enrolled in Calculus
+(4, 1),  -- Iri Rasoloarivalona enrolled in Calculus
+(5, 1),  -- Paul Leflon enrolled in Calculus
+(6, 2),  -- Matteo Launay enrolled in General Electricity
+(7, 2),  -- Valentin Lebras enrolled in General Electricity
+(3, 3),  -- Coline Sorin enrolled in Communication skills
+(7, 3);  -- Valentin Lebras enrolled in Communication skills
+
+
 DELETE FROM homework;
 INSERT INTO homework (id, title, description, due_date, class_id, teacher_id) VALUES
 (1, 'Taylor series', "Solve the 10 last finite expansion problems. It's easy, isn't it ?", '2024-12-20', 1, 8), -- Zahraa Mohsen's class
-(2, 'Physics Lab Report', 'Write a report about THE RESISTANCE IN PARALLEL WIZ ZE CAPACITOR.', '2024-12-22', 2, 9), -- Elias Hatem's class
-(3, 'Dossier Thématique', 'Finir les 16 pages du dossier thématiques et écrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
+(2, 'Physics Lab Report', 'Write a report about ZZE RESISTANCE IN PARALLEL WIZ ZZE CAPACITOR.', '2024-12-22', 2, 9), -- Elias Hatem's class
+(3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et écrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
