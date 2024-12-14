@@ -79,7 +79,7 @@
                     
                     <br>
                     <label>Password:</label>
-                    <input type="password" v-model="editableUser.password" /> <!-- Allow password to be changed, but without affecting status -->
+                    <input type="password" v-model="editableUser.password" placeholder=""/> <!-- Allow password to be changed, but without affecting status -->
 
                     <br>
                     <button type="submit">Update User</button>
@@ -100,7 +100,7 @@
 
     const isEditwindowOpen = ref(false);
     const isAddwindowOpen = ref(false);
-    const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '' }); // data for editing user
+    const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '', isPasswordChanged: false }); // data for editing user
     const newUser = ref({ name: '', surname: '', password: '', status: '' }); // data for adding a new user
 
     async function fetchUsers() {
@@ -140,35 +140,52 @@
     }
 
     function editUser(user) {
-        editableUser.value = { ...user };
-        isEditwindowOpen.value = true;
-    }
+  editableUser.value = {
+    id: user.id,
+    name: user.name,
+    surname: user.surname,
+    password: '', // Start with an empty password field
+    status: user.status,
+  };
+  isEditwindowOpen.value = true;
+}
+
 
     function closeEditWindow() {
         isEditwindowOpen.value = false;
     }
 
     async function updateUser() {
-        try {
-            const token = localStorage.getItem('token');
-            const { id, name, surname, password } = editableUser.value;
-            const payload = { name, surname, ...(password ? { password } : {}) };
+  try {
+    const token = localStorage.getItem('token');
+    const { id, name, surname, password } = editableUser.value;
 
-            const response = await axios.put(
-                `http://localhost:1234/api/users/${id}`, 
-                payload, 
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            
-            const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
-            const index = users.value.findIndex(user => user.id === id);
-            users.value[index] = updatedUser; // Update the user in the list
-            closeEditWindow(); // Close the edit window
-        } catch (error) {
-            console.error('Error updating user:', error);
-            errorMessage.value = 'Unable to update user. Please try again later.';
-        }
-    }
+    // Prepare payload:
+    // Include the password only if it's non-empty
+    const payload = {
+      name,
+      surname,
+      ...(password ? { password } : {}) // Send the password only if it's provided
+    };
+
+    const response = await axios.put(
+      `http://localhost:1234/api/users/${id}`,
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Update local user data
+    const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
+    const index = users.value.findIndex(user => user.id === id);
+    users.value[index] = updatedUser; // Update user in the list
+
+    closeEditWindow(); // Close the edit window
+    editableUser.value.password = ''; // Clear password field post-update
+  } catch (error) {
+    console.error('Error updating user:', error);
+    errorMessage.value = 'Unable to update user. Please try again later.';
+  }
+}
 
     function openAddWindow() {
         isAddwindowOpen.value = true;

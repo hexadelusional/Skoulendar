@@ -18,27 +18,45 @@ router.get('/', (req, res) => {
 // editing users
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, surname, password } = req.body;  // Removed status from destructuring
+    const { name, surname, password } = req.body;  // Receive name, surname, and password from body
 
     try {
-        // Hash the password only if it is provided
-        let hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+        // Initialize the query parts and value array
+        const queryParts = ['UPDATE users SET'];
+        const values = [];
+        const updates = [];
 
-        // Build the update query
-        const queryParts = ['UPDATE users SET name = ?, surname = ?,'];
-        const values = [name, surname];
+        // Only add the name if it is provided
+        if (name) {
+            updates.push('name = ?');
+            values.push(name);
+        }
         
-        // Conditional inclusion of hashed password
-        if (hashedPassword) {
-            queryParts.push('password = ?'); // Add password update part
-            values.push(hashedPassword); // Add hashed password to values
+        // Only add the surname if it is provided
+        if (surname) {
+            updates.push('surname = ?');
+            values.push(surname);
         }
 
-        // Always add the WHERE clause 
-        queryParts.push('WHERE id = ?'); 
-        values.push(id);  // Include the user ID 
+        // Only hash and include the password if it was provided
+        if (password) {
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.push('password = ?');
+            values.push(hashedPassword);
+        }
 
-        const query = queryParts.join(' '); // Join without the trailing comma
+        // If no fields are updated, return an error
+        if (updates.length === 0) {
+            return res.status(400).json({ message: 'No fields to update.' });
+        }
+
+        // Join updates into the query string
+        queryParts.push(updates.join(', ')); // Join updates with commas
+        queryParts.push('WHERE id = ?'); // Include WHERE clause
+        values.push(id);  // Add the user ID to the values
+
+        const query = queryParts.join(' '); // Construct the final SQL statement
 
         // Execute the update query
         database.query(query, values, (err, results) => {
@@ -51,14 +69,22 @@ router.put('/:id', async (req, res) => {
                 return res.status(404).json({ message: 'User not found.' });
             }
 
-            // Responding back with the updated user info (excluding status)
-            res.status(200).json({ id, name, surname });
+            // Respond back with the updated user info (excluding password)
+            const updatedUserResponse = {
+                id,
+                ...(name && { name }),  // Return name if it was updated
+                ...(surname && { surname }) // Return surname if it was updated
+            };
+
+            res.status(200).json(updatedUserResponse);
         });
+
     } catch (error) {
         console.error('Hashing error:', error);
         res.status(500).json({ message: 'Error hashing password' });
     }
 });
+
 
 
 // creating users
