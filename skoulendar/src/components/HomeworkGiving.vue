@@ -1,25 +1,29 @@
 <template>
-    <div>
+    <div class="container">
         <h1>Assign Homework</h1>
+
         <div v-if="submitError" class="error">{{ submitError }}</div>
 
         <label for="class-select">Select a class:</label> <br>
-        <select v-model="selectedClass" id="class-select">
+        <select v-model="selectedClass" id="class-select" class="input-field">
             <option v-for="classItem in lessons" :key="classItem.id" :value="classItem.id">
                 {{ classItem.name }}
             </option>
         </select>
 
         <div>
-            <input type="text" v-model="homework.title" placeholder="Homework Title" />
-            <textarea v-model="homework.description" placeholder="Homework Description"></textarea>
-            <input type="date" v-model="homework.deadline" placeholder="Deadline" />
+            <input type="text" v-model="homework.title" placeholder="TITLE" class="title" />
+
+            <textarea v-model="homework.description" placeholder="Description" class="input-field"></textarea>
+
+            <input type="date" v-model="homework.deadline" class="deadline" />
         </div>
 
         <button @click="submitHomework" :disabled="isSubmitting">Assign Homework</button>
         <div v-if="isSubmitting">Assigning homework...</div>
     </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -111,9 +115,29 @@ function getTeacherId() {
 </script>
 
 <style scoped>
-    .error {
-        color: rgb(255, 94, 0);
-    }
+.container {
+    width: 500px; /* Set the container width */
+    margin: auto; /* Center the container */
+    padding: 20px; /* Add some padding around the content */
+    border-radius: 8px; /* Optional: Rounded corners */
+}
+
+.input-field {
+    width: 100%; /* Make input fields take full width of the container */
+    margin-bottom: 15px; /* Space between input fields */
+    padding: 10px; /* Add padding for the input fields */
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+.title, .deadline{
+    text-align: center;
+    font-size: 16px;
+    width: 50%;
+}
+
+.error {
+    color: rgb(255, 94, 0);
+}
 </style>
 
 

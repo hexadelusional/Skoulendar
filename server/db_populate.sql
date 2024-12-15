@@ -1,6 +1,10 @@
 /* Run this file to populate the tables of the Skoulendar database */
-
 DELETE FROM users;
+DELETE FROM lessons;
+DELETE FROM teacher_class;
+DELETE FROM class_list; 
+DELETE FROM homework;
+DELETE FROM homework_status;
 
 INSERT INTO users (id, name, surname, password, status) VALUES
 (1, 'Adele', 'Chamoux', '160305', "Admin"),
@@ -14,14 +18,17 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (9, 'Elias', 'Hatem','98137', "Teacher"),
 (10, 'Clara', 'Boissier','98720', "Teacher");
 
-DELETE FROM lessons;
 INSERT INTO lessons (id, name, teacher_id, time, room_number) VALUES
 (1, 'Calculus', 8, '08:00:00', 101),           -- Zahraa Mohsen
 (2, 'General Electricity', 9, '10:00:00', 102), -- Elias Hatem
 (3, 'Communication skills', 10, '13:00:00', 103); -- Clara Boissier
 
 
-DELETE FROM class_list; 
+INSERT INTO teacher_class (teacher_id, lesson_id) VALUES
+(8, 1), -- Zahraa Mohsen teaches Calculus
+(9, 2), -- Elias Hatem teaches General Electricity
+(10, 3); -- Clara Boissier teaches Communication skills
+
 
 INSERT INTO class_list (student_id, class_id) VALUES
 (3, 1),  -- Coline Sorin enrolled in Calculus
@@ -33,12 +40,10 @@ INSERT INTO class_list (student_id, class_id) VALUES
 (7, 3);  -- Valentin Lebras enrolled in Communication skills
 
 
-DELETE FROM homework;
 INSERT INTO homework (id, title, description, deadline, class_id, teacher_id) VALUES
 (1, 'Taylor series', "Solve the 10 last finite expansion problems. It's easy, isn't it ?", '2024-12-20', 1, 8), -- Zahraa Mohsen's class
 (2, 'Physics Lab Report', 'Write a report about ZZE RESISTANCE IN PARALLEL WIZ ZZE CAPACITOR.', '2024-12-22', 2, 9), -- Elias Hatem's class
 (3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et ecrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
-
 
 INSERT INTO homework_status (student_id, homework_id, completed) VALUES
 (1, 1, TRUE),  -- Student 1 has completed Homework 1 (Taylor Series)

@@ -57,6 +57,7 @@ nav {
   background-color: #c8dbfee3;
   border-radius: 10px;
   padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.067);
 }
 
 .head {
