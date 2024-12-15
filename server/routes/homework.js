@@ -13,12 +13,12 @@ router.get('/', (req, res) => {
 
     // Your query to fetch homework for the student, including completion status
     const query = `
-        SELECT h.id AS homework_id, h.title, h.description, h.deadline, h.lesson_id, h.teacher_id, 
+        SELECT h.id AS homework_id, h.title, h.description, h.deadline, h.class_id, h.teacher_id, 
                hs.student_id, hs.completed, u.name AS student_name
         FROM homework h
         LEFT JOIN homework_status hs ON h.id = hs.homework_id
         LEFT JOIN users u ON hs.student_id = u.id
-        LEFT JOIN class_list cl ON h.lesson_id = cl.lesson_id
+        LEFT JOIN class_list cl ON h.class_id = cl.class_id
         WHERE cl.student_id = ?
     `;
 
@@ -34,11 +34,18 @@ router.get('/', (req, res) => {
 
 
 // Route to post new homework
+// Route to post new homework
 router.post('/', (req, res) => {
-    const { title, description, deadline, lesson_id, teacher_id } = req.body;
-    const query = 'INSERT INTO homework (title, description, deadline, lesson_id, teacher_id) VALUES (?, ?, ?, ?, ?)';
+    const { title, description, deadline, class_id, teacher_id, lesson_id } = req.body; 
 
-    database.query(query, [title, description, deadline, lesson_id, teacher_id], (error, results) => {
+    // Ensure lesson_id is provided
+    if (!lesson_id) {
+        return res.status(400).json({ message: 'Lesson ID is required' });
+    }
+
+    const query = 'INSERT INTO homework (title, description, deadline, class_id, lesson_id, teacher_id) VALUES (?, ?, ?, ?, ?, ?)';
+
+    database.query(query, [title, description, deadline, class_id, lesson_id, teacher_id], (error, results) => {
         if (error) {
             console.error('Error while assigning homework:', error);
             return res.status(500).json({ message: 'Error while assigning homework', error });
@@ -47,6 +54,7 @@ router.post('/', (req, res) => {
         res.status(201).json({ message: 'Homework assigned successfully', id: results.insertId });
     });
 });
+
 
 // Route to update homework completion status
 router.put('/update', (req, res) => {
