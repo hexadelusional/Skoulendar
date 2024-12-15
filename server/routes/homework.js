@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
     // Your query to fetch homework for the student, including completion status
     const query = `
-        SELECT h.id AS homework_id, h.title, h.description, h.due_date, h.class_id, h.teacher_id, 
+        SELECT h.id AS homework_id, h.title, h.description, h.deadline, h.class_id, h.teacher_id, 
                hs.student_id, hs.completed, u.name AS student_name
         FROM homework h
         LEFT JOIN homework_status hs ON h.id = hs.homework_id
@@ -35,10 +35,10 @@ router.get('/', (req, res) => {
 
 // Route to post new homework
 router.post('/', (req, res) => {
-    const { title, description, due_date, class_id, teacher_id } = req.body;
-    const query = 'INSERT INTO homework (title, description, due_date, class_id, teacher_id) VALUES (?, ?, ?, ?, ?)';
+    const { title, description, deadline, class_id, teacher_id } = req.body;
+    const query = 'INSERT INTO homework (title, description, deadline, class_id, teacher_id) VALUES (?, ?, ?, ?, ?)';
 
-    database.query(query, [title, description, due_date, class_id, teacher_id], (error, results) => {
+    database.query(query, [title, description, deadline, class_id, teacher_id], (error, results) => {
         if (error) {
             console.error('Error while assigning homework:', error);
             return res.status(500).json({ message: 'Error while assigning homework', error });

@@ -1,9 +1,9 @@
 <template>
     <div class="container">
         <h1>View Homework</h1>
-        <div v-if="submitErrorClasses" class="error">{{ submitErrorClasses }}</div>
+        <div v-if="submitErrorLessons" class="error">{{ submitErrorLessons }}</div>
 
-        <div v-for="classItem in classes" :key="classItem.id" class="class-section">
+        <div v-for="classItem in lessons" :key="classItem.id" class="class-section">
             <h2>{{ classItem.name }}</h2>
             <div v-if="homeworksByClass[classItem.id]?.length === 0">
                 No homework assigned for this class.
@@ -25,7 +25,7 @@
                             </label>
                         </div>
                         <p><strong>Instructions: </strong>{{ homework.description }}</p>
-                        <p><strong>Due Date:</strong> {{ formatDate(homework.due_date) }}</p>
+                        <p><strong>Deadline:</strong> {{ formatDate(homework.deadline) }}</p>
                     </div>
                 </li>
             </ul>
@@ -42,35 +42,35 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const classes = ref([]);
+const lessons = ref([]);
 const homeworksByClass = ref({});
-const isLoadingClasses = ref(false);
+const isLoadingLessons = ref(false);
 const isLoadingHomework = ref(false);
-const submitErrorClasses = ref(null);
+const submitErrorLessons = ref(null);
 const submitErrorHomework = ref(null);
 
 const studentId = ref(Cookies.get('studentId'));
 
-// Fetch the classes that the student is enrolled in
-async function fetchClasses() {
+// Fetch the lessons that the student is enrolled in
+async function fetchLessons() {
     if (!studentId.value) {
-        submitErrorClasses.value = 'Student ID is missing. Please log in again.';
+        submitErrorLessons.value = 'Student ID is missing. Please log in again.';
         return;
     }
 
-    isLoadingClasses.value = true;
-    submitErrorClasses.value = null;
+    isLoadingLessons.value = true;
+    submitErrorLessons.value = null;
 
     try {
         const response = await axios.get(`http://localhost:1234/api/classList`, {
             params: { student_id: studentId.value }
         });
-        classes.value = response.data;
+        lessons.value = response.data;
         fetchHomework();
     } catch (error) {
-        submitErrorClasses.value = 'Error loading classes. Please try again later.';
+        submitErrorLessons.value = 'Error loading lessons. Please try again later.';
     } finally {
-        isLoadingClasses.value = false;
+        isLoadingLessons.value = false;
     }
 }
 
@@ -157,7 +157,7 @@ async function updateHomeworkStatus(homework) {
 }
 
 onMounted(() => {
-    fetchClasses();
+    fetchLessons();
 });
 </script>
 

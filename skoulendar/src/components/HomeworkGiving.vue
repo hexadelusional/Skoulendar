@@ -5,7 +5,7 @@
 
         <label for="class-select">Select a class:</label> <br>
         <select v-model="selectedClass" id="class-select">
-            <option v-for="classItem in classes" :key="classItem.id" :value="classItem.id">
+            <option v-for="classItem in lessons" :key="classItem.id" :value="classItem.id">
                 {{ classItem.name }}
             </option>
         </select>
@@ -13,7 +13,7 @@
         <div>
             <input type="text" v-model="homework.title" placeholder="Homework Title" />
             <textarea v-model="homework.description" placeholder="Homework Description"></textarea>
-            <input type="date" v-model="homework.due_date" placeholder="Due Date" />
+            <input type="date" v-model="homework.deadline" placeholder="Deadline" />
         </div>
 
         <button @click="submitHomework" :disabled="isSubmitting">Assign Homework</button>
@@ -25,7 +25,7 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios'; // Import Axios
 
-const classes = ref([]);
+const lessons = ref([]);
 const selectedClass = ref(null);
 
 function getTodayDate() {
@@ -41,28 +41,28 @@ function getTodayDate() {
 const homework = ref({
     title: '',
     description: '',
-    due_date: getTodayDate(), // Set today's date here
+    deadline: getTodayDate(), // Set today's date here
 });
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 const submitError = ref(null);
 
-// Fetch classes when the component mounts
+// Fetch lessons when the component mounts
 onMounted(() => {
-    fetchClasses();
+    fetchLessons();
 });
 
-// Function to fetch classes
-async function fetchClasses() {
+// Function to fetch lessons
+async function fetchLessons() {
     isLoading.value = true;
     submitError.value = null;
 
     try {
-        const response = await axios.get('http://localhost:1234/api/classes'); // Use full URL
-        classes.value = response.data;
+        const response = await axios.get('http://localhost:1234/api/lessons'); // Use full URL
+        lessons.value = response.data;
     } catch (error) {
-        console.error('Error fetching classes:', error.message || error);
-        submitError.value = 'Error loading classes. Please try again later.';
+        console.error('Error fetching lessons:', error.message || error);
+        submitError.value = 'Error loading lessons. Please try again later.';
     } finally {
         isLoading.value = false;
     }
@@ -76,7 +76,7 @@ async function submitHomework() {
     const payload = {
         title: homework.value.title,
         description: homework.value.description,
-        due_date: homework.value.due_date,
+        deadline: homework.value.deadline,
         class_id: selectedClass.value,
         teacher_id: getTeacherId(), // ephemere, pour zarhaa qui submit le homework
     };
@@ -101,7 +101,7 @@ async function submitHomework() {
 function resetForm() {
     homework.value.title = '';
     homework.value.description = '';
-    homework.value.due_date = getTodayDate(); // Reset date to today again
+    homework.value.deadline = getTodayDate(); // Reset date to today again
     selectedClass.value = null;
 }
 

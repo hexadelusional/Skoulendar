@@ -11,17 +11,29 @@
     <!-- If not logged in, show the login form -->
     <div v-else>
       <form @submit.prevent="login">
-        <input type="text" v-model="id" placeholder="ID Number" :class="{ error: idError }" required />
-        <span v-if="idError" id="idError" class="error">ID Number is required</span>
-
+        <input
+          type="text"
+          v-model="id"
+          placeholder="ID Number"
+          :class="{ error: idError }"
+        />
         <div class="password-field">
-          <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Password" required />
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            v-model="password"
+            placeholder="Password"
+            :class="{ error: passwordError }"
+          />
           <button type="button" @click="showPassword = !showPassword">
             <span v-html="showPassword ? '<i class=\'fa-solid fa-eye\'></i>' : '<i class=\'fa-regular fa-eye\'></i>'"></span>
           </button>
         </div>
 
-        <span v-if="passwordError" id="passwordError" class="error">Password is required</span>
+        <!-- Combined error messages below login button -->
+        <p v-if="idError && passwordError" class="error">Both ID and password fields must be filled in.☝️</p>
+        <p v-else-if="idError" class="error">ID Number is required.☝️</p>
+        <p v-else-if="passwordError" class="error">Password is required.☝️</p>
+
         <button type="submit" :disabled="isLoggingIn">Log In</button>
         <p v-if="loginStatus" :class="{ success: loginStatus.success, error: !loginStatus.success }" v-html="loginStatus.message"></p>
       </form>
@@ -56,8 +68,8 @@ const username = computed(() => Cookies.get('username')); // Get username direct
 // Login function to handle login logic
 const login = async () => {
   // Reset errors
-  idError.value = !id.value; // Ensure there’s an ID provided
-  passwordError.value = !password.value; // Ensure there’s a password provided
+  idError.value = !id.value.trim(); // Ensure there’s an ID provided
+  passwordError.value = !password.value.trim(); // Ensure there’s a password provided
 
   if (idError.value || passwordError.value) {
     return; // Exit if there's an error
@@ -80,9 +92,6 @@ const login = async () => {
       message: "Welcome back <strong>" + userData.user.name + "</strong> 😃!",
     };
 
-    localStorage.setItem('loginStatus', JSON.stringify(loginStatus.value));
-
-
     // Clear input fields after successful login
     id.value = '';
     password.value = '';
@@ -104,12 +113,6 @@ const login = async () => {
 
     // Automatically redirect to the home page after successful login
     window.location.reload(); // Trigger page reload to update navigation
-    // Retrieve loginStatus from localStorage if available
-    const savedLoginStatus = JSON.parse(localStorage.getItem('loginStatus'));
-    if (savedLoginStatus) {
-      loginStatus.value = savedLoginStatus;
-    }
-
   } catch (error) {
     // Handle error response
     if (error.response && error.response.status === 401) {
@@ -149,7 +152,6 @@ const logOut = () => {
   router.push({ name: 'login' }); // Use the router instance
 };
 </script>
-
 
 <style scoped>
 .error {
