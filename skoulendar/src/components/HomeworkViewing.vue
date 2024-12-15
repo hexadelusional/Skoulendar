@@ -5,9 +5,10 @@
 
         <div v-for="classItem in lessons" :key="classItem.id" class="class-section">
             <h2>{{ classItem.name }}</h2>
-            <div v-if="homeworksByClass[classItem.id]?.length === 0">
-                No homework assigned for this class.
+            <div v-if="!homeworksByClass[classItem.id] || homeworksByClass[classItem.id].length === 0">
+                No homework assigned... YET.
             </div>
+
 
             <ul v-if="homeworksByClass[classItem.id]?.length">
                 <li v-for="homework in homeworksByClass[classItem.id]" :key="homework.id">
@@ -120,10 +121,10 @@ async function fetchHomework() {
 function groupHomeworkByClass(homeworkList) {
     const grouped = {};
     homeworkList.forEach(homework => {
-        if (!grouped[homework.class_id]) {
-            grouped[homework.class_id] = [];
+        if (!grouped[homework.lesson_id]) {
+            grouped[homework.lesson_id] = [];
         }
-        grouped[homework.class_id].push(homework);
+        grouped[homework.lesson_id].push(homework);
     });
     return grouped;
 }

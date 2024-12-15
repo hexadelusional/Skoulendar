@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     const query = `
         SELECT lessons.id, lessons.name 
         FROM class_list 
-        JOIN lessons ON class_list.class_id = lessons.id 
+        JOIN lessons ON class_list.lesson_id = lessons.id 
         WHERE class_list.student_id = ?
     `;
 
