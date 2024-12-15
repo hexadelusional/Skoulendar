@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS lessons (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(5) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     teacher_id INT NOT NULL,
     time TIME,
@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS lessons (
 
 CREATE TABLE IF NOT EXISTS class_list (
     student_id INT NOT NULL,
-    class_id INT NOT NULL,
-    PRIMARY KEY (student_id, class_id),
+    lesson_id VARCHAR(5) NOT NULL,
+    PRIMARY KEY (student_id, lesson_id),
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (class_id) REFERENCES lessons(id) ON DELETE CASCADE
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS homework (
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS homework (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     deadline DATE NOT NULL,
-    class_id INT NOT NULL,
+    lesson_id VARCHAR(5) NOT NULL,
     teacher_id INT NOT NULL,
-    FOREIGN KEY (class_id) REFERENCES lessons(id) ON DELETE CASCADE,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE,
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS homework_status (
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (homework_id) REFERENCES homework(id) ON DELETE CASCADE
 );
+
 
 DELIMITER //
 
@@ -91,3 +92,10 @@ BEGIN
 END; //
 
 DELIMITER ;
+
+
+
+
+
+
+

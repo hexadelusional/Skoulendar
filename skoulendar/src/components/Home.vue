@@ -5,15 +5,11 @@
             Skoulendar leads the way !
         </h1>
         <Chad/>
-        <HomeworkGiving/>
-        <HomeworkViewing/>
     </div>
 </template>  
 
 <script setup>
   import Chad from './Chad.vue';
-  import HomeworkGiving from './HomeworkGiving.vue';
-  import HomeworkViewing from './HomeworkViewing.vue';
 </script>
 
 <style scoped>

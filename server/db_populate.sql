@@ -1,6 +1,9 @@
 /* Run this file to populate the tables of the Skoulendar database */
-
 DELETE FROM users;
+DELETE FROM lessons;
+DELETE FROM class_list; 
+DELETE FROM homework;
+DELETE FROM homework_status;
 
 INSERT INTO users (id, name, surname, password, status) VALUES
 (1, 'Adele', 'Chamoux', '160305', "Admin"),
@@ -12,33 +15,47 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (7, 'Valentin', 'Lebras','123456', "Student"),
 (8, 'Zahraa', 'Mohsen','56789', "Teacher"),
 (9, 'Elias', 'Hatem','98137', "Teacher"),
-(10, 'Clara', 'Boissier','98720', "Teacher");
+(10, 'Clara', 'Boissier','98720', "Teacher"),
+(11, 'Nicolas', 'Flasque','66331', "Teacher"),
+(12, 'Christina', 'Dias','90877', "Teacher");
 
-DELETE FROM lessons;
+
 INSERT INTO lessons (id, name, teacher_id, time, room_number) VALUES
-(1, 'Calculus', 8, '08:00:00', 101),           -- Zahraa Mohsen
-(2, 'General Electricity', 9, '10:00:00', 102), -- Elias Hatem
-(3, 'Communication skills', 10, '13:00:00', 103); -- Clara Boissier
+('SM503', 'Calculus', 8, '08:00:00', 101),           -- Zahraa Mohsen
+('SM402', 'Multivariate Analysis', 8, '10:00:00', 101),  -- Zahraa Mohsen
+('SM601', 'Graph Theory', 8, '10:00:00', 101),         -- Zahraa Mohsen
+('TI402', 'General Electricity', 9, '09:00:00', 102), -- Elias Hatem
+('TI609', 'From the Atom to the Microchip', 9, '17:00:00', 102), -- Elias Hatem
+('TI702', 'Modern Physics', 9, '17:00:00', 102), -- Elias Hatem
+('FH601', 'Communication skills', 10, '13:00:00', 103), -- Clara Boissier
+('TI505', 'Java Programming', 11, '10:00:00', 104), -- Nicolas Flasque
+('TI507', 'Web Programming', 11, '16:00:00', 110), -- Nicolas Flasque
+('FL102', 'English second years', 12, '10:00:00', 105), -- Christina Dias
+('FL101', 'English first years', 12, '13:00:00', 105); -- Christina Dias
 
 
-DELETE FROM class_list; 
 
-INSERT INTO class_list (student_id, class_id) VALUES
-(3, 1),  -- Coline Sorin enrolled in Calculus
-(4, 1),  -- Iri Rasoloarivalona enrolled in Calculus
-(5, 1),  -- Paul Leflon enrolled in Calculus
-(6, 2),  -- Matteo Launay enrolled in General Electricity
-(7, 2),  -- Valentin Lebras enrolled in General Electricity
-(3, 3),  -- Coline Sorin enrolled in Communication skills
-(7, 3);  -- Valentin Lebras enrolled in Communication skills
+INSERT INTO class_list (student_id, lesson_id) VALUES
+(3, 'FL102'),  -- Coline Sorin 
+(3, 'SM503'),  -- Coline Sorin 
+(4, 'SM503'),  -- Iri Rasoloarivalona 
+(4, 'SM601'),  -- Iri Rasoloarivalona
+(4, 'FL101'),  -- Iri Rasoloarivalona
+(5, 'SM503'),  -- Paul Leflon 
+(5, 'TI609'),  -- Paul Leflon
+(5, 'TI507'),  -- Paul Leflon 
+(5, 'SM601'),  -- Paul Leflon
+(6, 'TI402'),  -- Matteo Launay 
+(6, 'TI609'),  -- Matteo Launay 
+(7, 'TI402'),  -- Valentin Lebras 
+(3, 'FH601'),  -- Coline Sorin 
+(7, 'FL101');  -- Valentin Lebras 
 
 
-DELETE FROM homework;
-INSERT INTO homework (id, title, description, deadline, class_id, teacher_id) VALUES
-(1, 'Taylor series', "Solve the 10 last finite expansion problems. It's easy, isn't it ?", '2024-12-20', 1, 8), -- Zahraa Mohsen's class
-(2, 'Physics Lab Report', 'Write a report about ZZE RESISTANCE IN PARALLEL WIZ ZZE CAPACITOR.', '2024-12-22', 2, 9), -- Elias Hatem's class
-(3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et ecrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25', 3, 10); -- Clara Boissier's class
-
+INSERT INTO homework (id, title, description, deadline, lesson_id, teacher_id) VALUES
+(1, 'Taylor series', "Solve the 10 last finite expansion problems. It's easy, isn't it ?", '2024-12-20', 'SM503', 8), -- Zahraa Mohsen's class
+(2, 'Physics Lab Report', 'Write a report about ZZE RESISTANCE IN PARALLEL WIZ ZZE CAPACITOR.', '2024-12-22', 'TI402', 9), -- Elias Hatem's class
+(3, 'Dossier Thematique', 'Finir les 16 pages du dossier thematiques et ecrire la semi-introduction de votre essai sur Montaigne. Je veux des titres vivants et un avis pertinent.', '2024-12-25','FH601', 10); -- Clara Boissier's class
 
 INSERT INTO homework_status (student_id, homework_id, completed) VALUES
 (1, 1, TRUE),  -- Student 1 has completed Homework 1 (Taylor Series)

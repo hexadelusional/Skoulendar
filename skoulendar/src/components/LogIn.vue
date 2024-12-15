@@ -1,41 +1,30 @@
 <template>
   <div class="form">
-    <h1>{{ isLoggedIn ? 'Login successful!' : 'Log In' }}</h1>
+    <h1>{{ isLoggedIn ? `Logged in as ${userRole}` : 'Log In' }}</h1>
 
     <!-- If user is logged in, show logout button -->
     <div v-if="isLoggedIn">
-      <p v-if="loginStatus" :class="{ success: loginStatus.success, error: !loginStatus.success }" v-html="loginStatus.message"></p>
-      <button @click="logOut">Log Out</button>
+      <h2>Welcome back {{ username }}! 😃</h2>
+      <button @click="logOut">Log Out <i class="fa-solid fa-door-closed"></i></button>
     </div>
 
     <!-- If not logged in, show the login form -->
     <div v-else>
       <form @submit.prevent="login">
-        <input
-          type="text"
-          v-model="id"
-          placeholder="ID Number"
-          :class="{ error: idError }"
-        />
+        <input class="id-field" type="text" v-model="id" placeholder="ID Number" :class="{ error: idError }"/>
         <div class="password-field">
-          <input
-            :type="showPassword ? 'text' : 'password'"
-            v-model="password"
-            placeholder="Password"
-            :class="{ error: passwordError }"
-          />
-          <button type="button" @click="showPassword = !showPassword">
+          <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Password" :class="{ error: passwordError }"/>
+          <button class="eye" type="button" @click="showPassword = !showPassword">
             <span v-html="showPassword ? '<i class=\'fa-solid fa-eye\'></i>' : '<i class=\'fa-regular fa-eye\'></i>'"></span>
           </button>
         </div>
-
-        <!-- Combined error messages below login button -->
+        <button type="submit" :disabled="isLoggingIn">Log In <i class="fa-solid fa-door-open"></i></button>
+        <p v-if="loginStatus" :class="{ success: loginStatus.success, error: !loginStatus.success }" v-html="loginStatus.message"></p>
+        <!-- Error messages for wrong login info -->
         <p v-if="idError && passwordError" class="error">Both ID and password fields must be filled in.☝️</p>
         <p v-else-if="idError" class="error">ID Number is required.☝️</p>
         <p v-else-if="passwordError" class="error">Password is required.☝️</p>
 
-        <button type="submit" :disabled="isLoggingIn">Log In</button>
-        <p v-if="loginStatus" :class="{ success: loginStatus.success, error: !loginStatus.success }" v-html="loginStatus.message"></p>
       </form>
     </div>
   </div>
@@ -64,6 +53,8 @@ const showPassword = ref(false);
 // Computed properties for auth status
 const isLoggedIn = computed(() => auth.isLoggedIn.value); // Accessing isLoggedIn from the useAuth
 const username = computed(() => Cookies.get('username')); // Get username directly from cookies
+const userRole = computed(() => Cookies.get('role')); // Get the role
+
 
 // Login function to handle login logic
 const login = async () => {
@@ -85,12 +76,6 @@ const login = async () => {
     });
 
     const userData = response.data; // Get user data
-
-    // Handle successful login
-    loginStatus.value = {
-      success: true,
-      message: "Welcome back <strong>" + userData.user.name + "</strong> 😃!",
-    };
 
     // Clear input fields after successful login
     id.value = '';
@@ -141,15 +126,10 @@ const logOut = () => {
 
   // Call logOut from useAuth to clear session state
   auth.logOut();
-
-  // Update login status
-  loginStatus.value = {
-    success: true,
-    message: "You have been logged out successfully. 😃",
-  };
-
+  
   // Redirect the user to the login page
   router.push({ name: 'login' }); // Use the router instance
+  window.location.reload();
 };
 </script>
 
@@ -160,11 +140,24 @@ const logOut = () => {
 .success {
   color: rgb(55, 128, 0);
 }
+form{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 200px;
+  width: 200px;
+}
+.id-field{
+  width: 200px;
+}
 .password-field {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
+  width: 223.2px;
 }
-.password-field button {
-  margin-left: 10px;
+.eye{
+  margin-right: 0px;
 }
+
 </style>
