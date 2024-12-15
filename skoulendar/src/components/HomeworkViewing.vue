@@ -121,10 +121,10 @@ async function fetchHomework() {
 function groupHomeworkByClass(homeworkList) {
     const grouped = {};
     homeworkList.forEach(homework => {
-        if (!grouped[homework.lesson_id]) {
-            grouped[homework.lesson_id] = [];
+        if (!grouped[homework.class_id]) {
+            grouped[homework.class_id] = [];
         }
-        grouped[homework.lesson_id].push(homework);
+        grouped[homework.class_id].push(homework);
     });
     return grouped;
 }

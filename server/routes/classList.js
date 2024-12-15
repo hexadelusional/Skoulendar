@@ -8,9 +8,9 @@ router.get('/', (req, res) => {
     const studentId = req.query.student_id; // Get the student ID from query parameters
 
     const query = `
-        SELECT lessons.id, lessons.name 
-        FROM class_list 
-        JOIN lessons ON class_list.lesson_id = lessons.id 
+        SELECT lessons.lesson_id, lessons.name
+        FROM class_list
+        JOIN lessons ON class_list.lesson_id = lessons.lesson_id
         WHERE class_list.student_id = ?
     `;
 
@@ -20,8 +20,8 @@ router.get('/', (req, res) => {
             return res.status(500).json({ message: 'Error fetching lessons for student', error });
         }
 
-        console.log('Results:', results); 
-        res.json(results); 
+        console.log('Results:', results);
+        res.json(results);
     });
 });
 
