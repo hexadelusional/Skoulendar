@@ -6,6 +6,7 @@ import authentication from './routes/authentication.js';
 import homework from './routes/homework.js';
 import lessons from './routes/lessons.js'; 
 import classList from './routes/classList.js';
+import classes from './routes/classes.js';
 
 import { checkAndHashPasswords } from './routes/hashed.js'; 
 
@@ -21,6 +22,8 @@ app.use('/api/users', users);
 app.use('/api/homework', homework);
 app.use('/api/lessons', lessons);
 app.use('/api/classList', classList);
+app.use('/api/classes', classes);
+
 
 
 

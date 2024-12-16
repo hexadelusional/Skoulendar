@@ -163,6 +163,18 @@ INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (25, 10, 'FL102'); -- Nicolas Zhang enrolled in English second years (lesson_id = 10)
 
 
+INSERT INTO classes (lesson_id, name, class_id) VALUES
+(1, 'Calculus', 'SM503'),
+(2, 'Multivariate Analysis', 'SM402'),
+(3, 'Graph Theory', 'SM601'),
+(4, 'General Electricity', 'TI402'),
+(5, 'From the Atom to the Microchip', 'TI609'),
+(6, 'Modern Physics', 'TI702'),
+(7, 'Communication skills', 'FH601'),
+(8, 'Java Programming', 'TI505'),
+(9, 'Web Programming', 'TI507'),
+(10, 'English second years', 'FL102'),
+(11, 'English first years', 'FL101');
 
 
 /* Insert data into `homework` table */

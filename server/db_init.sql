@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS class_list;
 DROP TABLE IF EXISTS homework;
 DROP TABLE IF EXISTS lessons;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS classes;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,6 +58,14 @@ CREATE TABLE IF NOT EXISTS homework_status (
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (homework_id) REFERENCES homework(id) ON DELETE CASCADE
 );
+
+-- New table for class database
+CREATE TABLE IF NOT EXISTS classes (
+    lesson_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    class_id VARCHAR(5) NOT NULL
+);
+
 
 DELIMITER //
 
