@@ -22,21 +22,9 @@ password for id 2 : 050304
 ## To implement:
  
 
- adele
-- hash passwords done
-- edit & delete users done
-
-
 elodie
 - timetable viewing page
 - adding/deleting lessons
 
-
-elodie
-- homework assigned viewing page & ticking checkbox if completed (user version)
-
-
-adele
-- giving homework page & viewing submission (teacher version)
 
 - notifications (for everyone)

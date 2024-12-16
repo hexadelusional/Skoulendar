@@ -3,9 +3,10 @@
       <h1>Users List</h1>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <div class="flex">
-        <input class="search" type="text" v-model="searchTerm" placeholder="Search by name or surname..." @input="searchUsers" />
+        <input class="search" type="text" v-model="searchTerm" placeholder="Search by name or surname." @input="searchUsers" />
         <button class="add" @click="openAddWindow">&plus; Add User</button>
       </div>
+      <p v-if="searchMessage" class="error">{{ searchMessage }}</p>
       <table v-if="filteredUsers.length > 0">
         <thead>
           <tr>
@@ -28,9 +29,10 @@
                 <button @click="editUser(user)">Edit</button>
                 <button @click="deleteUser(user.id)">Delete</button>
             </td>
-          </tr>
+            </tr>
         </tbody>
       </table>
+
       <!-- Add User Window -->
       <div v-if="isAddwindowOpen" class="window">
             <div class="window-content">
@@ -40,31 +42,33 @@
                     <label>Status:</label>
                     <br>
                     <div class="status-options">
-                        <input type="radio" id="admin" value="Admin" v-model="newUser.status" required />
+                        <input type="radio" id="admin" value="Admin" v-model="newUser.status" />
                         <label for="admin">Admin</label>
 
-                        <input type="radio" id="student" value="Student" v-model="newUser.status" required />
+                        <input type="radio" id="student" value="Student" v-model="newUser.status" />
                         <label for="student">Student</label>
 
-                        <input type="radio" id="teacher" value="Teacher" v-model="newUser.status" required />
+                        <input type="radio" id="teacher" value="Teacher" v-model="newUser.status" />
                         <label for="teacher">Teacher</label>
                     </div>
 
                     <br>
                     <label for="name">Name:</label>
-                    <input type="text" v-model="newUser.name" required />
+                    <input type="text" v-model="newUser.name" />
                     <br>
                     <label for="surname">Surname:</label>
-                    <input type="text" v-model="newUser.surname" required />
+                    <input type="text" v-model="newUser.surname" />
                     <br>
                     <label for="password">Password:</label>
-                    <input type="text" v-model="newUser.password" required />
+                    <input type="password" v-model="newUser.password" />
                     <br>
+                    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                     <button type="submit">Add User</button>
                 </form>
             </div>
       </div>
-      <!-- Existing Edit User Window -->
+
+      <!-- Edit User Window -->
       <div v-if="isEditwindowOpen" class="window">
             <div class="window-content">
                 <span class="cross" @click="closeEditWindow">&times;</span>
@@ -90,19 +94,47 @@
 </template>
   
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-    const users = ref([]);
-    const filteredUsers = ref([]);
-    const errorMessage = ref('');
-    const searchTerm = ref('');
+const users = ref([]);
+const filteredUsers = ref([]);
+const errorMessage = ref('');
+const searchMessage = ref('');
+const searchTerm = ref('');
 
-    const isEditwindowOpen = ref(false);
-    const isAddwindowOpen = ref(false);
-    const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '', isPasswordChanged: false }); // data for editing user
-    const newUser = ref({ name: '', surname: '', password: '', status: '' }); // data for adding a new user
+const isEditwindowOpen = ref(false);
+const isAddwindowOpen = ref(false);
+const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '', isPasswordChanged: false }); // data for editing user
+const newUser = ref({ name: '', surname: '', password: '', status: '' });
 
+    // Checking if all fields are filled
+    function validateNewUser() {
+        return newUser.value.name && newUser.value.surname && newUser.value.password && newUser.value.status;
+    }
+
+    // Adding user to the user list
+    async function addUser() {
+        if (!validateNewUser()) {
+            errorMessage.value = 'All fields must be filled in.☝️';
+            return;
+        }
+        // Reset error message before API call
+        errorMessage.value = '';
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('http://localhost:1234/api/users', newUser.value, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            await fetchUsers();
+            closeAddWindow();
+        } catch (error) {
+            console.error('Error adding user:', error);
+            errorMessage.value = 'Uh oh... unable to add user.😬';
+        }
+    }
+
+    // Fetching user list
     async function fetchUsers() {
         try {
             const token = localStorage.getItem('token');
@@ -114,17 +146,17 @@
             filteredUsers.value = response.data; // Initialize the filtered users
         } catch (error) {
             console.error('Error fetching users:', error);
-            errorMessage.value = 'Unable to fetch users. Please try again later.';
+            errorMessage.value = 'Uh oh... unable to fetch users.😬';
         }
     }
 
+    // Searching users by name or surname
     async function searchUsers() {
         if (!searchTerm.value) {
-            // If the search term is empty, reset the filtered users
-            filteredUsers.value = users.value;
+            filteredUsers.value = users.value; 
+            searchMessage.value = '';
             return;
         }
-
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`http://localhost:1234/api/users/search`, {
@@ -133,64 +165,67 @@
             });
 
             filteredUsers.value = response.data; // Update filtered users with search results
+            // Update search message based on results
+            if (response.data.length === 0) {
+                searchMessage.value = 'No user has that name or surname...🧐';
+            } else {
+                searchMessage.value = ''; // Clear message if results are found
+            }
         } catch (error) {
             console.error('Error searching users:', error);
-            errorMessage.value = 'Unable to search users. Please try again later.';
+            errorMessage.value = 'Uh oh... unable to search users.😬';
         }
     }
 
+    // Edit a user of the list
     function editUser(user) {
-  editableUser.value = {
-    id: user.id,
-    name: user.name,
-    surname: user.surname,
-    password: '', // Start with an empty password field
-    status: user.status,
-  };
-  isEditwindowOpen.value = true;
-}
+        editableUser.value = {
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            password: '', // Start with an empty password field
+            status: user.status,
+        };
+        isEditwindowOpen.value = true;
+    }
 
-
+    // Toggle the edit window
     function closeEditWindow() {
         isEditwindowOpen.value = false;
     }
 
+    // Update a user of the list
     async function updateUser() {
-  try {
-    const token = localStorage.getItem('token');
-    const { id, name, surname, password } = editableUser.value;
+        try {
+            const token = localStorage.getItem('token');
+            const { id, name, surname, password } = editableUser.value;
+            // Send the password only if it's provided
+            const payload = {
+                name,
+                surname,
+                ...(password ? { password } : {}) 
+            };
+            const response = await axios.put(
+                `http://localhost:1234/api/users/${id}`,
+                payload,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            // Update data
+            const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
+            const index = users.value.findIndex(user => user.id === id);
+            users.value[index] = updatedUser;
 
-    // Prepare payload:
-    // Include the password only if it's non-empty
-    const payload = {
-      name,
-      surname,
-      ...(password ? { password } : {}) // Send the password only if it's provided
-    };
-
-    const response = await axios.put(
-      `http://localhost:1234/api/users/${id}`,
-      payload,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    // Update local user data
-    const updatedUser = { ...users.value.find(user => user.id === id), ...response.data };
-    const index = users.value.findIndex(user => user.id === id);
-    users.value[index] = updatedUser; // Update user in the list
-
-    closeEditWindow(); // Close the edit window
-    editableUser.value.password = ''; // Clear password field post-update
-  } catch (error) {
-    console.error('Error updating user:', error);
-    errorMessage.value = 'Unable to update user. Please try again later.';
-  }
-}
-
+            closeEditWindow(); // calling toggle function
+            editableUser.value.password = '';
+        } catch (error) {
+            console.error('Error updating user:', error);
+            errorMessage.value = 'Unable to update user. Please try again later.';
+        }
+    }
+    // Toggle the add user window
     function openAddWindow() {
         isAddwindowOpen.value = true;
     }
-
     function closeAddWindow() {
         isAddwindowOpen.value = false;
         resetNewUser();
@@ -198,20 +233,6 @@
 
     function resetNewUser() {
         newUser.value = { name: '', surname: '', password: '', status: '' };
-    }
-
-    async function addUser() {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post('http://localhost:1234/api/users', newUser.value, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            await fetchUsers();
-            closeAddWindow();
-        } catch (error) {
-            console.error('Error adding user:', error);
-            errorMessage.value = 'Unable to add user. Please try again later.';
-        }
     }
 
     // Delete user by id
@@ -239,7 +260,6 @@
         }
     }
 
-    // Fetch users on component mount
     onMounted(() => {
         fetchUsers();
     });
