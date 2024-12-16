@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Users List</h1>
+        <h1>Users list</h1>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <div class="flex">
@@ -30,10 +30,9 @@
                     <td>
                         <ul>
                             <li v-for="course in user.classes" :key="course.class_id">
-                                → {{ course.class_id }} - {{ course.lesson_name }}
+                                <i class="fa-solid fa-arrow-right"></i> {{ course.class_id }} - {{ course.lesson_name }}
                             </li>
                         </ul>
-                        <!-- Use optional chaining to prevent errors -->
                         <p v-if="!user.classes || user.classes.length === 0">-</p>
                     </td>
                     <td>
@@ -50,9 +49,8 @@
                 <span class="cross" @click="closeAddWindow">&times;</span>
                 <h4>Add User</h4>
                 <form @submit.prevent="addUser">
-                    <label>Status:</label>
-                    <br>
                     <div class="status-options">
+                        <label>Status:</label>
                         <input type="radio" id="admin" value="Admin" v-model="newUser.status" />
                         <label for="admin">Admin</label>
 
@@ -74,10 +72,14 @@
                     <input type="password" v-model="newUser.password" />
                     <br>
                     <label>Available Classes:</label>
-                    <div v-for="classe in allClasses" :key="classe.lesson_id">
-                        <input type="checkbox" :value="classe.lesson_id" v-model="selectedLessonIds" />
-                        {{ classe.class_id }} - {{ classe.name }}
-                    </div>
+                    <div class="checkbox-group">
+                        <div v-for="classe in allClasses" :key="classe.lesson_id" class="checkbox-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" :value="classe.lesson_id" v-model="selectedLessonIds" />
+                                {{ classe.class_id }} - {{ classe.name }}
+                            </label>
+                        </div>
+                    </div>                    
                     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                     <button type="submit">Add User</button>
                 </form>
@@ -143,7 +145,7 @@
             allClasses.value = response.data; // Populate allClasses with fetched data
         } catch (error) {
             console.error('Error fetching classes:', error);
-            errorMessage.value = 'Unable to fetch class data.';
+            errorMessage.value = 'Unable to fetch class data.😬';
         }
     }
 
@@ -171,7 +173,7 @@
             console.error('Error adding lesson:', error);
             console.log('Response data:', error.response.data);
             console.log('Response status:', error.response.status);
-            errorMessage.value = error.response.data.message || 'Failed to add lesson.';
+            errorMessage.value = error.response.data.message || 'Failed to add lesson.😬';
         }
     }
 
@@ -212,7 +214,6 @@
             await fetchUsers(); // Refresh the user list
             closeAddWindow(); // Close the modal
         } catch (error) {
-            console.error('Error adding user or lessons:', error);
             errorMessage.value = 'Uh oh... unable to add user or lessons. 😬';
         }
     }
@@ -319,20 +320,22 @@
             editableUser.value.password = '';
         } catch (error) {
             console.error('Error updating user:', error);
-            errorMessage.value = 'Unable to update user. Please try again later.';
+            errorMessage.value = 'Unable to update user.😬';
         }
     }
     
 
     function resetNewUser() {
         newUser.value = { name: '', surname: '', password: '', status: '' };
+        selectedLessonIds.value = []; // Reset selected lessons
+        errorMessage.value = ''; // Clear any previous error messages
     }
 
     // Delete user by id
     async function deleteUser(userId) {
         console.log(`Attempting to delete user with ID: ${userId}`);
         
-        if (!confirm("Are you sure you want to delete this user?")) {
+        if (!confirm("Are you sure you want to delete this user?🤔")) {
             return;
         }
 
@@ -349,7 +352,7 @@
         } catch (error) {
             console.error('Error deleting user:', error);
             console.error('Error response:', error.response);
-            errorMessage.value = 'Unable to delete user. Please try again later.';
+            errorMessage.value = 'Unable to delete user.😬';
         }
     }
 
@@ -371,7 +374,11 @@
         text-align: left;
         border: 1px solid #aad2ef;
     }
-
+    ul{
+        list-style-type: none;
+        padding-left: 5px;
+        line-height: 2;
+    }
     .error {
         color: rgb(255, 94, 0);
     }
@@ -387,7 +394,7 @@
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.219);
         justify-content: center; 
-        align-items: center;
+        align-items: flex-start;
         display: flex;
     }
 
@@ -442,4 +449,27 @@
         gap: 15px;   
         align-items: center;
     }
+    .checkbox-group {
+        display: flex;       
+        flex-wrap: wrap;  
+        line-height: 2;
+    }
+
+    .checkbox-item {
+        margin-right: 15px; 
+        white-space: nowrap; 
+    }
+
+    .checkbox-label {
+        display: flex;    
+        align-items: center;
+    }
+
+    input[type="checkbox"] {
+        box-shadow: none;  
+        margin-right: 5px;  
+    }
+
+
+
 </style>

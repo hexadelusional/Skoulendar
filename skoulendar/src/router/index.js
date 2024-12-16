@@ -6,6 +6,7 @@ import LogIn from '../components/LogIn.vue';
 import Users from '../components/Users.vue';
 import HomeworkGiving from '../components/HomeworkGiving.vue';
 import HomeworkViewing from '../components/HomeworkViewing.vue';
+import Lessons from '../components/Lessons.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -13,6 +14,7 @@ const routes = [
   { path: '/users', name: 'Users', component: Users },
   { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
   { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
+  { path: '/lessons', name: 'Lessons', component: Lessons },
 ];
 
 const router = createRouter({
@@ -48,6 +50,11 @@ router.beforeEach((to, from, next) => {
 
       // Admin access to Users route
       if (to.name === 'Users' && role !== 'Admin') {
+        return next({ name: 'Home' }); // Prevent access if not an Admin
+      }
+
+      // Admin access to Users route
+      if (to.name === 'Lessons' && role !== 'Admin') {
         return next({ name: 'Home' }); // Prevent access if not an Admin
       }
     }

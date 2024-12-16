@@ -7,9 +7,7 @@ import homework from './routes/homework.js';
 import lessons from './routes/lessons.js'; 
 import classList from './routes/classList.js';
 import classes from './routes/classes.js';
-
 import { checkAndHashPasswords } from './routes/hashed.js'; 
-
 
 const app = express();
 
@@ -24,13 +22,9 @@ app.use('/api/lessons', lessons);
 app.use('/api/classList', classList);
 app.use('/api/classes', classes);
 
-
-
-
 checkAndHashPasswords()
     .then(() => {
         console.log('Password check and hash process completed.');
-        
         // Start server only after checking passwords
         const PORT = 1234;
         app.listen(PORT, () => {
@@ -39,5 +33,4 @@ checkAndHashPasswords()
     })
     .catch(err => {
         console.error('Error during password check/update:', err);
-        // Optionally, you might choose to stop server start if there's an error
     });

@@ -23,10 +23,10 @@ CREATE TABLE IF NOT EXISTS lessons (
     teacher_id INT NOT NULL,
     time TIME,
     room_number INT NOT NULL,
-    duration_time TIME NOT NULL,  -- New field for duration of the lesson
-    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY (class_id)
+    duration_time TIME NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS class_list (
     student_id INT NOT NULL,
@@ -46,7 +46,6 @@ CREATE TABLE IF NOT EXISTS homework (
     class_id VARCHAR(5) NOT NULL,
     teacher_id INT NOT NULL,
     FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE,
-    FOREIGN KEY (class_id) REFERENCES lessons(class_id) ON DELETE CASCADE,
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
