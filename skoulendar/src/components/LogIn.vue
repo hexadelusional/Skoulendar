@@ -35,11 +35,11 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useAuth } from '../composable/useAuth';
-import { useRouter } from 'vue-router'; // Import useRouter
+import { useRouter } from 'vue-router';
 
-const router = useRouter(); // Get the router instance
+const router = useRouter(); 
 
-const auth = useAuth(); // Use the auth composable
+const auth = useAuth(); 
 
 // Reactive state variables
 const id = ref('');
@@ -51,9 +51,9 @@ const isLoggingIn = ref(false);
 const showPassword = ref(false);
 
 // Computed properties for auth status
-const isLoggedIn = computed(() => auth.isLoggedIn.value); // Accessing isLoggedIn from the useAuth
-const username = computed(() => Cookies.get('username')); // Get username directly from cookies
-const userRole = computed(() => Cookies.get('role')); // Get the role
+const isLoggedIn = computed(() => auth.isLoggedIn.value);  // Check if user is logged in
+const username = computed(() => Cookies.get('username')); // Get username from cookies
+const userRole = computed(() => Cookies.get('role')); // Get user role from cookies
 
 
 // Login function to handle login logic
@@ -63,7 +63,7 @@ const login = async () => {
   passwordError.value = !password.value.trim(); // Ensure there’s a password provided
 
   if (idError.value || passwordError.value) {
-    return; // Exit if there's an error
+    return; 
   }
 
   isLoggingIn.value = true; // Set loading state
@@ -96,7 +96,6 @@ const login = async () => {
     Cookies.set('authToken', userData.token, { path: '/' }); // Set token cookie if applicable
     Cookies.set('studentId', userData.user.id, { path: '/' }); // Assuming the ID is in userData.user.id
 
-    // Automatically redirect to the home page after successful login
     window.location.reload(); // Trigger page reload to update navigation
   } catch (error) {
     // Handle error response
@@ -128,7 +127,7 @@ const logOut = () => {
   auth.logOut();
   
   // Redirect the user to the login page
-  router.push({ name: 'login' }); // Use the router instance
+  router.push({ name: 'login' }); 
   window.location.reload();
 };
 </script>
