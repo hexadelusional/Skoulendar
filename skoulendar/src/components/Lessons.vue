@@ -1,7 +1,6 @@
 <template>
     <div>
         <h1>Lessons List</h1>
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <div class="flex">
             <input
@@ -52,33 +51,39 @@
                 <span class="cross" @click="closeAddWindow">&times;</span>
                 <h4>Add Lesson</h4>
                 <form @submit.prevent="addLesson">
-                    <label for="class_id">Class ID:</label>
-                    <input type="text" v-model="newLesson.class_id" required />
-
+                    <label>Class ID:</label>
+                    <div class="checkbox-group">
+                        <div v-for="classItem in possibleClasses" :key="classItem.id" class="checkbox-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" :value="classItem.class_id" v-model="selectedClassIds"/>
+                                {{ classItem.class_id }} - {{ classItem.name }}
+                            </label>
+                        </div>
+                    </div>   
                     <br />
 
                     <label for="name">Lesson Name:</label>
-                    <input type="text" v-model="newLesson.name" required />
+                    <input type="text" v-model="newLesson.name" />
 
                     <br />
 
                     <label for="teacher_id">Teacher ID:</label>
-                    <input type="number" v-model="newLesson.teacher_id" required />
+                    <input type="number" v-model="newLesson.teacher_id" />
 
                     <br />
 
                     <label for="time">Time:</label>
-                    <input type="time" v-model="newLesson.time" required />
+                    <input type="time" v-model="newLesson.time" />
 
                     <br />
 
                     <label for="room_number">Room Number:</label>
-                    <input type="number" v-model="newLesson.room_number" required />
+                    <input type="number" v-model="newLesson.room_number" />
 
                     <br />
 
                     <label for="duration_time">Duration:</label>
-                    <input type="time" v-model="newLesson.duration_time" required />
+                    <input type="time" v-model="newLesson.duration_time" />
 
                     <br />
 
@@ -95,32 +100,32 @@
                 <h4>Edit Lesson</h4>
                 <form @submit.prevent="updateLesson">
                     <label for="class_id">Class ID:</label>
-                    <input type="text" v-model="editableLesson.class_id" required />
+                    <input type="text" v-model="editableLesson.class_id" />
 
                     <br />
 
                     <label for="name">Lesson Name:</label>
-                    <input type="text" v-model="editableLesson.name" required />
+                    <input type="text" v-model="editableLesson.name" />
 
                     <br />
 
                     <label for="teacher_id">Teacher ID:</label>
-                    <input type="number" v-model="editableLesson.teacher_id" required />
+                    <input type="number" v-model="editableLesson.teacher_id" />
 
                     <br />
 
                     <label for="time">Time:</label>
-                    <input type="time" v-model="editableLesson.time" required />
+                    <input type="time" v-model="editableLesson.time" />
 
                     <br />
 
                     <label for="room_number">Room Number:</label>
-                    <input type="number" v-model="editableLesson.room_number" required />
+                    <input type="number" v-model="editableLesson.room_number" />
 
                     <br />
 
                     <label for="duration_time">Duration:</label>
-                    <input type="time" v-model="editableLesson.duration_time" required />
+                    <input type="time" v-model="editableLesson.duration_time" />
 
                     <br />
 
@@ -142,6 +147,8 @@ const errorMessage = ref('');
 const searchMessage = ref('');
 const isAddwindowOpen = ref(false);
 const isEditwindowOpen = ref(false);
+const possibleClasses = ref([]);
+const selectedClassIds = ref([]);
 
 const newLesson = ref({
     class_id: '',
@@ -163,6 +170,17 @@ async function fetchLessons() {
     } catch (error) {
         console.error('Error fetching lessons:', error);
         errorMessage.value = 'Unable to fetch lessons...😬';
+    }
+}
+
+// Fetch Available Classes
+async function fetchClasses() {
+    try {
+        const response = await axios.get('http://localhost:1234/api/classes'); // Update with your actual endpoint
+        possibleClasses.value = response.data; // Assuming response contains the list of classes
+    } catch (error) {
+        console.error('Error fetching classes:', error);
+        errorMessage.value = 'Unable to fetch classes. Please try again.';
     }
 }
 
@@ -208,8 +226,25 @@ function resetNewLesson() {
 
 // Adding a new lesson
 async function addLesson() {
+    errorMessage.value = '';
+    // Check for empty fields
+    if (selectedClassIds.value.length === 0 || !newLesson.value.name || !newLesson.value.teacher_id || !newLesson.value.time || !newLesson.value.room_number || !newLesson.value.duration_time) {
+        errorMessage.value = 'All fields must be filled in.☝️';
+        return;
+    }
+    const lessonPromises = selectedClassIds.value.map(classId => {
+        // Create a new lesson based on the selected class_id
+        return axios.post('http://localhost:1234/api/lessons', {
+            class_id: classId,
+            name: newLesson.value.name,
+            teacher_id: newLesson.value.teacher_id,
+            time: newLesson.value.time,
+            room_number: newLesson.value.room_number,
+            duration_time: newLesson.value.duration_time,
+        });
+    });
     try {
-        const response = await axios.post('http://localhost:1234/api/lessons', newLesson.value);
+        await Promise.all(lessonPromises);
         await fetchLessons();
         closeAddWindow();
     } catch (error) {
@@ -253,6 +288,7 @@ async function deleteLesson(lessonId) {
 
 onMounted(() => {
     fetchLessons();
+    fetchClasses();
 });
 </script>
 
