@@ -15,6 +15,7 @@
             <th>Name</th>
             <th>Surname</th>
             <th>Password</th>
+            <th>Classes</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -25,6 +26,14 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.surname }}</td>
                 <td>{{ user.password }}</td> 
+                <td>
+                    <ul>
+                        <li v-for="course in user.classes" :key="course.class_id">
+                            → {{ course.class_id }} -{{ course.lesson_name }}
+                        </li>
+                    </ul>
+                    <p v-if="user.classes.length === 0">-</p>
+                </td>  
             <td>
                 <button @click="editUser(user)">Edit</button>
                 <button @click="deleteUser(user.id)">Delete</button>
@@ -70,26 +79,33 @@
 
       <!-- Edit User Window -->
       <div v-if="isEditwindowOpen" class="window">
-            <div class="window-content">
-                <span class="cross" @click="closeEditWindow">&times;</span>
-                <h4>Edit User</h4>
-                <form @submit.prevent="updateUser">
-                    <label>Name:</label>
-                    <input type="text" v-model="editableUser.name" required />
-                    
-                    <br>
-                    <label>Surname:</label>
-                    <input type="text" v-model="editableUser.surname" required />
-                    
-                    <br>
-                    <label>Password:</label>
-                    <input type="password" v-model="editableUser.password" placeholder=""/> <!-- Allow password to be changed, but without affecting status -->
-
-                    <br>
-                    <button type="submit">Update User</button>
-                </form>
+    <div class="window-content">
+        <span class="cross" @click="closeEditWindow">&times;</span>
+        <h4>Edit User</h4>
+        <form @submit.prevent="updateUser">
+            <label>Name:</label>
+            <input type="text" v-model="editableUser.name" required />
+            <br>
+            <label>Surname:</label>
+            <input type="text" v-model="editableUser.surname" required />
+            <br>
+            <label>Password:</label>
+            <input type="password" v-model="editableUser.password" placeholder="" />
+            <br>
+            <label>Lessons:</label>
+            <div v-for="lesson in allLessons" :key="lesson.id">
+                <input type="checkbox" 
+                       :value="lesson.id" 
+                       v-model="selectedLessons" 
+                       :checked="editableUser.lessons.includes(lesson.id)" />
+                <label>{{ lesson.name }}</label>
             </div>
+                <br>
+                <button type="submit">Update User</button>
+            </form>
         </div>
+    </div>
+
     </div>
 </template>
   
@@ -277,11 +293,24 @@ const newUser = ref({ name: '', surname: '', password: '', status: '' });
         text-align: left;
         border: 1px solid #aad2ef;
     }
+        /* Add this line to set a minimum width for the password column */
+        td.password {
+        min-width: 200px; /* Adjust as necessary for your application */
+        white-space: nowrap; /* Prevent breaking the password into multiple lines */
+        overflow: hidden; /* Hide overflow */
+        text-overflow: ellipsis; /* Add ellipsis for long passwords */
+    }
 
+    ul{
+        list-style-type: none;
+        padding: 0;
+    }
     .error {
         color: rgb(255, 94, 0);
     }
-
+    .add{
+        margin: 0;
+    }
     .window {
         display: block;
         position: fixed;

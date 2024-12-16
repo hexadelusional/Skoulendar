@@ -4,16 +4,46 @@ import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
-// fetching all users
+// fetching all users with corresponding lesson names
 router.get('/', (req, res) => {
-    database.query('SELECT * FROM users', (err, results) => {
+    const query = `
+        SELECT users.*, class_list.class_id, lessons.name AS lesson_name 
+        FROM users 
+        LEFT JOIN class_list ON users.id = class_list.student_id
+        LEFT JOIN lessons ON class_list.lesson_id = lessons.lesson_id
+    `;
+    
+    database.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching users:', err.message);
             return res.status(500).json({ message: 'Error fetching users' });
         }
-        res.json(results);
+
+        // Transform results to group users with their classes and lesson names
+        const usersWithClassesAndLessons = results.reduce((acc, result) => {
+            const { id, name, surname, password, status, class_id, lesson_name } = result; 
+
+            // Find the user in the accumulator
+            let user = acc.find(user => user.id === id);
+
+            if (!user) {
+                // If the user does not exist in the accumulator, create a new entry
+                user = { id, name, surname, password, status, classes: [] };
+                acc.push(user);
+            }
+
+            // If the class_id exists, add it to the user's classes array with lesson_name
+            if (class_id) {
+                user.classes.push({ class_id, lesson_name });
+            }
+
+            return acc;
+        }, []);
+
+        res.json(usersWithClassesAndLessons);
     });
 });
+
 
 // editing users
 router.put('/:id', async (req, res) => {
