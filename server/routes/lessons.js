@@ -23,15 +23,15 @@ router.get('/', (req, res) => {
 
 // Route to add a new lesson
 router.post('/', (req, res) => {
-    const { class_id, name, teacher_id, time, room_number, duration_time } = req.body;
-    if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time) {
+    const { class_id, name, teacher_id, time, room_number, duration_time, lesson_date } = req.body;
+    if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time || !lesson_date) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
     const query = `
-        INSERT INTO lessons (class_id, name, teacher_id, time, room_number, duration_time)
-        VALUES (?, ?, ?, ?, ?, ?)`;
+        INSERT INTO lessons (class_id, name, teacher_id, time, room_number, duration_time, lesson_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-    database.query(query, [class_id, name, teacher_id, time, room_number, duration_time], (error, results) => {
+    database.query(query, [class_id, name, teacher_id, time, room_number, duration_time, lesson_date], (error, results) => {
         if (error) {
             console.error('Error adding lesson:', error);
             return res.status(500).json({ message: 'Error adding lesson', error });
@@ -44,18 +44,18 @@ router.post('/', (req, res) => {
 // Route to update a lesson by ID
 router.put('/:id', (req, res) => {
     const { id } = req.params;
-    const { class_id, name, teacher_id, time, room_number, duration_time } = req.body;
+    const { class_id, name, teacher_id, time, room_number, duration_time, lesson_date } = req.body;
 
-    if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time) {
+    if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time || !lesson_date) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
     const query = `
         UPDATE lessons
-        SET class_id = ?, name = ?, teacher_id = ?, time = ?, room_number = ?, duration_time = ?
+        SET class_id = ?, name = ?, teacher_id = ?, time = ?, room_number = ?, duration_time = ?, lesson_date = ?
         WHERE lesson_id = ?`;
 
-    database.query(query, [class_id, name, teacher_id, time, room_number, duration_time, id], (error, results) => {
+    database.query(query, [class_id, name, teacher_id, time, room_number, duration_time, lesson_date, id], (error, results) => {
         if (error) {
             console.error('Error updating lesson:', error);
             return res.status(500).json({ message: 'Error updating lesson', error });

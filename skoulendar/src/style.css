@@ -172,18 +172,18 @@ ul{
   gap: 15px;   
   align-items: center;
 }
-.checkbox-group {
+.radio-group {
   display: flex;       
   flex-wrap: wrap;  
   line-height: 2;
 }
 
-.checkbox-item {
+.radio-item {
   margin-right: 15px; 
   white-space: nowrap; 
 }
 
-.checkbox-label {
+.radio-label {
   display: flex;    
   align-items: center;
 }

@@ -17,6 +17,7 @@
                     <th>Class ID</th>
                     <th>Name</th>
                     <th>Teacher ID</th>
+                    <th>Date</th>
                     <th>Time</th>
                     <th>Room Number</th>
                     <th>Duration</th>
@@ -29,6 +30,7 @@
                     <td>{{ lesson.class_id }}</td>
                     <td>{{ lesson.name }}</td>
                     <td>{{ lesson.teacher_id }}</td>
+                    <td>{{ formatDate(lesson.lesson_date) }}</td>
                     <td>{{ lesson.time }}</td>
                     <td>{{ lesson.room_number }}</td>
                     <td>{{ lesson.duration_time }}</td>
@@ -47,10 +49,10 @@
                 <h4>Add Lesson</h4>
                 <form @submit.prevent="addLesson">
                     <label>Class ID:</label>
-                    <div class="checkbox-group">
-                        <div v-for="classItem in possibleClasses" :key="classItem.id" class="checkbox-item">
-                            <label class="checkbox-label">
-                                <input type="checkbox" :value="classItem.class_id" v-model="selectedClassIds"/>
+                    <div class="radio-group">
+                        <div v-for="classItem in possibleClasses" :key="classItem.id" class="radio-item">
+                            <label class="radio-label">
+                                <input type="radio" :value="classItem.class_id" v-model="newLesson.class_id" />
                                 {{ classItem.class_id }} - {{ classItem.name }}
                             </label>
                         </div>
@@ -64,6 +66,10 @@
 
                     <label for="teacher_id">Teacher ID:</label>
                     <input type="number" v-model="newLesson.teacher_id" />
+
+                    <br />
+                    <label for="lesson_date">Date:</label>
+                    <input type="date" v-model="newLesson.lesson_date" />
 
                     <br />
 
@@ -94,40 +100,54 @@
                 <span class="cross" @click="closeEditWindow">&times;</span>
                 <h4>Edit Lesson</h4>
                 <form @submit.prevent="updateLesson">
-                    <label for="class_id">Class ID:</label>
-                    <input type="text" v-model="editableLesson.class_id" />
 
+                    <label>Class ID:</label>
+                    <div class="radio-group">
+                        <div v-for="classItem in possibleClasses" :key="classItem.class_id" class="radio-item">
+                            <label class="radio-label">
+                                <input 
+                                    type="radio" 
+                                    :value="classItem.class_id" 
+                                    v-model="editableLesson.class_id"
+                                    :checked="editableLesson.class_id === classItem.class_id"
+                                />
+                                {{ classItem.class_id }} - {{ classItem.name }}
+                            </label>
+                        </div>
+                    </div>
                     <br />
 
                     <label for="name">Lesson Name:</label>
                     <input type="text" v-model="editableLesson.name" />
-
                     <br />
 
                     <label for="teacher_id">Teacher ID:</label>
                     <input type="number" v-model="editableLesson.teacher_id" />
+                    <br />
 
+                    <label for="lesson_date">Date:</label>
+                    <input type="date" v-model="editableLesson.lesson_date" />
                     <br />
 
                     <label for="time">Time:</label>
                     <input type="time" v-model="editableLesson.time" />
-
                     <br />
 
                     <label for="room_number">Room Number:</label>
                     <input type="number" v-model="editableLesson.room_number" />
-
                     <br />
 
                     <label for="duration_time">Duration:</label>
                     <input type="time" v-model="editableLesson.duration_time" />
-
                     <br />
 
                     <button type="submit">Update Lesson</button>
                 </form>
             </div>
         </div>
+
+
+
     </div>
 </template>
 
@@ -150,6 +170,7 @@ const newLesson = ref({
     name: '',
     teacher_id: null,
     time: '',
+    lesson_date: '',
     room_number: null,
     duration_time: '',
 });
@@ -212,34 +233,54 @@ function resetNewLesson() {
         name: '',
         teacher_id: null,
         time: '',
+        lesson_date: '',
         room_number: null,
         duration_time: '',
     };
+    selectedClassIds.value = [];
     errorMessage.value = '';
 }
 
 // Adding a new lesson
 async function addLesson() {
     errorMessage.value = '';
-    // Check for empty fields
-    if (selectedClassIds.value.length === 0 || !newLesson.value.name || !newLesson.value.teacher_id || !newLesson.value.time || !newLesson.value.room_number || !newLesson.value.duration_time) {
+
+    // Log the current states of all fields for debugging
+    console.log("New Lesson Data:", newLesson.value);
+
+    // Ensure a class is selected by checking newLesson.class_id
+    if (!newLesson.value.class_id) {
+        errorMessage.value = 'You must select a class.☝️';
+        return;
+    }
+
+    // Validation check
+    if (
+        !newLesson.value.name.trim() || 
+        !newLesson.value.teacher_id || 
+        !newLesson.value.lesson_date || 
+        !newLesson.value.time || 
+        !newLesson.value.room_number || 
+        !newLesson.value.duration_time
+    ) {
         errorMessage.value = 'All fields must be filled in.☝️';
         return;
     }
-    const lessonPromises = selectedClassIds.value.map(classId => {
-        // Create a new lesson based on the selected class_id
-        return axios.post('http://localhost:1234/api/lessons', {
-            class_id: classId,
-            name: newLesson.value.name,
+
+    // Continue to process adding the lesson
+    try {
+        const response = await axios.post('http://localhost:1234/api/lessons', {
+            class_id: newLesson.value.class_id, // Use the radio-selected class_id
+            name: newLesson.value.name.trim(),
             teacher_id: newLesson.value.teacher_id,
             time: newLesson.value.time,
+            lesson_date: newLesson.value.lesson_date,
             room_number: newLesson.value.room_number,
             duration_time: newLesson.value.duration_time,
         });
-    });
-    try {
-        await Promise.all(lessonPromises);
-        await fetchLessons();
+        
+        // Assuming fetchLessons is a method that refreshes lessons list
+        await fetchLessons(); 
         closeAddWindow();
     } catch (error) {
         console.error('Error adding lesson:', error);
@@ -247,18 +288,69 @@ async function addLesson() {
     }
 }
 
+
 // Opening the edit lesson window and loading data
 function editLesson(lesson) {
-    editableLesson.value = { ...lesson }; 
-    isEditwindowOpen.value = true; 
+    editableLesson.value = {
+        class_id: lesson.class_id,
+        name: lesson.name,
+        teacher_id: lesson.teacher_id,
+        lesson_date: lesson.lesson_date.split('T')[0], // Keep only the date
+        time: lesson.time,
+        room_number: lesson.room_number,
+        duration_time: lesson.duration_time,
+        lesson_id: lesson.lesson_id // Make sure to keep the lesson ID for updating
+    };
+    isEditwindowOpen.value = true;
 }
+
+
+
+
 function closeEditWindow() {
     isEditwindowOpen.value = false; 
 }
 
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    });
+}
+
 async function updateLesson() {
+    errorMessage.value = ''; // Reset errors before submitting
+
+    // Validation check
+    if (!editableLesson.value.class_id) {
+        errorMessage.value = 'You must select a class.☝️';
+        return;
+    }
+
+    if (
+        !editableLesson.value.name.trim() || 
+        !editableLesson.value.teacher_id || 
+        !editableLesson.value.lesson_date || 
+        !editableLesson.value.time || 
+        !editableLesson.value.room_number || 
+        !editableLesson.value.duration_time
+    ) {
+        errorMessage.value = 'All fields must be filled in.☝️';
+        return;
+    }
+
     try {
-        await axios.put(`http://localhost:1234/api/lessons/${editableLesson.value.lesson_id}`, editableLesson.value); 
+        await axios.put(`http://localhost:1234/api/lessons/${editableLesson.value.lesson_id}`, {
+            class_id: editableLesson.value.class_id,  // Use selected class for editing
+            name: editableLesson.value.name.trim(),
+            teacher_id: editableLesson.value.teacher_id,
+            lesson_date: editableLesson.value.lesson_date,
+            time: editableLesson.value.time,
+            room_number: editableLesson.value.room_number,
+            duration_time: editableLesson.value.duration_time,
+        });
         await fetchLessons();
         closeEditWindow();
     } catch (error) {
@@ -266,6 +358,7 @@ async function updateLesson() {
         errorMessage.value = 'Error updating lesson.😬';
     }
 }
+
 
 // Deleting a selected lesson
 async function deleteLesson(lessonId) {
