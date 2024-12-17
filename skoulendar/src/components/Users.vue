@@ -1,8 +1,6 @@
 <template>
     <div>
         <h1>Users list</h1>
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-
         <div class="flex">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input class="search" type="text" v-model="searchTerm" placeholder="Search by name or surname." @input="searchUsers" />
@@ -87,28 +85,27 @@
             </div>
         </div>
 
-      <!-- Edit User Window -->
-      <div v-if="isEditwindowOpen" class="window">
+        <!-- Edit User Window -->
+        <div v-if="isEditwindowOpen" class="window">
             <div class="window-content">
                 <span class="cross" @click="closeEditWindow">&times;</span>
                 <h4>Edit User</h4>
                 <form @submit.prevent="updateUser">
                     <label>Name:</label>
-                    <input type="text" v-model="editableUser.name" required />
-                    
+                    <input type="text" v-model="editableUser.name" />
                     <br>
                     <label>Surname:</label>
-                    <input type="text" v-model="editableUser.surname" required />
-                    
+                    <input type="text" v-model="editableUser.surname" />
                     <br>
                     <label>Password:</label>
-                    <input type="password" v-model="editableUser.password" placeholder=""/> <!-- Allow password to be changed, but without affecting status -->
-
+                    <input type="password" v-model="editableUser.password" />
                     <br>
+                    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                     <button type="submit">Update User</button>
                 </form>
             </div>
         </div>
+
     </div>
 </template>
   
@@ -121,32 +118,71 @@
     const errorMessage = ref('');
     const searchMessage = ref('');
     const searchTerm = ref('');
-
     const isEditwindowOpen = ref(false);
     const isAddwindowOpen = ref(false);
     const editableUser = ref({ id: null, name: '', surname: '', password: '', status: '', isPasswordChanged: false }); // data for editing user
     const newUser = ref({ name: '', surname: '', password: '', status: '', lessonIds: [] });
+    const selectedLessonIds = ref([]); 
+    const allClasses = ref([]);
 
-        // Checking if all fields are filled
-        function validateNewUser() {
-            return newUser.value.name && newUser.value.surname && newUser.value.password && newUser.value.status;
-        }
-        
-        // Fetch all available classes
-        const selectedLessonIds = ref([]); // Store selected lesson IDs
-        const allClasses = ref([]);
 
+    // Fetching classes list
     async function fetchClasses() {
-        const token = localStorage.getItem('token'); // Get the token if needed
+        const token = localStorage.getItem('token'); 
 
         try {
             const response = await axios.get('http://localhost:1234/api/classes', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            allClasses.value = response.data; // Populate allClasses with fetched data
+            allClasses.value = response.data; 
         } catch (error) {
             console.error('Error fetching classes:', error);
-            errorMessage.value = 'Unable to fetch class data.😬';
+            errorMessage.value = 'Unable to fetch class data. 😬';
+        }
+    }
+
+    // Fetching user list
+    async function fetchUsers() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:1234/api/users', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            users.value = response.data.map(user => ({
+                ...user,
+                classes: user.classes || [] 
+            }));
+
+            filteredUsers.value = users.value; 
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            errorMessage.value = 'Uh oh... unable to fetch users. 😬';
+        }
+    }
+
+    // Searching users by name or surname
+    async function searchUsers() {
+        if (!searchTerm.value) {
+            filteredUsers.value = users.value;
+            return;
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:1234/api/users/search`, {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { nameOrSurname: searchTerm.value }
+            });
+
+            filteredUsers.value = Array.isArray(response.data) ? response.data : [];
+
+            if (filteredUsers.value.length === 0) {
+                searchMessage.value = 'No user under that name... 🧐';
+            } else {
+                searchMessage.value = '';
+            }
+        } catch (error) {
+            console.error('Error searching users:', error);
+            errorMessage.value = 'Uh oh... unable to search users. 😬';
         }
     }
 
@@ -174,7 +210,7 @@
             console.error('Error adding lesson:', error);
             console.log('Response data:', error.response.data);
             console.log('Response status:', error.response.status);
-            errorMessage.value = error.response.data.message || 'Failed to add lesson.😬';
+            errorMessage.value = error.response.data.message || 'Failed to add lesson. 😬';
         }
     }
 
@@ -188,94 +224,29 @@
         errorMessage.value = '';
 
         try {
-            const token = localStorage.getItem('token'); // Get token here
-
-            // Step 1: Add the user
+            const token = localStorage.getItem('token'); 
             const response = await axios.post('http://localhost:1234/api/users', newUser.value, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             const userId = response.data.id;
-
-            // Step 2: Add each lesson associated with its classID
             const lessonPromises = selectedLessonIds.value.map(lessonId => {
-                // Find the corresponding class ID for the selected lesson ID
                 const selectedClass = allClasses.value.find(classe => classe.lesson_id === lessonId);
                 const classId = selectedClass ? selectedClass.class_id : null;
 
                 if (classId) {
-                    return addLessonToUser(userId, lessonId, classId); // Call your addLessonToUser function
+                    return addLessonToUser(userId, lessonId, classId); 
                 } else {
                     console.warn(`Class ID not found for lesson ID: ${lessonId}`);
-                    return Promise.resolve(); // Skip if class_id is not found
+                    return Promise.resolve();
                 }
             });
 
-            await Promise.all(lessonPromises); // Wait for all lesson additions to complete
-            await fetchUsers(); // Refresh the user list
-            closeAddWindow(); // Close the modal
+            await Promise.all(lessonPromises); 
+            await fetchUsers(); 
+            closeAddWindow(); 
         } catch (error) {
             errorMessage.value = 'Uh oh... unable to add user or lessons. 😬';
-        }
-    }
-
-    // Toggle the add user window
-    function openAddWindow() {
-        isAddwindowOpen.value = true;
-    }
-    function closeAddWindow() {
-        isAddwindowOpen.value = false;
-        resetNewUser();
-    }
-
-    // Fetching user list
-    async function fetchUsers() {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:1234/api/users', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            // Ensure that every user has a 'classes' property that is an array
-            users.value = response.data.map(user => ({
-                ...user,
-                classes: user.classes || [] // Default to an empty array if undefined
-            }));
-
-            filteredUsers.value = users.value; // Initialize filteredUsers
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            errorMessage.value = 'Uh oh... unable to fetch users.😬';
-        }
-    }
-
-    // Searching users by name or surname
-    async function searchUsers() {
-        if (!searchTerm.value) {
-            // Reset the filtered users back to all users if the search term is empty
-            filteredUsers.value = users.value;
-            return;
-        }
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:1234/api/users/search`, {
-                headers: { Authorization: `Bearer ${token}` },
-                params: { nameOrSurname: searchTerm.value }
-            });
-
-            // Ensure response.data is an array
-            filteredUsers.value = Array.isArray(response.data) ? response.data : [];
-
-            // If no results are found, initialize filteredUsers with an empty array
-            if (filteredUsers.value.length === 0) {
-                searchMessage.value = 'No user found.';
-            } else {
-                searchMessage.value = ''; // Clear search message
-            }
-        } catch (error) {
-            console.error('Error searching users:', error);
-            errorMessage.value = 'Uh oh... unable to search users.😬';
         }
     }
 
@@ -285,19 +256,18 @@
             id: user.id,
             name: user.name,
             surname: user.surname,
-            password: '', // Start with an empty password field
+            password: '', // start with an empty password field
             status: user.status,
         };
         isEditwindowOpen.value = true;
     }
 
-    // Toggle the edit window
-    function closeEditWindow() {
-        isEditwindowOpen.value = false;
-    }
-
     // Update a user of the list
     async function updateUser() {
+        if (!validateEditableUser()) {
+            errorMessage.value = 'Name and surname are required. ☝️';
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
             const { id, name, surname, password } = editableUser.value;
@@ -321,22 +291,15 @@
             editableUser.value.password = '';
         } catch (error) {
             console.error('Error updating user:', error);
-            errorMessage.value = 'Unable to update user.😬';
+            errorMessage.value = 'Unable to update user. 😬';
         }
-    }
-    
-
-    function resetNewUser() {
-        newUser.value = { name: '', surname: '', password: '', status: '' };
-        selectedLessonIds.value = []; // Reset selected lessons
-        errorMessage.value = ''; // Clear any previous error messages
     }
 
     // Delete user by id
     async function deleteUser(userId) {
         console.log(`Attempting to delete user with ID: ${userId}`);
         
-        if (!confirm("Are you sure you want to delete this user?🤔")) {
+        if (!confirm("Are you sure you want to delete this user? 🤔")) {
             return;
         }
 
@@ -356,6 +319,37 @@
             errorMessage.value = 'Unable to delete user.😬';
         }
     }
+
+    
+    // Toggle the edit window
+    function closeEditWindow() {
+        isEditwindowOpen.value = false;
+    }
+    function resetNewUser() {
+        newUser.value = { name: '', surname: '', password: '', status: '' };
+        selectedLessonIds.value = []; // Reset selected lessons
+        errorMessage.value = ''; 
+    }
+    // Toggle the add user window
+    function openAddWindow() {
+        isAddwindowOpen.value = true;
+    }
+
+    function closeAddWindow() {
+        isAddwindowOpen.value = false;
+        resetNewUser();
+    }
+
+    // Validate edited user
+    function validateEditableUser() {
+        return editableUser.value.name.trim() !== '' &&
+        editableUser.value.surname.trim() !== '';
+    }
+
+    // Checking if all fields are filled
+    function validateNewUser() {
+        return newUser.value.name && newUser.value.surname && newUser.value.password && newUser.value.status;
+    } 
 
     onMounted(() => {
         fetchUsers();

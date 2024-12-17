@@ -192,7 +192,7 @@ function searchLessons() {
         lesson.name.toLowerCase().includes(term) || lesson.class_id.toLowerCase().includes(term)
     );
 
-    searchMessage.value = filteredLessons.value.length ? '' : 'No lessons found...😬';
+    searchMessage.value = filteredLessons.value.length ? '' : 'No lessons found under that name or id...🧐';
 }
 
 // Opening the add lesson window
