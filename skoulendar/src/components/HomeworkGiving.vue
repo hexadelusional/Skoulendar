@@ -1,16 +1,13 @@
 <template>
     <div class="container">
         <h1>Assign Homework</h1>
-
         <div v-if="submitError" class="error">{{ submitError }}</div>
-
-        <label for="class-select">Select a class:</label> <br />
+        <label for="class-select">Select a class:</label><br />
         <select v-model="selectedClass" id="class-select" class="input-field">
             <option v-for="classItem in lessons" :key="classItem.class_id" :value="classItem.class_id">
                 {{ classItem.class_id }} - {{ classItem.name }}
             </option>
         </select>
-
         <div>
             <input type="text" v-model="homework.title" placeholder="TITLE" class="title" />
             <textarea v-model="homework.description" placeholder="Description" class="input-field"></textarea>
@@ -18,19 +15,63 @@
         </div>
 
         <button @click="submitHomework" :disabled="isSubmitting">Assign Homework</button>
-        <div v-if="isSubmitting">Assigning homework...</div>
+        <div v-if="isSubmitting">Assigning homework...⏳</div>
+
+        <h1>Homework Status</h1>
+
+        <div v-for="classItem in lessons" :key="classItem.class_id" class="class-section">
+            <h2>{{ classItem.class_id }} - {{ classItem.name }}</h2>
+            
+            <div v-if="filteredHomeworkStatus(classItem.class_id).length">
+                <table class="homework-status-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Homework Title</th>
+                            <th>Instructions</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in filteredHomeworkStatus(classItem.class_id)" :key="item.homework_id">
+                            <td>{{ item.student_name }}</td>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.deadline }}</td>
+                            <td v-html="getCompletionIcon(item.completed)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-else>
+                <p>No homework is assigned.</p>
+            </div>
+        </div>
     </div>
 </template>
+
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Cookies from 'js-cookie'; // Ensure you have this import
+import Cookies from 'js-cookie'; 
 
-// Define the reactive variables
 const lessons = ref([]);
 const selectedClass = ref(null);
-const userId = ref(null); // Add this line to declare userId
+const userId = ref(null);
+
+const filteredHomeworkStatus = (classId) => {
+    return homeworkStatus.value.filter(item => item.class_id === classId);
+};
+
+const getCompletionIcon = (completed) => {
+    return completed
+        ? '<i class="fa-solid fa-check"></i>' 
+        : '<i class="fa-solid fa-xmark"></i>';
+};
 
 function getTodayDate() {
     const today = new Date();
@@ -46,19 +87,18 @@ const homework = ref({
     deadline: getTodayDate(),
 });
 
-const isLoading = ref(false);
 const isSubmitting = ref(false);
 const submitError = ref(null);
 
-onMounted(async () => {
-    // Retrieve the userId from cookies
-    userId.value = Cookies.get('userId'); // Store teacher/student ID
+const homeworkStatus = ref([]);
 
-    // Fetch lessons if the ID is available
+onMounted(async () => {
+    userId.value = Cookies.get('userId');
+
     if (userId.value) {
         await fetchLessons();
+        await fetchHomeworkStatus();
     } else {
-        console.error('No user ID found. User may not be logged in.');
         submitError.value = 'You need to be logged in to assign homework.';
     }
 });
@@ -69,7 +109,18 @@ async function fetchLessons() {
         lessons.value = response.data;
     } catch (error) {
         console.error('Error fetching lessons:', error);
-        submitError.value = 'Error loading lessons. Please try again later.';
+        submitError.value = 'Error loading lessons... 😬';
+    }
+}
+
+async function fetchHomeworkStatus() {
+    try {
+        const response = await axios.get(`http://localhost:1234/api/homework/status?teacher_id=${userId.value}`);
+        homeworkStatus.value = response.data;
+        console.log('Fetched homework status:', homeworkStatus.value); 
+    } catch (error) {
+        console.error('Error fetching homework status:', error);
+        submitError.value = 'Error loading homework statuses... 😬';
     }
 }
 
@@ -77,10 +128,8 @@ async function submitHomework() {
     submitError.value = null;
     isSubmitting.value = true;
 
-    // Ensure that selectedClass and selectedLesson are defined in your Vue instance
     const selectedLesson = lessons.value.find(lesson => lesson.class_id === selectedClass.value);
 
-    // If lesson_id was not found, you should handle that.
     if (!selectedLesson) {
         submitError.value = 'Selected class does not correspond to a lesson.';
         isSubmitting.value = false;
@@ -92,19 +141,20 @@ async function submitHomework() {
         description: homework.value.description,
         deadline: homework.value.deadline,
         class_id: selectedClass.value,
-        teacher_id: userId.value, // Use declared userId here
+        teacher_id: userId.value,
         lesson_id: selectedLesson.lesson_id,
     };
 
     try {
         const response = await axios.post('http://localhost:1234/api/homework', payload);
-        alert('Homework assigned successfully!😃');
+        alert('Homework assigned successfully! 😃');
         resetForm();
+        fetchHomeworkStatus();
     } catch (error) {
         if (error.response) {
-            submitError.value = error.response.data.message || 'Failed to assign homework...😬';
+            submitError.value = error.response.data.message || 'Failed to assign homework... 😬';
         } else {
-            submitError.value = 'An error occurred when assigning homework...😬';
+            submitError.value = 'An error occurred when assigning homework... 😬';
         }
     } finally {
         isSubmitting.value = false;
@@ -119,46 +169,25 @@ function resetForm() {
 }
 </script>
 
+
 <style scoped>
+    .container {
+        width: 500px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 8px;
+    }
 
-.container {
+    .input-field {
+        width: 100%;
+        margin-bottom: 15px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
 
-    width: 500px;
-
-    margin: auto;
-
-    padding: 20px;
-
-    border-radius: 8px;
-
-}
-
-.input-field {
-
-    width: 100%;
-
-    margin-bottom: 15px;
-
-    padding: 10px;
-
-    box-sizing: border-box;
-
-}
-
-.title, .deadline {
-
-    text-align: center;
-
-    font-size: 16px;
-
-    width: 50%;
-
-}
-
-.error {
-
-    color: rgb(255, 94, 0);
-
-}
-
+    .title, .deadline {
+        text-align: center;
+        font-size: 16px;
+        width: 50%;
+    }
 </style>

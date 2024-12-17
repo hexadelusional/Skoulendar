@@ -157,11 +157,13 @@ INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 -- Enroll Maxime Tang in lessons
 INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (24, 1, 'SM503'),  -- Maxime Tang enrolled in Calculus (lesson_id = 1)
+(24, 2, 'SM402'),  
 (24, 10, 'FL102'); -- Maxime Tang enrolled in English second years (lesson_id = 10)
 
 -- Enroll Nicolas Zhang in lessons
 INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (25, 1, 'SM503'),  -- Nicolas Zhang enrolled in Calculus (lesson_id = 1)
+(25, 2, 'SM402'),  
 (25, 10, 'FL102'); -- Nicolas Zhang enrolled in English second years (lesson_id = 10)
 
 
@@ -177,16 +179,3 @@ INSERT INTO classes (lesson_id, name, class_id) VALUES
 (9, 'Web Programming', 'TI507'),
 (10, 'English second years', 'FL102'),
 (11, 'English first years', 'FL101');
-
-
-/* Insert data into `homework` table */
-INSERT INTO homework (id, title, description, deadline, class_id, lesson_id, teacher_id) VALUES
-(1, 'Taylor series', "Solve the 10 last finite expansion problems.", '2024-12-20', 'SM503', 1, 8),  -- Calculus (lesson_id = 1, teacher_id = 8)
-(2, 'Physics Lab Report', "Write a report about resistance in a circuit.", '2024-12-22', 'TI402', 4, 9),  -- General Electricity (lesson_id = 4, teacher_id = 9)
-(3, 'Dossier Thematique', "Complete the thematic essay on Montaigne.", '2024-12-25', 'FH601', 7, 10);  -- Communication skills (lesson_id = 7, teacher_id = 10)
-
-/* Insert data into `homework_status` table */
-INSERT INTO homework_status (student_id, homework_id, completed) VALUES
-(3, 1, TRUE),  
-(4, 2, FALSE), 
-(5, 3, TRUE);

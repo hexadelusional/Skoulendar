@@ -132,30 +132,23 @@ const logOut = () => {
 </script>
 
 <style scoped>
-.error {
-  color: rgb(255, 94, 0);
-}
-.success {
-  color: rgb(55, 128, 0);
-}
-form{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 200px;
-  width: 200px;
-}
-.id-field{
-  width: 200px;
-}
-.password-field {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 223.2px;
-}
-.eye{
-  margin-right: 0px;
-}
-
+  form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 200px;
+    width: 200px;
+  }
+  .id-field{
+    width: 200px;
+  }
+  .password-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 223.2px;
+  }
+  .eye{
+    margin-right: 0px;
+  }
 </style>

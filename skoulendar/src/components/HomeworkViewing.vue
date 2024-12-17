@@ -19,8 +19,8 @@
                             <label>
                                 <input
                                     type="checkbox"
-                                    v-model="homework.completed"
-                                    @change="updateHomeworkStatus(homework)"
+                                    :checked="homework.completed"
+                                    @change="handleCheckboxChange(homework)"
                                 /> Mark as Completed
                             </label>
                         </div>
@@ -69,9 +69,7 @@ async function fetchHomework() {
         const response = await axios.get('http://localhost:1234/api/homework', {
             params: { student_id: userId.value }
         });
-        // Group homework by class
         const groupedHomeworks = groupHomeworkByClass(response.data);        
-        // Assign the grouped homework to the reactive state
         homeworksByClass.value = groupedHomeworks;
 
     } catch (error) {
@@ -98,16 +96,26 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
-// Update homework completion status
-async function updateHomeworkStatus(homework) {
+async function handleCheckboxChange(homework) {
+    // Optimistically update the state
+    homework.completed = !homework.completed; // Toggle the completed status
+
+    // Now call the API
     try {
         await axios.put('http://localhost:1234/api/homework/update', {
-            homeworkId: homework.id,
+            homeworkId: homework.homework_id,
             completed: homework.completed,
             userId: userId.value
         });
+
+        // Fetch homework again to ensure up-to-date state, if needed can also directly alter local state
+        await fetchHomework();
     } catch (error) {
-        submitErrorLessons.value = 'Error updating homework status.😬';
+        console.error('Error updating homework status:', error.response?.data || error);
+        submitErrorLessons.value = error.response?.data.message || 'Error updating homework status. 😬';
+
+        // Revert the optimistic change on failure
+        homework.completed = !homework.completed; // Revert back the change
     }
 }
 
