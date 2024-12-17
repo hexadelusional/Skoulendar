@@ -13,7 +13,6 @@ router.beforeEach((to, from, next) => {
   // Check authentication state
   auth.checkAuthState();
 
-  // Example: Restrict access to protected routes
   if (to.meta.requiresAuth && !auth.isLoggedIn.value) {
     return next({ name: 'login' }); // Redirect to login if not authenticated
   }
@@ -21,8 +20,6 @@ router.beforeEach((to, from, next) => {
   next(); // Allow navigation
 });
 
-// Use the router
 app.use(router);
 
-// Mount the application
 app.mount('#app');

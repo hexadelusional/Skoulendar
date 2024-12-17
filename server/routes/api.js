@@ -17,4 +17,7 @@ router.use('/lessons', lessons);
 
 router.use('/classList', classList);
 
+router.use('/classes', classes);
+
+
 export default router;

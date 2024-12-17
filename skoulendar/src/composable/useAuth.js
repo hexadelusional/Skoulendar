@@ -25,7 +25,7 @@ export const useAuth = () => {
   const checkAuthState = () => {
     const role = Cookies.get('role');
     const userNameFromCookie = Cookies.get('username');
-    const token = Cookies.get('authToken'); // Optional: Validate token if needed
+    const token = Cookies.get('authToken');
 
     if (role && userNameFromCookie && token) {
       isLoggedIn.value = true;

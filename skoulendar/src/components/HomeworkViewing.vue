@@ -1,28 +1,27 @@
 <template>
     <div class="container">
         <h1>View Homework</h1>
+
         <div v-if="submitErrorLessons" class="error">{{ submitErrorLessons }}</div>
 
-        <div v-for="classItem in lessons" :key="classItem.id" class="class-section">
-            <h2>{{ classItem.name }}</h2>
-            <div v-if="!homeworksByClass[classItem.id] || homeworksByClass[classItem.id].length === 0">
+        <div v-for="classItem in lessons" :key="classItem.class_id" class="class-section">
+            <h2>{{ classItem.lesson_name }}</h2>
+
+            <div v-if="!homeworksByClass[classItem.class_id]">
                 No homework assigned... YET.
             </div>
 
-
-            <ul v-if="homeworksByClass[classItem.id]?.length">
-                <li v-for="homework in homeworksByClass[classItem.id]" :key="homework.id">
+            <ul v-if="homeworksByClass[classItem.class_id]?.length > 0">
+                <li v-for="homework in homeworksByClass[classItem.class_id]" :key="homework.homework_id">
                     <div :class="['homework-card', { 'completed': homework.completed }]">
                         <div class="homework-header">
                             <h3>{{ homework.title }}</h3>
-
                             <label>
                                 <input
                                     type="checkbox"
-                                    v-model="homework.completed"
-                                    @change="updateHomeworkStatus(homework)"
-                                />
-                                Mark as Completed
+                                    :checked="homework.completed"
+                                    @change="handleCheckboxChange(homework)"
+                                /> Mark as Completed
                             </label>
                         </div>
                         <p><strong>Instructions: </strong>{{ homework.description }}</p>
@@ -35,9 +34,6 @@
 </template>
 
 
-
-
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -45,75 +41,38 @@ import Cookies from 'js-cookie';
 
 const lessons = ref([]);
 const homeworksByClass = ref({});
-const isLoadingLessons = ref(false);
-const isLoadingHomework = ref(false);
 const submitErrorLessons = ref(null);
-const submitErrorHomework = ref(null);
+const userId = ref(Cookies.get('userId'));
 
-const studentId = ref(Cookies.get('studentId'));
 
-// Fetch the lessons that the student is enrolled in
+// Fetch lessons for the student
 async function fetchLessons() {
-    if (!studentId.value) {
-        submitErrorLessons.value = 'Student ID is missing. Please log in again.';
-        return;
-    }
-
-    isLoadingLessons.value = true;
-    submitErrorLessons.value = null;
-
     try {
-        const response = await axios.get(`http://localhost:1234/api/classList`, {
-            params: { student_id: studentId.value }
+        const response = await axios.get('http://localhost:1234/api/classList', {
+            params: { student_id: userId.value }
         });
-        lessons.value = response.data;
-        fetchHomework();
+        lessons.value = Array.isArray(response.data) ? response.data : [];
+        fetchHomework(); 
     } catch (error) {
         submitErrorLessons.value = 'Error loading lessons. Please try again later.';
-    } finally {
-        isLoadingLessons.value = false;
     }
 }
 
-// Fetch homework data and group it by class
+// Fetch homework for the student
 async function fetchHomework() {
-    if (!studentId.value) {
-        submitErrorHomework.value = 'Student ID is missing. Please log in again.';
+    if (!userId.value) {
+        submitErrorLessons.value = 'Student ID is missing. Please log in again.';
         return;
     }
-
-    isLoadingHomework.value = true;
-    submitErrorHomework.value = null;
-
     try {
         const response = await axios.get('http://localhost:1234/api/homework', {
-            params: {
-                student_id: studentId.value // Ensure homework is for the logged-in student
-            }
+            params: { student_id: userId.value }
         });
-
-        // Group homework by class and set the homework state
-        const groupedHomeworks = groupHomeworkByClass(response.data);
-
-        // Get saved homework states from localStorage or cookies
-        const savedHomeworks = JSON.parse(localStorage.getItem('homeworksState')) || {};
-
-        // Apply saved state to the homeworks
-        for (const classId in groupedHomeworks) {
-            groupedHomeworks[classId].forEach(homework => {
-                // Check if saved state exists for the homework
-                if (savedHomeworks[homework.id] !== undefined) {
-                    homework.completed = savedHomeworks[homework.id];
-                }
-            });
-        }
-
+        const groupedHomeworks = groupHomeworkByClass(response.data);        
         homeworksByClass.value = groupedHomeworks;
+
     } catch (error) {
-        console.error('Error fetching homework:', error);
-        submitErrorHomework.value = 'Error loading homework. Please try again later.';
-    } finally {
-        isLoadingHomework.value = false;
+        submitErrorLessons.value = 'Error loading homework.😬';
     }
 }
 
@@ -121,39 +80,39 @@ async function fetchHomework() {
 function groupHomeworkByClass(homeworkList) {
     const grouped = {};
     homeworkList.forEach(homework => {
+        if (!homework.class_id) return;
         if (!grouped[homework.class_id]) {
             grouped[homework.class_id] = [];
         }
-        grouped[homework.class_id].push(homework);
+        grouped[homework.class_id].push(homework); 
     });
     return grouped;
 }
 
-// Format date for better readability
+// Format date to readable format
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
-// Update homework completion status and save to localStorage
-async function updateHomeworkStatus(homework) {
+async function handleCheckboxChange(homework) {
+    // Optimistically update the state
+    homework.completed = !homework.completed; // Toggle the completed status
+
+    // Now call the API
     try {
-        // Update in backend (optional)
         await axios.put('http://localhost:1234/api/homework/update', {
-            homeworkId: homework.id,
+            homeworkId: homework.homework_id,
             completed: homework.completed,
-            studentId: studentId.value
+            userId: userId.value
         });
 
-        // Save the updated completion status in localStorage
-        let savedHomeworks = JSON.parse(localStorage.getItem('homeworksState')) || {};
-        savedHomeworks[homework.id] = homework.completed;
-
-        // Store the updated state in localStorage
-        localStorage.setItem('homeworksState', JSON.stringify(savedHomeworks));
-
+        await fetchHomework();
     } catch (error) {
-        submitErrorHomework.value = 'Error updating homework status. Please try again later.';
+        console.error('Error updating homework status:', error.response?.data || error);
+        submitErrorLessons.value = error.response?.data.message || 'Error updating homework status. 😬';
+
+        homework.completed = !homework.completed; 
     }
 }
 
@@ -161,7 +120,6 @@ onMounted(() => {
     fetchLessons();
 });
 </script>
-
 
 
 <style scoped>
