@@ -7,6 +7,7 @@ import Users from '../components/Users.vue';
 import HomeworkGiving from '../components/HomeworkGiving.vue';
 import HomeworkViewing from '../components/HomeworkViewing.vue';
 import Lessons from '../components/Lessons.vue';
+import StTeTimetable from "../components/StTeTimetable.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -15,6 +16,7 @@ const routes = [
   { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
   { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
   { path: '/lessons', name: 'Lessons', component: Lessons },
+    { path: '/timetable', name: 'Timetable', component: StTeTimetable },
 ];
 
 const router = createRouter({
