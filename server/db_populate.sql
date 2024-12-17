@@ -32,23 +32,25 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (23, 'Tom', 'Sancesario', '306990', 'Student'),
 (24, 'Maxime', 'Tang', '207630', 'Student'),
 (25, 'Nicolas', 'Zhang', '209520', 'Student'),
-(26, 'Clara', 'Boissier', '98720', 'Teacher'),
-(27, 'Nicolas', 'Flasque', '66331', 'Teacher'),
-(28, 'Christina', 'Dias', '90877', 'Teacher');
+(26, 'Clara', 'Boissier', '987200', 'Teacher'),
+(27, 'Nicolas', 'Flasque', '663310', 'Teacher'),
+(28, 'Christina', 'Dias', '908770', 'Teacher'),
+(29, 'Zahraa', 'Mosen', '229900', 'Teacher'),
+(30, 'Ziad', 'Adem', '987530', 'Teacher');
 
 /* Insert data into `lessons` table */
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time) VALUES
-(1, 'SM503', 'Calculus', 8, '08:00:00', 101, '01:30:00'),           -- 1 hour 30 minutes
-(2, 'SM402', 'Multivariate Analysis', 8, '10:00:00', 101, '02:00:00'),  -- 2 hours
-(3, 'SM601', 'Graph Theory', 8, '10:00:00', 101, '01:45:00'),         -- 1 hour 45 minutes
-(4, 'TI402', 'General Electricity', 9, '09:00:00', 102, '02:00:00'), -- 2 hours
-(5, 'TI609', 'From the Atom to the Microchip', 9, '17:00:00', 102, '02:30:00'), -- 2 hours 30 minutes
-(6, 'TI702', 'Modern Physics', 9, '17:00:00', 102, '01:45:00'), -- 1 hour 45 minutes
-(7, 'FH601', 'Communication skills', 10, '13:00:00', 103, '01:00:00'), -- 1 hour
-(8, 'TI505', 'Java Programming', 11, '10:00:00', 104, '02:00:00'), -- 2 hours
-(9, 'TI507', 'Web Programming', 11, '16:00:00', 110, '01:30:00'), -- 1 hour 30 minutes
-(10, 'FL102', 'English second years', 12, '10:00:00', 105, '01:15:00'), -- 1 hour 15 minutes
-(11, 'FL101', 'English first years', 12, '13:00:00', 105, '01:00:00'); -- 1 hour
+(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '01:30:00'),           -- 1 hour 30 minutes
+(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00'),  -- 2 hours
+(3, 'SM601', 'Graph Theory', 29, '10:00:00', 101, '01:45:00'),         -- 1 hour 45 minutes
+(4, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00'), -- 2 hours
+(5, 'TI609', 'From the Atom to the Microchip', 27, '17:00:00', 102, '02:30:00'), -- 2 hours 30 minutes
+(6, 'TI702', 'Modern Physics', 30, '17:00:00', 102, '01:45:00'), -- 1 hour 45 minutes
+(7, 'FH601', 'Communication skills', 26, '13:00:00', 103, '01:00:00'), -- 1 hour
+(8, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00'), -- 2 hours
+(9, 'TI507', 'Web Programming', 27, '16:00:00', 110, '01:30:00'), -- 1 hour 30 minutes
+(10, 'FL102', 'English second years', 28, '10:00:00', 105, '01:15:00'), -- 1 hour 15 minutes
+(11, 'FL101', 'English first years', 28, '13:00:00', 105, '01:00:00'); -- 1 hour
 
 
 /* Insert data into `class_list` table */

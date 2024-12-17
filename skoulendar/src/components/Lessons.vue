@@ -3,13 +3,8 @@
         <h1>Lessons List</h1>
 
         <div class="flex">
-            <input
-                class="search"
-                type="text"
-                v-model="searchTerm"
-                placeholder="Search by lesson name or class ID."
-                @input="searchLessons"
-            />
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input class="search" type="text" v-model="searchTerm" placeholder="Search by lesson name or class ID." @input="searchLessons" />
             <button class="add" @click="openAddWindow">&plus; Add Lesson</button>
         </div>
 
@@ -358,6 +353,7 @@ onMounted(() => {
         display: flex;
         justify-content: space-evenly;
         flex-direction: row;
+        align-items: center;
         margin: 30px 20% 30px 20%;
     }
     .add{

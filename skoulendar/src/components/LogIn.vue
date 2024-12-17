@@ -51,23 +51,23 @@ const isLoggingIn = ref(false);
 const showPassword = ref(false);
 
 // Computed properties for auth status
-const isLoggedIn = computed(() => auth.isLoggedIn.value);  // Check if user is logged in
-const username = computed(() => Cookies.get('username')); // Get username from cookies
-const userRole = computed(() => Cookies.get('role')); // Get user role from cookies
+const isLoggedIn = computed(() => auth.isLoggedIn.value);
+const username = computed(() => Cookies.get('username')); 
+const userRole = computed(() => Cookies.get('role')); 
 
 
 // Login function to handle login logic
 const login = async () => {
   // Reset errors
-  idError.value = !id.value.trim(); // Ensure there’s an ID provided
-  passwordError.value = !password.value.trim(); // Ensure there’s a password provided
+  idError.value = !id.value.trim(); 
+  passwordError.value = !password.value.trim();
 
   if (idError.value || passwordError.value) {
     return; 
   }
 
-  isLoggingIn.value = true; // Set loading state
-  loginStatus.value = null; // Reset login status
+  isLoggingIn.value = true; 
+  loginStatus.value = null;
 
   try {
     const response = await axios.post('http://localhost:1234/api/auth/login', {
@@ -75,7 +75,7 @@ const login = async () => {
       password: password.value,
     });
 
-    const userData = response.data; // Get user data
+    const userData = response.data;
 
     // Clear input fields after successful login
     id.value = '';
@@ -87,14 +87,14 @@ const login = async () => {
     auth.logIn({
       username: userData.user.name,
       role: userData.user.status,
-      token: userData.token, // Assuming your API sends back a token
+      token: userData.token, 
     });
 
     // Set cookies to maintain session
     Cookies.set('role', userData.user.status, { path: '/' }); // Set role cookie
     Cookies.set('username', userData.user.name, { path: '/' }); // Set username cookie
     Cookies.set('authToken', userData.token, { path: '/' }); // Set token cookie if applicable
-    Cookies.set('studentId', userData.user.id, { path: '/' }); // Assuming the ID is in userData.user.id
+    Cookies.set('userId', userData.user.id, { path: '/' }); // Set user ID cookie
 
     window.location.reload(); // Trigger page reload to update navigation
   } catch (error) {
@@ -111,7 +111,7 @@ const login = async () => {
       };
     }
   } finally {
-    isLoggingIn.value = false; // Reset loading state
+    isLoggingIn.value = false;
   }
 };
 
@@ -121,9 +121,8 @@ const logOut = () => {
   Cookies.remove('role', { path: '/' });
   Cookies.remove('username', { path: '/' });
   Cookies.remove('authToken', { path: '/' });
-  Cookies.remove('studentId', { path: '/' });
+  Cookies.remove('userId', { path: '/' });
 
-  // Call logOut from useAuth to clear session state
   auth.logOut();
   
   // Redirect the user to the login page

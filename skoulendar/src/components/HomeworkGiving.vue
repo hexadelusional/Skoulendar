@@ -1,115 +1,76 @@
 <template>
-
     <div class="container">
-
         <h1>Assign Homework</h1>
 
         <div v-if="submitError" class="error">{{ submitError }}</div>
 
         <label for="class-select">Select a class:</label> <br />
-
         <select v-model="selectedClass" id="class-select" class="input-field">
-
             <option v-for="classItem in lessons" :key="classItem.class_id" :value="classItem.class_id">
-
-                {{ classItem.class_id }} - {{ classItem.name }} <!-- Show both the ID and the name -->
-
+                {{ classItem.class_id }} - {{ classItem.name }}
             </option>
-
         </select>
 
         <div>
-
             <input type="text" v-model="homework.title" placeholder="TITLE" class="title" />
-
             <textarea v-model="homework.description" placeholder="Description" class="input-field"></textarea>
-
             <input type="date" v-model="homework.deadline" class="deadline" />
-
         </div>
 
         <button @click="submitHomework" :disabled="isSubmitting">Assign Homework</button>
-
         <div v-if="isSubmitting">Assigning homework...</div>
-
     </div>
-
 </template>
 
 <script setup>
-
 import { ref, onMounted } from 'vue';
-
 import axios from 'axios';
+import Cookies from 'js-cookie'; // Ensure you have this import
 
+// Define the reactive variables
 const lessons = ref([]);
-
 const selectedClass = ref(null);
+const userId = ref(null); // Add this line to declare userId
 
 function getTodayDate() {
-
     const today = new Date();
-
     const dd = String(today.getDate()).padStart(2, '0');
-
     const mm = String(today.getMonth() + 1).padStart(2, '0');
-
     const yyyy = today.getFullYear();
-
     return `${yyyy}-${mm}-${dd}`; // formatted date in yyyy-mm-dd
-
 }
 
 const homework = ref({
-
     title: '',
-
     description: '',
-
     deadline: getTodayDate(),
-
 });
 
 const isLoading = ref(false);
-
 const isSubmitting = ref(false);
-
 const submitError = ref(null);
 
-onMounted(() => {
+onMounted(async () => {
+    // Retrieve the userId from cookies
+    userId.value = Cookies.get('userId'); // Store teacher/student ID
 
-    fetchLessons();
-
+    // Fetch lessons if the ID is available
+    if (userId.value) {
+        await fetchLessons();
+    } else {
+        console.error('No user ID found. User may not be logged in.');
+        submitError.value = 'You need to be logged in to assign homework.';
+    }
 });
 
 async function fetchLessons() {
-
-    isLoading.value = true;
-
-    submitError.value = null;
-
     try {
-
-        const teacherId = getTeacherId();
-
-        const response = await axios.get(
-            `http://localhost:1234/api/lessons?teacher_id=${teacherId}`
-            );
-
+        const response = await axios.get(`http://localhost:1234/api/lessons?teacher_id=${userId.value}`);
         lessons.value = response.data;
-
     } catch (error) {
-
-        console.error('Error fetching lessons:', error.message || error);
-
+        console.error('Error fetching lessons:', error);
         submitError.value = 'Error loading lessons. Please try again later.';
-
-    } finally {
-
-        isLoading.value = false;
-
     }
-
 }
 
 async function submitHomework() {
@@ -131,8 +92,8 @@ async function submitHomework() {
         description: homework.value.description,
         deadline: homework.value.deadline,
         class_id: selectedClass.value,
-        teacher_id: getTeacherId(),
-        lesson_id: selectedLesson.lesson_id, // Add lesson_id here
+        teacher_id: userId.value, // Use declared userId here
+        lesson_id: selectedLesson.lesson_id,
     };
 
     try {
@@ -150,25 +111,12 @@ async function submitHomework() {
     }
 }
 
-
 function resetForm() {
-
     homework.value.title = '';
-
     homework.value.description = '';
-
     homework.value.deadline = getTodayDate();
-
     selectedClass.value = null;
-
 }
-
-function getTeacherId() {
-
-    return 8; // Example; replace this with the actual method to get the logged-in teacher's ID
-
-}
-
 </script>
 
 <style scoped>

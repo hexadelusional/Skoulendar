@@ -4,6 +4,7 @@
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <div class="flex">
+            <i class="fa-solid fa-magnifying-glass"></i>
             <input class="search" type="text" v-model="searchTerm" placeholder="Search by name or surname." @input="searchUsers" />
             <button class="add" @click="openAddWindow">&plus; Add User</button>
         </div>
@@ -33,7 +34,7 @@
                                 <i class="fa-solid fa-arrow-right"></i> {{ course.class_id }} - {{ course.lesson_name }}
                             </li>
                         </ul>
-                        <p v-if="!user.classes || user.classes.length === 0">-</p>
+                        <p v-if="!user.classes || user.classes.length === 0"><i>None</i></p>
                     </td>
                     <td>
                         <button @click="editUser(user)">Edit</button>
@@ -149,19 +150,19 @@
         }
     }
 
-    async function addLessonToUser(studentId, lessonId, classId) {
+    async function addLessonToUser(userId, lessonId, classId) {
         const token = localStorage.getItem('token');
 
         // Log the data being sent
         console.log('Adding lesson with:', {
-            student_id: studentId,
+            student_id: userId,
             lesson_id: lessonId,
             class_id: classId
         });
 
         try {
             const response = await axios.post('http://localhost:1234/api/classList', {
-                student_id: studentId,
+                student_id: userId,
                 lesson_id: lessonId,
                 class_id: classId
             }, {
@@ -427,6 +428,7 @@
         display: flex;
         justify-content: space-evenly;
         flex-direction: row;
+        align-items: center;
         margin: 30px 20% 30px 20%;
     }
     .add{

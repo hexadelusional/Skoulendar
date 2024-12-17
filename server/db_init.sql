@@ -1,12 +1,11 @@
 CREATE DATABASE IF NOT EXISTS skoulendar;
-USE skoulendar;
 
-DROP TABLE IF EXISTS homework_status;
-DROP TABLE IF EXISTS class_list;
-DROP TABLE IF EXISTS homework;
-DROP TABLE IF EXISTS lessons;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS classes;
+DROP TABLE IF EXISTS skoulendar.homework_status;
+DROP TABLE IF EXISTS skoulendar.class_list;
+DROP TABLE IF EXISTS skoulendar.homework;
+DROP TABLE IF EXISTS skoulendar.lessons;
+DROP TABLE IF EXISTS skoulendar.users;
+DROP TABLE IF EXISTS skoulendar.classes;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,

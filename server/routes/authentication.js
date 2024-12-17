@@ -1,9 +1,12 @@
 import express from 'express';
 import database from './database.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'; // Import jsonwebtoken package
 
 const router = express.Router();
 
+// Secret key for JWT - make sure to keep this secret
+const SECRET_KEY = 'your_secret_key'; // Ideally, set this in an environment variable
 
 // Login route
 router.post('/login', (req, res) => {
@@ -17,7 +20,6 @@ router.post('/login', (req, res) => {
         }
 
         if (rows.length === 0) {
-            // No user found with that ID
             return res.status(401).json({ success: false, message: 'Login has failed... user does not exist.😬' });
         }
 
@@ -35,23 +37,24 @@ router.post('/login', (req, res) => {
             console.log("Stored Password Hash:", user.password); // Log stored password hash
 
             if (!match) {
-                // Passwords do not match
                 return res.status(401).json({ success: false, message: 'Login has failed... wrong password😬' });
             }
 
-            // Successful login
+            // Successful login, generate a token
+            const token = jwt.sign({ id: user.id, status: user.status }, SECRET_KEY, { expiresIn: '1h' });
+
             res.status(200).json({
                 success: true,
+                token,
                 user: {
                     id: user.id,
                     name: user.name,
                     surname: user.surname,
-                    status: user.status
-                }
+                    status: user.status,
+                },
             });
         });
     });
 });
-
 
 export default router;
