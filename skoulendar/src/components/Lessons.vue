@@ -156,12 +156,11 @@ const newLesson = ref({
 
 const editableLesson = ref({});
 
-// Fetching all lessons when the component is mounted
 async function fetchLessons() {
     try {
-        const response = await axios.get('http://localhost:1234/api/lessons'); // Ensure correct endpoint
+        const response = await axios.get('http://localhost:1234/api/lessons'); 
         lessons.value = response.data;
-        filteredLessons.value = lessons.value; // Initialize filtered lessons
+        filteredLessons.value = lessons.value; 
     } catch (error) {
         console.error('Error fetching lessons:', error);
         errorMessage.value = 'Unable to fetch lessons...😬';
@@ -171,8 +170,8 @@ async function fetchLessons() {
 // Fetch Available Classes
 async function fetchClasses() {
     try {
-        const response = await axios.get('http://localhost:1234/api/classes'); // Update with your actual endpoint
-        possibleClasses.value = response.data; // Assuming response contains the list of classes
+        const response = await axios.get('http://localhost:1234/api/classes'); 
+        possibleClasses.value = response.data; 
     } catch (error) {
         console.error('Error fetching classes:', error);
         errorMessage.value = 'Unable to fetch classes. Please try again.';
@@ -183,7 +182,7 @@ async function fetchClasses() {
 function searchLessons() {
     const term = searchTerm.value.toLowerCase();
     if (!term) {
-        filteredLessons.value = lessons.value; // Reset to all lessons
+        filteredLessons.value = lessons.value; 
         searchMessage.value = '';
         return;
     }

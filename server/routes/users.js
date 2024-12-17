@@ -19,20 +19,16 @@ router.get('/', (req, res) => {
             return res.status(500).json({ message: 'Error fetching users' });
         }
 
-        // Transform results to group users with their classes and lesson names
         const usersWithClassesAndLessons = results.reduce((acc, result) => {
             const { id, name, surname, password, status, class_id, lesson_name } = result; 
 
-            // Find the user in the accumulator
             let user = acc.find(user => user.id === id);
 
             if (!user) {
-                // If the user does not exist in the accumulator, create a new entry
                 user = { id, name, surname, password, status, classes: [] };
                 acc.push(user);
             }
 
-            // If the class_id exists, add it to the user's classes array with lesson_name
             if (class_id) {
                 user.classes.push({ class_id, lesson_name });
             }
@@ -48,10 +44,9 @@ router.get('/', (req, res) => {
 // editing users
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, surname, password } = req.body;  // Receive name, surname, and password from body
+    const { name, surname, password } = req.body; 
 
     try {
-        // Initialize the query parts and value array
         const queryParts = ['UPDATE users SET'];
         const values = [];
         const updates = [];
@@ -61,7 +56,6 @@ router.put('/:id', async (req, res) => {
             updates.push('name = ?');
             values.push(name);
         }
-        
         // Only add the surname if it is provided
         if (surname) {
             updates.push('surname = ?');
@@ -76,19 +70,16 @@ router.put('/:id', async (req, res) => {
             values.push(hashedPassword);
         }
 
-        // If no fields are updated, return an error
         if (updates.length === 0) {
             return res.status(400).json({ message: 'No fields to update.' });
         }
 
-        // Join updates into the query string
-        queryParts.push(updates.join(', ')); // Join updates with commas
-        queryParts.push('WHERE id = ?'); // Include WHERE clause
-        values.push(id);  // Add the user ID to the values
+        queryParts.push(updates.join(', ')); 
+        queryParts.push('WHERE id = ?'); 
+        values.push(id); 
 
-        const query = queryParts.join(' '); // Construct the final SQL statement
+        const query = queryParts.join(' ');
 
-        // Execute the update query
         database.query(query, values, (err, results) => {
             if (err) {
                 console.error('Error updating user:', err);
@@ -99,7 +90,6 @@ router.put('/:id', async (req, res) => {
                 return res.status(404).json({ message: 'User not found.' });
             }
 
-            // Respond back with the updated user info (excluding password)
             const updatedUserResponse = {
                 id,
                 ...(name && { name }),  // Return name if it was updated
@@ -114,7 +104,6 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ message: 'Error hashing password' });
     }
 });
-
 
 
 // creating users

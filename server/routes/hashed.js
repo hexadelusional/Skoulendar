@@ -3,7 +3,7 @@ import database from './database.js';
 
 const HASH_ROUNDS = 10;
 
-export async function checkAndHashPasswords() { // Export the function here
+export async function checkAndHashPasswords() { 
     return new Promise((resolve, reject) => {
         database.query('SELECT id, password FROM users', async (err, users) => {
             if (err) {

@@ -1,5 +1,5 @@
 import express from 'express';
-import database from './database.js'; // Import your database connection
+import database from './database.js'; 
 
 const router = express.Router();
 
@@ -9,16 +9,13 @@ router.get('/', (req, res) => {
         SELECT lesson_id, class_id, name
         FROM classes;  
     `;
-
     database.query(query, (error, results) => {
         if (error) {
             console.error('Error fetching classes:', error);
             return res.status(500).json({ message: 'Error fetching classes' });
         }
-
-        res.json(results); // Return the list of classes
+        res.json(results);
     });
 });
 
-// Export router to use it in your main app
 export default router;

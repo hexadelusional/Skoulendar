@@ -318,7 +318,6 @@
             errorMessage.value = 'Unable to delete user. 😬';
         }
     }
-
     
     // Toggle the edit window
     function closeEditWindow() {
@@ -326,14 +325,13 @@
     }
     function resetNewUser() {
         newUser.value = { name: '', surname: '', password: '', status: '' };
-        selectedLessonIds.value = []; // Reset selected lessons
+        selectedLessonIds.value = []; 
         errorMessage.value = ''; 
     }
     // Toggle the add user window
     function openAddWindow() {
         isAddwindowOpen.value = true;
     }
-
     function closeAddWindow() {
         isAddwindowOpen.value = false;
         resetNewUser();

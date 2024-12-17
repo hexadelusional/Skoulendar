@@ -53,120 +53,6 @@ INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, d
 (11, 'FL101', 'English first years', 28, '13:00:00', 105, '01:00:00'); -- 1 hour
 
 
-/* Insert data into `class_list` table */
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(3, 1, 'SM503'),  -- Coline Sorin enrolled in Calculus (lesson_id = 1)
-(3, 10, 'FL102');  -- Coline Sorin enrolled in English second years (lesson_id = 10)
-
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(4, 3, 'SM601'),  -- Iri Rasoloarivalona enrolled in Graph Theory (lesson_id = 3)
-(4, 5, 'TI609');  -- Iri Rasoloarivalona enrolled in From the Atom to the Microchip (lesson_id = 5)
-
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(5, 7, 'FH601'),  -- Paul Leflon enrolled in Communication skills (lesson_id = 7)
-(5, 9, 'TI507');  -- Paul Leflon enrolled in Web Programming (lesson_id = 9)
-
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(6, 4, 'TI402'),  -- Matteo Launay enrolled in General Electricity (lesson_id = 4)
-(6, 8, 'TI505');  -- Matteo Launay enrolled in Java Programming (lesson_id = 8)
-
-
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(7, 11, 'FL101');  -- Valentin Lebras enrolled in English first years (lesson_id = 11)
-
--- Enroll Assila Ait Said in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(8, 1, 'SM503'),  -- Assila Ait Said enrolled in Calculus (lesson_id = 1)
-(8, 10, 'FL102'); -- Assila Ait Said enrolled in English second years (lesson_id = 10)
-
--- Enroll Romuald Amrein in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(9, 1, 'SM503'),  -- Romuald Amrein enrolled in Calculus (lesson_id = 1)
-(9, 10, 'FL102'); -- Romuald Amrein enrolled in English second years (lesson_id = 10)
-
--- Enroll Luc Ayeto in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(10, 1, 'SM503'),  -- Luc Ayeto enrolled in Calculus (lesson_id = 1)
-(10, 10, 'FL102'); -- Luc Ayeto enrolled in English second years (lesson_id = 10)
-
--- Enroll Mathis Berger in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(11, 1, 'SM503'),  -- Mathis Berger enrolled in Calculus (lesson_id = 1)
-(11, 10, 'FL102'); -- Mathis Berger enrolled in English second years (lesson_id = 10)
-
--- Enroll Thibault Beurotte in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(12, 1, 'SM503'),  -- Thibault Beurotte enrolled in Calculus (lesson_id = 1)
-(12, 10, 'FL102'); -- Thibault Beurotte enrolled in English second years (lesson_id = 10)
-
--- Enroll Camille Chen in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(13, 1, 'SM503'),  -- Camille Chen enrolled in Calculus (lesson_id = 1)
-(13, 10, 'FL102'); -- Camille Chen enrolled in English second years (lesson_id = 10)
-
--- Enroll Guillaume Cottura in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(14, 1, 'SM503'),  -- Guillaume Cottura enrolled in Calculus (lesson_id = 1)
-(14, 10, 'FL102'); -- Guillaume Cottura enrolled in English second years (lesson_id = 10)
-
--- Enroll Camille Dommergue in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(15, 1, 'SM503'),  -- Camille Dommergue enrolled in Calculus (lesson_id = 1)
-(15, 10, 'FL102'); -- Camille Dommergue enrolled in English second years (lesson_id = 10)
-
--- Enroll Samuel Doyen in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(16, 1, 'SM503'),  -- Samuel Doyen enrolled in Calculus (lesson_id = 1)
-(16, 10, 'FL102'); -- Samuel Doyen enrolled in English second years (lesson_id = 10)
-
--- Enroll Tiphaine Fournier in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(17, 1, 'SM503'),  -- Tiphaine Fournier enrolled in Calculus (lesson_id = 1)
-(17, 10, 'FL102'); -- Tiphaine Fournier enrolled in English second years (lesson_id = 10)
-
--- Enroll Alexandre Gobé in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(18, 1, 'SM503'),  -- Alexandre Gobé enrolled in Calculus (lesson_id = 1)
-(18, 10, 'FL102'); -- Alexandre Gobé enrolled in English second years (lesson_id = 10)
-
--- Enroll Ethan Guingand in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(19, 1, 'SM503'),  -- Ethan Guingand enrolled in Calculus (lesson_id = 1)
-(19, 10, 'FL102'); -- Ethan Guingand enrolled in English second years (lesson_id = 10)
-
--- Enroll John Jin in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(20, 1, 'SM503'),  -- John Jin enrolled in Calculus (lesson_id = 1)
-(20, 10, 'FL102'); -- John Jin enrolled in English second years (lesson_id = 10)
-
--- Enroll Josselin Keib in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(21, 1, 'SM503'),  -- Josselin Keib enrolled in Calculus (lesson_id = 1)
-(21, 10, 'FL102'); -- Josselin Keib enrolled in English second years (lesson_id = 10)
-
--- Enroll Soulamaine Laarissi in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(22, 1, 'SM503'),  -- Soulamaine Laarissi enrolled in Calculus (lesson_id = 1)
-(22, 10, 'FL102'); -- Soulamaine Laarissi enrolled in English second years (lesson_id = 10)
-
--- Enroll Tom Sancesario in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(23, 1, 'SM503'),  -- Tom Sancesario enrolled in Calculus (lesson_id = 1)
-(23, 10, 'FL102'); -- Tom Sancesario enrolled in English second years (lesson_id = 10)
-
--- Enroll Maxime Tang in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(24, 1, 'SM503'),  -- Maxime Tang enrolled in Calculus (lesson_id = 1)
-(24, 2, 'SM402'),  
-(24, 10, 'FL102'); -- Maxime Tang enrolled in English second years (lesson_id = 10)
-
--- Enroll Nicolas Zhang in lessons
-INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(25, 1, 'SM503'),  -- Nicolas Zhang enrolled in Calculus (lesson_id = 1)
-(25, 2, 'SM402'),  
-(25, 10, 'FL102'); -- Nicolas Zhang enrolled in English second years (lesson_id = 10)
-
-
 INSERT INTO classes (lesson_id, name, class_id) VALUES
 (1, 'Calculus', 'SM503'),
 (2, 'Multivariate Analysis', 'SM402'),
@@ -179,3 +65,145 @@ INSERT INTO classes (lesson_id, name, class_id) VALUES
 (9, 'Web Programming', 'TI507'),
 (10, 'English second years', 'FL102'),
 (11, 'English first years', 'FL101');
+
+
+-- Enrollments for Coline Sorin
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(3, 2, 'SM402'),  -- Multivariate Analysis
+(3, 4, 'TI402'),  -- General Electricity
+(3, 9, 'TI507');  -- Web Programming
+
+-- Enrollments for Iri Rasoloarivalona
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(4, 6, 'TI702'),  -- Modern Physics
+(4, 8, 'TI505'),  -- Java Programming
+(4, 11, 'FL101'); -- English first years
+
+-- Enrollments for Paul Leflon
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(5, 4, 'TI402'),  -- General Electricity
+(5, 10, 'FL102'), -- English second years
+(5, 8, 'TI505');  -- Java Programming
+
+-- Enrollments for Matteo Launay
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(6, 1, 'SM503'),  -- Calculus
+(6, 7, 'FH601'),  -- Communication skills
+(6, 9, 'TI507');  -- Web Programming
+
+-- Enrollments for Valentin Lebras
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(7, 6, 'TI702'),  -- Modern Physics
+(7, 7, 'FH601'),  -- Communication skills
+(7, 8, 'TI505'),  -- Java Programming
+(7, 1, 'SM503'),  -- Calculus
+(7, 9, 'TI507');  -- Web Programming
+
+-- Enrollments for Assila Ait Said
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(8, 2, 'SM402'),  -- Multivariate Analysis
+(8, 7, 'FH601'),  -- Communication skills
+(8, 11, 'FL101'); -- English first years
+
+-- Enrollments for Romuald Amrein
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(9, 4, 'TI402'),  -- General Electricity
+(9, 7, 'FH601'),  -- Communication skills
+(9, 6, 'TI702');  -- Modern Physics
+
+-- Enrollments for Luc Ayeto
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(10, 2, 'SM402'), -- Multivariate Analysis
+(10, 4, 'TI402'), -- General Electricity
+(10, 9, 'TI507'), -- Web Programming
+(10, 6, 'TI702'); -- Modern Physics
+
+-- Enrollments for Mathis Berger
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(11, 7, 'FH601'), -- Communication skills
+(11, 8, 'TI505'), -- Java Programming
+(11, 2, 'SM402'); -- Multivariate Analysis
+
+-- Enrollments for Thibault Beurotte
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(12, 3, 'SM601'), -- Graph Theory
+(12, 6, 'TI702'), -- Modern Physics
+(12, 4, 'TI402'); -- General Electricity
+
+-- Enrollments for Camille Chen
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(13, 5, 'TI609'), -- From the Atom to the Microchip
+(13, 7, 'FH601'), -- Communication skills
+(13, 8, 'TI505'); -- Java Programming
+
+-- Enrollments for Guillaume Cottura
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(14, 3, 'SM601'), -- Graph Theory
+(14, 6, 'TI702'), -- Modern Physics
+(14, 5, 'TI609'); -- From the Atom to the Microchip
+
+-- Enrollments for Camille Dommergue
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(15, 4, 'TI402'), -- General Electricity
+(15, 5, 'TI609'), -- From the Atom to the Microchip
+(15, 11, 'FL101'); -- English first years
+
+-- Enrollments for Samuel Doyen
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(16, 8, 'TI505'), -- Java Programming
+(16, 3, 'SM601'), -- Graph Theory
+(16, 7, 'FH601'); -- Communication skills
+
+-- Enrollments for Tiphaine Fournier
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(17, 2, 'SM402'), -- Multivariate Analysis
+(17, 3, 'SM601'), -- Graph Theory
+(17, 6, 'TI702'); -- Modern Physics
+
+-- Enrollments for Alexandre Gobé
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(18, 5, 'TI609'), -- From the Atom to the Microchip
+(18, 4, 'TI402'), -- General Electricity
+(18, 8, 'TI505'); -- Java Programming
+
+-- Enrollments for Ethan Guingand
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(19, 3, 'SM601'), -- Graph Theory
+(19, 5, 'TI609'), -- From the Atom to the Microchip
+(19, 7, 'FH601'); -- Communication skills
+
+-- Enrollments for John Jin
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(20, 2, 'SM402'), -- Multivariate Analysis
+(20, 3, 'SM601'), -- Graph Theory
+(20, 5, 'TI609'); -- From the Atom to the Microchip
+
+-- Enrollments for Josselin Keib
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(21, 7, 'FH601'), -- Communication skills
+(21, 8, 'TI505'), -- Java Programming
+(21, 9, 'TI507'); -- Web Programming
+
+-- Enrollments for Soulamaine Laarissi
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(22, 11, 'FL101'), -- English first years
+(22, 5, 'TI609'), -- From the Atom to the Microchip
+(22, 9, 'TI507'); -- Web Programming
+
+-- Enrollments for Tom Sancesario
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(23, 2, 'SM402'), -- Multivariate Analysis
+(23, 6, 'TI702'), -- Modern Physics
+(23, 3, 'SM601'); -- Graph Theory
+
+-- Enrollments for Maxime Tang
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(24, 4, 'TI402'), -- General Electricity
+(24, 6, 'TI702'), -- Modern Physics
+(24, 7, 'FH601'); -- Communication skills
+
+-- Enrollments for Nicolas Zhang
+INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
+(25, 3, 'SM601'), -- Graph Theory
+(25, 8, 'TI505'), -- Java Programming
+(25, 7, 'FH601'); -- Communication skills

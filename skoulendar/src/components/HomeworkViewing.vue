@@ -58,7 +58,6 @@ async function fetchLessons() {
     }
 }
 
-
 // Fetch homework for the student
 async function fetchHomework() {
     if (!userId.value) {
@@ -108,14 +107,12 @@ async function handleCheckboxChange(homework) {
             userId: userId.value
         });
 
-        // Fetch homework again to ensure up-to-date state, if needed can also directly alter local state
         await fetchHomework();
     } catch (error) {
         console.error('Error updating homework status:', error.response?.data || error);
         submitErrorLessons.value = error.response?.data.message || 'Error updating homework status. 😬';
 
-        // Revert the optimistic change on failure
-        homework.completed = !homework.completed; // Revert back the change
+        homework.completed = !homework.completed; 
     }
 }
 

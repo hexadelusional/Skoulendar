@@ -31,104 +31,103 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useAuth } from '../composable/useAuth';
-import { useRouter } from 'vue-router';
+  import { ref, computed } from 'vue';
+  import axios from 'axios';
+  import Cookies from 'js-cookie';
+  import { useAuth } from '../composable/useAuth';
+  import { useRouter } from 'vue-router';
 
-const router = useRouter(); 
+  const router = useRouter(); 
 
-const auth = useAuth(); 
+  const auth = useAuth(); 
 
-// Reactive state variables
-const id = ref('');
-const password = ref('');
-const idError = ref(false);
-const passwordError = ref(false);
-const loginStatus = ref(null);
-const isLoggingIn = ref(false);
-const showPassword = ref(false);
+  // Reactive state variables
+  const id = ref('');
+  const password = ref('');
+  const idError = ref(false);
+  const passwordError = ref(false);
+  const loginStatus = ref(null);
+  const isLoggingIn = ref(false);
+  const showPassword = ref(false);
 
-// Computed properties for auth status
-const isLoggedIn = computed(() => auth.isLoggedIn.value);
-const username = computed(() => Cookies.get('username')); 
-const userRole = computed(() => Cookies.get('role')); 
+  // Computed properties for auth status
+  const isLoggedIn = computed(() => auth.isLoggedIn.value);
+  const username = computed(() => Cookies.get('username')); 
+  const userRole = computed(() => Cookies.get('role')); 
 
 
-// Login function to handle login logic
-const login = async () => {
-  // Reset errors
-  idError.value = !id.value.trim(); 
-  passwordError.value = !password.value.trim();
+  // Login function to handle login logic
+  const login = async () => {
+    // Reset errors
+    idError.value = !id.value.trim(); 
+    passwordError.value = !password.value.trim();
 
-  if (idError.value || passwordError.value) {
-    return; 
-  }
-
-  isLoggingIn.value = true; 
-  loginStatus.value = null;
-
-  try {
-    const response = await axios.post('http://localhost:1234/api/auth/login', {
-      id: id.value,
-      password: password.value,
-    });
-
-    const userData = response.data;
-
-    // Clear input fields after successful login
-    id.value = '';
-    password.value = '';
-    idError.value = false;
-    passwordError.value = false;
-
-    // Log in using the auth composable
-    auth.logIn({
-      username: userData.user.name,
-      role: userData.user.status,
-      token: userData.token, 
-    });
-
-    // Set cookies to maintain session
-    Cookies.set('role', userData.user.status, { path: '/' }); // Set role cookie
-    Cookies.set('username', userData.user.name, { path: '/' }); // Set username cookie
-    Cookies.set('authToken', userData.token, { path: '/' }); // Set token cookie if applicable
-    Cookies.set('userId', userData.user.id, { path: '/' }); // Set user ID cookie
-
-    window.location.reload(); // Trigger page reload to update navigation
-  } catch (error) {
-    // Handle error response
-    if (error.response && error.response.status === 401) {
-      loginStatus.value = {
-        success: false,
-        message: error.response.data.message || "Login has failed, please check your credentials... 😬",
-      };
-    } else {
-      loginStatus.value = {
-        success: false,
-        message: "An error occurred while logging in... 😬",
-      };
+    if (idError.value || passwordError.value) {
+      return; 
     }
-  } finally {
-    isLoggingIn.value = false;
-  }
-};
 
-// Logout function
-const logOut = () => {
-  // Clear session cookies
-  Cookies.remove('role', { path: '/' });
-  Cookies.remove('username', { path: '/' });
-  Cookies.remove('authToken', { path: '/' });
-  Cookies.remove('userId', { path: '/' });
+    isLoggingIn.value = true; 
+    loginStatus.value = null;
 
-  auth.logOut();
-  
-  // Redirect the user to the login page
-  router.push({ name: 'login' }); 
-  window.location.reload();
-};
+    try {
+      const response = await axios.post('http://localhost:1234/api/auth/login', {
+        id: id.value,
+        password: password.value,
+      });
+
+      const userData = response.data;
+
+      // Clear input fields after successful login
+      id.value = '';
+      password.value = '';
+      idError.value = false;
+      passwordError.value = false;
+
+      // Log in using the auth composable
+      auth.logIn({
+        username: userData.user.name,
+        role: userData.user.status,
+        token: userData.token, 
+      });
+
+      // Set cookies to maintain session
+      Cookies.set('role', userData.user.status, { path: '/' }); 
+      Cookies.set('username', userData.user.name, { path: '/' }); 
+      Cookies.set('authToken', userData.token, { path: '/' }); 
+      Cookies.set('userId', userData.user.id, { path: '/' }); 
+
+      window.location.reload(); // Trigger page reload to update navigation
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        loginStatus.value = {
+          success: false,
+          message: error.response.data.message || "Login has failed, please check your credentials... 😬",
+        };
+      } else {
+        loginStatus.value = {
+          success: false,
+          message: "An error occurred while logging in... 😬",
+        };
+      }
+    } finally {
+      isLoggingIn.value = false;
+    }
+  };
+
+  // Logout function
+  const logOut = () => {
+    // Clear session cookies
+    Cookies.remove('role', { path: '/' });
+    Cookies.remove('username', { path: '/' });
+    Cookies.remove('authToken', { path: '/' });
+    Cookies.remove('userId', { path: '/' });
+
+    auth.logOut();
+    
+    // Redirect the user to the login page
+    router.push({ name: 'login' }); 
+    window.location.reload();
+  };
 </script>
 
 <style scoped>

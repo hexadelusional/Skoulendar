@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Cookies from 'js-cookie'; // Import cookies for session management
+import Cookies from 'js-cookie'; 
 
 import Home from '../components/Home.vue';
 import LogIn from '../components/LogIn.vue';
@@ -23,8 +23,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const role = Cookies.get('role'); // Get the user's role from cookies
-    console.log(`Navigating to: ${to.name}, role: ${role}`); // Debugging
+    const role = Cookies.get('role');
+    console.log(`Navigating to: ${to.name}, role: ${role}`); 
 
     // Allow access to /login for all users (authenticated or not)
     if (to.name === 'login') {

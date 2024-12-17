@@ -18,15 +18,14 @@
         <div v-if="isSubmitting">Assigning homework...⏳</div>
 
         <h1>Homework Status</h1>
-
         <div v-for="classItem in lessons" :key="classItem.class_id" class="class-section">
             <h2>{{ classItem.class_id }} - {{ classItem.name }}</h2>
-            
             <div v-if="filteredHomeworkStatus(classItem.class_id).length">
                 <table class="homework-status-table">
                     <thead>
                         <tr>
-                            <th>Student Name</th>
+                            <th>Name</th>
+                            <th>Surname</th>
                             <th>Homework Title</th>
                             <th>Instructions</th>
                             <th>Deadline</th>
@@ -36,15 +35,15 @@
                     <tbody>
                         <tr v-for="item in filteredHomeworkStatus(classItem.class_id)" :key="item.homework_id">
                             <td>{{ item.student_name }}</td>
+                            <td>{{ item.student_surname }}</td>
                             <td>{{ item.title }}</td>
                             <td>{{ item.description }}</td>
-                            <td>{{ item.deadline }}</td>
+                            <td>{{ formatDate(item.deadline) }}</td>
                             <td v-html="getCompletionIcon(item.completed)"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
             <div v-else>
                 <p>No homework is assigned.</p>
             </div>
@@ -52,57 +51,53 @@
     </div>
 </template>
 
-
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Cookies from 'js-cookie'; 
-
+import Cookies from 'js-cookie';
 const lessons = ref([]);
 const selectedClass = ref(null);
 const userId = ref(null);
+const homeworkStatus = ref([]);
+const submitError = ref(null);
+const isSubmitting = ref(false);
 
+// Filter homework statuses by class
 const filteredHomeworkStatus = (classId) => {
     return homeworkStatus.value.filter(item => item.class_id === classId);
 };
 
+// Get completion icon based on completion status
 const getCompletionIcon = (completed) => {
     return completed
-        ? '<i class="fa-solid fa-check"></i>' 
-        : '<i class="fa-solid fa-xmark"></i>';
+        ? '<i class="fa-solid fa-check success"></i>' 
+        : '<i class="fa-solid fa-xmark error"></i>';
 };
 
+// Get today's date in yyyy-mm-dd format
 function getTodayDate() {
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, '0');
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const yyyy = today.getFullYear();
-    return `${yyyy}-${mm}-${dd}`; // formatted date in yyyy-mm-dd
+    return `${yyyy}-${mm}-${dd}`;
 }
 
+// Format date to human-readable format
+const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+};
+
+// Homework form
 const homework = ref({
     title: '',
     description: '',
     deadline: getTodayDate(),
 });
 
-const isSubmitting = ref(false);
-const submitError = ref(null);
-
-const homeworkStatus = ref([]);
-
-onMounted(async () => {
-    userId.value = Cookies.get('userId');
-
-    if (userId.value) {
-        await fetchLessons();
-        await fetchHomeworkStatus();
-    } else {
-        submitError.value = 'You need to be logged in to assign homework.';
-    }
-});
-
+// Fetch lessons
 async function fetchLessons() {
     try {
         const response = await axios.get(`http://localhost:1234/api/lessons?teacher_id=${userId.value}`);
@@ -113,17 +108,17 @@ async function fetchLessons() {
     }
 }
 
+// Fetch homework statuses
 async function fetchHomeworkStatus() {
     try {
         const response = await axios.get(`http://localhost:1234/api/homework/status?teacher_id=${userId.value}`);
         homeworkStatus.value = response.data;
-        console.log('Fetched homework status:', homeworkStatus.value); 
     } catch (error) {
-        console.error('Error fetching homework status:', error);
         submitError.value = 'Error loading homework statuses... 😬';
     }
 }
 
+// Assign homework to a class
 async function submitHomework() {
     submitError.value = null;
     isSubmitting.value = true;
@@ -161,12 +156,25 @@ async function submitHomework() {
     }
 }
 
+// Reset the form
 function resetForm() {
     homework.value.title = '';
     homework.value.description = '';
     homework.value.deadline = getTodayDate();
     selectedClass.value = null;
 }
+
+
+onMounted(async () => {
+    userId.value = Cookies.get('userId');
+
+    if (userId.value) {
+        await fetchLessons();
+        await fetchHomeworkStatus();
+    } else {
+        submitError.value = 'You need to be logged in to assign homework.';
+    }
+});
 </script>
 
 

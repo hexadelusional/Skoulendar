@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Route to get all lessons, optionally filtered by teacher ID
 router.get('/', (req, res) => {
-    const teacherId = req.query.teacher_id; // Optional query parameter
+    const teacherId = req.query.teacher_id; 
 
     const query = teacherId
         ? 'SELECT * FROM lessons WHERE teacher_id = ?'
@@ -24,15 +24,9 @@ router.get('/', (req, res) => {
 // Route to add a new lesson
 router.post('/', (req, res) => {
     const { class_id, name, teacher_id, time, room_number, duration_time } = req.body;
-
-    // Log input data
-    console.log('Adding lesson with data:', req.body);
-
-    // Validate required fields
     if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
-
     const query = `
         INSERT INTO lessons (class_id, name, teacher_id, time, room_number, duration_time)
         VALUES (?, ?, ?, ?, ?, ?)`;
@@ -49,10 +43,9 @@ router.post('/', (req, res) => {
 
 // Route to update a lesson by ID
 router.put('/:id', (req, res) => {
-    const { id } = req.params; // Get the lesson ID from parameters
+    const { id } = req.params;
     const { class_id, name, teacher_id, time, room_number, duration_time } = req.body;
 
-    // Validate required fields
     if (!class_id || !name || !teacher_id || !time || !room_number || !duration_time) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
@@ -78,7 +71,7 @@ router.put('/:id', (req, res) => {
 
 // Route to delete a lesson by ID
 router.delete('/:id', (req, res) => {
-    const { id } = req.params; // Get the lesson ID from parameters
+    const { id } = req.params; 
 
     const query = 'DELETE FROM lessons WHERE lesson_id = ?';
 

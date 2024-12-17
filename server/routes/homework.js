@@ -3,15 +3,13 @@ import database from './database.js';
 
 const router = express.Router();
 
-// Get homework for a specific student ensuring they are enrolled in a class that has homework
+// Route to fetch homework assignments for a specific student
 router.get('/', (req, res) => {
     const { student_id } = req.query;
 
     if (!student_id) {
         return res.status(400).json({ message: 'Student ID is required' });
     }
-
-    // Query to fetch homework for the student, filtered by their enrollment in classes
     const query = `
         SELECT
             h.id AS homework_id,
@@ -34,7 +32,6 @@ router.get('/', (req, res) => {
         WHERE
             cl.student_id = ?;
     `;
-
     // Fetch homework assignments based on the student_id
     database.query(query, [student_id], (error, results) => {
         if (error) {
@@ -46,15 +43,13 @@ router.get('/', (req, res) => {
     });
 });
 
-// Add a route to fetch homework status for a specific class and teacher
+// Route to fetch homework status for a specific teacher
 router.get('/status', (req, res) => {
-    const { teacher_id } = req.query;
-
+    const { teacher_id, student_id } = req.query;
     if (!teacher_id) {
         return res.status(400).json({ message: 'Teacher ID is required' });
     }
-
-    const query = `
+    let query = `
         SELECT
             h.id AS homework_id,
             h.title,
@@ -62,33 +57,36 @@ router.get('/status', (req, res) => {
             h.deadline,
             cl.class_id,
             l.name AS class_name,
+            u.id AS student_id,
             u.name AS student_name,
-            hs.completed
+            u.surname as student_surname,
+            COALESCE(hs.completed, 0) AS completed
         FROM
             homework h
-        LEFT JOIN
-            homework_status hs ON h.id = hs.homework_id
-        LEFT JOIN
-            class_list cl ON h.class_id = cl.class_id
-        LEFT JOIN
-            users u ON cl.student_id = u.id
-        LEFT JOIN
-            lessons l ON h.class_id = l.class_id
+        LEFT JOIN class_list cl ON h.class_id = cl.class_id
+        LEFT JOIN users u ON cl.student_id = u.id
+        LEFT JOIN homework_status hs ON h.id = hs.homework_id AND hs.student_id = u.id
+        LEFT JOIN lessons l ON h.class_id = l.class_id
         WHERE
-            h.teacher_id = ?;
-    `;
+            h.teacher_id = ?`;
 
-    database.query(query, [teacher_id], (error, results) => {
+    const params = [teacher_id];
+
+    if (student_id) {
+        query += ' AND u.id = ?';
+        params.push(student_id);
+    }
+
+    database.query(query, params, (error, results) => {
         if (error) {
             console.error('Error fetching homework status:', error);
             return res.status(500).json({ message: 'Error fetching homework status', error });
         }
 
-        // Now results should include class_id, name, description, and deadline
+        console.log('Fetched Results:', results);
         res.status(200).json(results);
     });
 });
-
 
 // Route to post new homework
 router.post('/', (req, res) => {
@@ -137,9 +135,5 @@ router.put('/update', (req, res) => {
         res.status(200).json({ message: 'Homework status updated successfully' });
     });
 });
-
-
-
-
 
 export default router;
