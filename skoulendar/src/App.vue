@@ -10,6 +10,11 @@
         <strong>Users</strong>
       </router-link>
 
+      <!-- Only show the 'Users' link if the user is an Admin -->
+      <router-link v-if="isAdmin" class="head" to="/lessons">
+        <strong>Lessons</strong>
+      </router-link>
+
       <!-- Only show the 'HomeworkGiving' link if the user is a Teacher -->
       <router-link v-if="isTeacher" class="head" to="/homeworkGiving">
         <strong>Homework</strong>

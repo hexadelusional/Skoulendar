@@ -14,7 +14,8 @@ const routes = [
     { path: '/users', name: 'Users', component: Users },
     { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
     { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
-    { path: '/timetable', name: 'ViewTimetable', component: ViewTimetable }
+    { path: '/timetable', name: 'ViewTimetable', component: ViewTimetable },
+    { path: '/lessons', name: 'Lessons', component: Lessons },
 ];
 
 const router = createRouter({
@@ -23,8 +24,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const role = Cookies.get('role'); // Get the user's role from cookies
-    console.log(`Navigating to: ${to.name}, role: ${role}`); // Debugging
+    const role = Cookies.get('role');
+    console.log(`Navigating to: ${to.name}, role: ${role}`);
 
     // Allow access to /login for all users (authenticated or not)
     if (to.name === 'login') {
@@ -50,6 +51,11 @@ router.beforeEach((to, from, next) => {
 
       // Admin access to Users route
       if (to.name === 'Users' && role !== 'Admin') {
+        return next({ name: 'Home' }); // Prevent access if not an Admin
+      }
+
+      // Admin access to Users route
+      if (to.name === 'Lessons' && role !== 'Admin') {
         return next({ name: 'Home' }); // Prevent access if not an Admin
       }
     }
