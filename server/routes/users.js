@@ -40,6 +40,24 @@ router.get('/', (req, res) => {
     });
 });
 
+// getting teachers
+router.get('/teachers', (req, res) => {
+    const query = `
+        SELECT id, name, surname 
+        FROM users 
+        WHERE status = 'Teacher'
+    `;
+
+    database.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching teachers:', err.message);
+            return res.status(500).json({ message: 'Error fetching teachers' });
+        }
+
+        // Return the list of teachers
+        res.json(results);
+    });
+});
 
 // editing users
 router.put('/:id', async (req, res) => {

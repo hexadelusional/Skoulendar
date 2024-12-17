@@ -64,8 +64,15 @@
 
                     <br />
 
-                    <label for="teacher_id">Teacher ID:</label>
-                    <input type="number" v-model="newLesson.teacher_id" />
+                    <label>Teacher:</label>
+                    <div class="radio-group">
+                        <div v-for="teacher in teachers" :key="teacher.id" class="radio-item">
+                            <label class="radio-label">
+                                <input type="radio" :value="teacher.id" v-model="newLesson.teacher_id" />
+                                {{ teacher.name }} {{ teacher.surname }}
+                            </label>
+                        </div>
+                    </div>
 
                     <br />
                     <label for="lesson_date">Date:</label>
@@ -121,8 +128,19 @@
                     <input type="text" v-model="editableLesson.name" />
                     <br />
 
-                    <label for="teacher_id">Teacher ID:</label>
-                    <input type="number" v-model="editableLesson.teacher_id" />
+                    <div class="radio-group">
+                        <div v-for="teacher in teachers" :key="teacher.id" class="radio-item">
+                            <label class="radio-label">
+                                <input
+                                    type="radio"
+                                    :value="teacher.id"
+                                    v-model="editableLesson.teacher_id"
+                                    :checked="editableLesson.teacher_id === teacher.id"
+                                />
+                                {{ teacher.name }} {{ teacher.surname }} 
+                            </label>
+                        </div>
+                    </div>
                     <br />
 
                     <label for="lesson_date">Date:</label>
@@ -145,9 +163,6 @@
                 </form>
             </div>
         </div>
-
-
-
     </div>
 </template>
 
@@ -159,11 +174,13 @@ const lessons = ref([]);
 const filteredLessons = ref([]);
 const searchTerm = ref('');
 const errorMessage = ref('');
-const searchMessage = ref('');
+const searchMessage = ref(''); 
 const isAddwindowOpen = ref(false);
 const isEditwindowOpen = ref(false);
 const possibleClasses = ref([]);
 const selectedClassIds = ref([]);
+const teachers = ref([]); 
+
 
 const newLesson = ref({
     class_id: '',
@@ -196,6 +213,17 @@ async function fetchClasses() {
     } catch (error) {
         console.error('Error fetching classes:', error);
         errorMessage.value = 'Unable to fetch classes. Please try again.';
+    }
+}
+
+// Fetch Teachers Function
+async function fetchTeachers() {
+    try {
+        const response = await axios.get('http://localhost:1234/api/users/teachers');
+        teachers.value = response.data; // Assuming the response.data is an array of teacher objects
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+        errorMessage.value = 'Unable to fetch teachers. Please try again.';
     }
 }
 
@@ -245,15 +273,15 @@ function resetNewLesson() {
 async function addLesson() {
     errorMessage.value = '';
 
-    // Log the current states of all fields for debugging
-    console.log("New Lesson Data:", newLesson.value);
-
+    if (!newLesson.value.teacher_id) {
+        errorMessage.value = 'You must select a teacher.☝️';
+        return;
+    }
     // Ensure a class is selected by checking newLesson.class_id
     if (!newLesson.value.class_id) {
         errorMessage.value = 'You must select a class.☝️';
         return;
     }
-
     // Validation check
     if (
         !newLesson.value.name.trim() || 
@@ -290,22 +318,20 @@ async function addLesson() {
 
 
 // Opening the edit lesson window and loading data
-function editLesson(lesson) {
+async function editLesson(lesson) {
     editableLesson.value = {
         class_id: lesson.class_id,
         name: lesson.name,
-        teacher_id: lesson.teacher_id,
-        lesson_date: lesson.lesson_date.split('T')[0], // Keep only the date
+        teacher_id: lesson.teacher_id, 
+        lesson_date: lesson.lesson_date.split('T')[0], 
         time: lesson.time,
         room_number: lesson.room_number,
         duration_time: lesson.duration_time,
-        lesson_id: lesson.lesson_id // Make sure to keep the lesson ID for updating
+        lesson_id: lesson.lesson_id 
     };
-    isEditwindowOpen.value = true;
+    await fetchTeachers(); 
+    isEditwindowOpen.value = true; 
 }
-
-
-
 
 function closeEditWindow() {
     isEditwindowOpen.value = false; 
@@ -321,44 +347,36 @@ function formatDate(dateString) {
 }
 
 async function updateLesson() {
-    errorMessage.value = ''; // Reset errors before submitting
+    errorMessage.value = ''; 
+    
+    // Validation if a teacher is selected
+    if (!editableLesson.value.teacher_id) {
+        errorMessage.value = 'You must select a teacher.☝️';
+        return;
+    }
 
-    // Validation check
     if (!editableLesson.value.class_id) {
         errorMessage.value = 'You must select a class.☝️';
         return;
     }
-
-    if (
-        !editableLesson.value.name.trim() || 
-        !editableLesson.value.teacher_id || 
-        !editableLesson.value.lesson_date || 
-        !editableLesson.value.time || 
-        !editableLesson.value.room_number || 
-        !editableLesson.value.duration_time
-    ) {
-        errorMessage.value = 'All fields must be filled in.☝️';
-        return;
-    }
-
     try {
         await axios.put(`http://localhost:1234/api/lessons/${editableLesson.value.lesson_id}`, {
-            class_id: editableLesson.value.class_id,  // Use selected class for editing
+            class_id: editableLesson.value.class_id,
             name: editableLesson.value.name.trim(),
-            teacher_id: editableLesson.value.teacher_id,
+            teacher_id: editableLesson.value.teacher_id, 
             lesson_date: editableLesson.value.lesson_date,
             time: editableLesson.value.time,
             room_number: editableLesson.value.room_number,
             duration_time: editableLesson.value.duration_time,
         });
-        await fetchLessons();
+
+        await fetchLessons(); 
         closeEditWindow();
     } catch (error) {
         console.error('Error updating lesson:', error);
         errorMessage.value = 'Error updating lesson.😬';
     }
 }
-
 
 // Deleting a selected lesson
 async function deleteLesson(lessonId) {
@@ -376,6 +394,7 @@ async function deleteLesson(lessonId) {
 onMounted(() => {
     fetchLessons();
     fetchClasses();
+    fetchTeachers();
 });
 </script>
 
