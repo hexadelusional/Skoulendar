@@ -294,7 +294,6 @@ const newUser = ref({ name: '', surname: '', password: '', status: '' });
         background-color: rgba(0, 0, 0, 0.219);
         justify-content: center; 
         align-items: center;
-        display: flex;
     }
 
     .window-content {

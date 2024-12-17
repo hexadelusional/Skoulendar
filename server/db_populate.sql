@@ -8,7 +8,7 @@ DELETE FROM users;
 /* Insert data into `users` table */
 INSERT INTO users (id, name, surname, password, status) VALUES
 (1, 'Adele', 'Chamoux', '160305', "Admin"),
-(2, 'Elodie', 'Duflaut', '050304', "Admin"),
+(2, 'Elodie', 'Duflaut', '040304', "Admin"),
 (3, 'Coline', 'Sorin', '151104', "Student"),
 (4, 'Iri', 'Rasoloarivalona', '161616', "Student"),
 (5, 'Paul', 'Leflon', '252525', "Student"),

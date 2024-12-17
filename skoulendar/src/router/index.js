@@ -6,13 +6,15 @@ import LogIn from '../components/LogIn.vue';
 import Users from '../components/Users.vue';
 import HomeworkGiving from '../components/HomeworkGiving.vue';
 import HomeworkViewing from '../components/HomeworkViewing.vue';
+import ViewTimetable from "../components/ViewTimetable.vue";
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'login', component: LogIn },
-  { path: '/users', name: 'Users', component: Users },
-  { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
-  { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
+    { path: '/', name: 'Home', component: Home },
+    { path: '/login', name: 'login', component: LogIn },
+    { path: '/users', name: 'Users', component: Users },
+    { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
+    { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
+    { path: '/timetable', name: 'ViewTimetable', component: ViewTimetable }
 ];
 
 const router = createRouter({
