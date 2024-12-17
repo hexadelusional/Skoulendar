@@ -39,18 +39,18 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (30, 'Ziad', 'Adem', '987530', 'Teacher');
 
 /* Insert data into `lessons` table */
-INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time) VALUES
-(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '01:30:00'),           -- 1 hour 30 minutes
-(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00'),  -- 2 hours
-(3, 'SM601', 'Graph Theory', 29, '10:00:00', 101, '01:45:00'),         -- 1 hour 45 minutes
-(4, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00'), -- 2 hours
-(5, 'TI609', 'From the Atom to the Microchip', 27, '17:00:00', 102, '02:30:00'), -- 2 hours 30 minutes
-(6, 'TI702', 'Modern Physics', 30, '17:00:00', 102, '01:45:00'), -- 1 hour 45 minutes
-(7, 'FH601', 'Communication skills', 26, '13:00:00', 103, '01:00:00'), -- 1 hour
-(8, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00'), -- 2 hours
-(9, 'TI507', 'Web Programming', 27, '16:00:00', 110, '01:30:00'), -- 1 hour 30 minutes
-(10, 'FL102', 'English second years', 28, '10:00:00', 105, '01:15:00'), -- 1 hour 15 minutes
-(11, 'FL101', 'English first years', 28, '13:00:00', 105, '01:00:00'); -- 1 hour
+INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
+(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '01:30:00', '2024-01-08'),           -- January 8, 2024
+(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-01-08'),  -- January 8, 2024
+(3, 'SM601', 'Graph Theory', 29, '10:00:00', 101, '01:45:00', '2024-01-09'),         -- January 9, 2024
+(4, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-01-09'), -- January 9, 2024
+(5, 'TI609', 'From the Atom to the Microchip', 27, '17:00:00', 102, '02:30:00', '2024-01-10'), -- January 10, 2024
+(6, 'TI702', 'Modern Physics', 30, '17:00:00', 102, '01:45:00', '2024-01-10'), -- January 10, 2024
+(7, 'FH601', 'Communication skills', 26, '13:00:00', 103, '01:00:00', '2024-01-11'), -- January 11, 2024
+(8, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00', '2024-01-11'), -- January 11, 2024
+(9, 'TI507', 'Web Programming', 27, '16:00:00', 110, '01:30:00', '2024-01-12'), -- January 12, 2024
+(10, 'FL102', 'English second years', 28, '10:00:00', 105, '01:15:00', '2024-01-12'), -- January 12, 2024
+(11, 'FL101', 'English first years', 28, '13:00:00', 105, '01:00:00', '2024-01-13'); -- January 13, 2024
 
 
 INSERT INTO classes (lesson_id, name, class_id) VALUES
