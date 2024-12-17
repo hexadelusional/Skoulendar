@@ -2,29 +2,12 @@
   import VueCal from "vue-cal"
   import 'vue-cal/dist/vuecal.css'
 
-  let events = [
-    {
-      start: '2024-12-17 09:50',
-      end: '2024-12-17 12:15',
-      title: 'Computer Architecture and Operating Systems',
-      info1: '305',
-      info2: 'Teacher',
-    },
-    {
-      start: '2024-12-17 14:00',
-      end: '2024-12-17 16:35',
-      title: 'Machine Learning',
-      info1: '210',
-      info2: 'Teacher',
-    },
-    {
-      start: '2024-12-18 09:50',
-      end: '2024-12-18 12:15',
-      title: 'UML',
-      info1: '?',
-      info2: 'Teacher',
-    }
-  ]
+  const props = defineProps({
+    events: {
+      type: Array,
+      default: () => [],
+      }
+  })
 
   function truncate(str, limit) {
     return (str.length > limit ? str.slice(0, limit-1) + '&hellip;' : str)
@@ -34,7 +17,6 @@
 </script>
 
 <template>
-  <h1>Timetable</h1>
   <div class="timetable">
     <vue-cal
         small
@@ -88,6 +70,6 @@
 }
 
 .vuecal--month-view .vuecal__cell-date {padding: 4px;}
-.vuecal--month-view .vuecal__no-event {display: none;}
+.vuecal__no-event {display: none;}
 
 </style>

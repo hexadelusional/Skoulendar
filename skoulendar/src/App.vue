@@ -25,16 +25,22 @@
         <strong>Homework</strong>
       </router-link>
 
-      <!-- Only show 'ViewTimetable' link if the user is a Student or a Teacher -->
-      <router-link v-if="isStudent || isTeacher" class="head" to="/timetable">
+      <!-- Only show 'Timetable' link if the user is a Student or a Teacher -->
+      <router-link v-if="isStudent || isTeacher" class="head" to="/timetable"
+                   :isStudent="isStudent"
+      >
         <strong>Timetable</strong>
       </router-link>
+
+      <!-- Only show 'AdminTimetable' link if the user is an Admin -->
+      <router-link v-if="isAdmin" to="/timetable_admin">
+        <strong>Timetable</strong>
+      </router-link>
+
       <router-link class="head" to="/login">
         <strong><i class="fa-solid fa-right-from-bracket"></i></strong>
       </router-link>
     </nav>
-
-    <router-view></router-view>
   </div>
 </template>
 

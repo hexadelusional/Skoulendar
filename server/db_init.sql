@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS lessons (
     time TIME,
     room_number INT NOT NULL,
     duration_time TIME NOT NULL,
+    lesson_date DATE NOT NULL,
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

@@ -6,7 +6,9 @@ import LogIn from '../components/LogIn.vue';
 import Users from '../components/Users.vue';
 import HomeworkGiving from '../components/HomeworkGiving.vue';
 import HomeworkViewing from '../components/HomeworkViewing.vue';
-import ViewTimetable from "../components/ViewTimetable.vue";
+import Lessons from "../components/Lessons.vue";
+import StudentTeacherTimetable from "../components/StudentTeacherTimetable.vue";
+import AdminTimetable from "../components/AdminTimetable.vue";
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
@@ -14,7 +16,8 @@ const routes = [
     { path: '/users', name: 'Users', component: Users },
     { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
     { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
-    { path: '/timetable', name: 'ViewTimetable', component: ViewTimetable },
+    { path: '/timetable', name: 'Timetable', component: StudentTeacherTimetable },
+    { path: '/timetable_admin', name: 'AdminTimetable', component: AdminTimetable},
     { path: '/lessons', name: 'Lessons', component: Lessons },
 ];
 
