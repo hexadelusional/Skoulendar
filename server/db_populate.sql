@@ -8,7 +8,7 @@ DELETE FROM users;
 /* Insert data into `users` table */
 INSERT INTO users (id, name, surname, password, status) VALUES
 (1, 'Adele', 'Chamoux', '160305', "Admin"),
-(2, 'Elodie', 'Duflaut', '050304', "Admin"),
+(2, 'Elodie', 'Duflaut', '040304', "Admin"),
 (3, 'Coline', 'Sorin', '151104', "Student"),
 (4, 'Iri', 'Rasoloarivalona', '161616', "Student"),
 (5, 'Paul', 'Leflon', '252525', "Student"),
@@ -39,18 +39,29 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (30, 'Ziad', 'Adem', '987530', 'Teacher');
 
 /* Insert data into `lessons` table */
+-- Lessons for teacher_id = 29, starting with lesson_id = 1
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
-(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '01:30:00', '2024-01-08'),           -- January 8, 2024
-(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-01-08'),  -- January 8, 2024
-(3, 'SM601', 'Graph Theory', 29, '10:00:00', 101, '01:45:00', '2024-01-09'),         -- January 9, 2024
-(4, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-01-09'), -- January 9, 2024
-(5, 'TI609', 'From the Atom to the Microchip', 27, '17:00:00', 102, '02:30:00', '2024-01-10'), -- January 10, 2024
-(6, 'TI702', 'Modern Physics', 30, '17:00:00', 102, '01:45:00', '2024-01-10'), -- January 10, 2024
-(7, 'FH601', 'Communication skills', 26, '13:00:00', 103, '01:00:00', '2024-01-11'), -- January 11, 2024
-(8, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00', '2024-01-11'), -- January 11, 2024
-(9, 'TI507', 'Web Programming', 27, '16:00:00', 110, '01:30:00', '2024-01-12'), -- January 12, 2024
-(10, 'FL102', 'English second years', 28, '10:00:00', 105, '01:15:00', '2024-01-12'), -- January 12, 2024
-(11, 'FL101', 'English first years', 28, '13:00:00', 105, '01:00:00', '2024-01-13'); -- January 13, 2024
+(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(3, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(4, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-28'),  -- December 18, 2024 (Wednesday)
+(5, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(6, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(7, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-27'),  -- December 19, 2024 (Thursday)
+(8, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(9, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(10, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(11, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(12, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
+
+-- Lessons for other teachers (example)
+INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
+(13, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-12-26'),  -- December 16, 2024 (Monday)
+(14, 'TI609', 'From the Atom to the Microchip', 27, '12:00:00', 102, '02:00:00', '2024-12-22'),  -- December 17, 2024 (Tuesday)
+(15, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-31'),  -- December 18, 2024 (Wednesday)
+(16, 'FH601', 'Communication skills', 26, '13:00:00', 103, '02:00:00', '2024-12-29'),  -- December 19, 2024 (Thursday)
+(17, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(18, 'TI507', 'Web Programming', 27, '16:00:00', 110, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
 
 
 INSERT INTO classes (lesson_id, name, class_id) VALUES

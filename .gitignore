@@ -3,6 +3,6 @@
 /skoulendar/.vscode/
 /skoulendar/package-lock.json/
 /skoulendar/vite.config.js/
-
+/server/.env
 /server/node_modules/
 /server/package-lock.json/

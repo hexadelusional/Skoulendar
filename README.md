@@ -34,5 +34,4 @@ mysql -u root -p skoulendar < db_populate.sql
 <br/><br/>
 
 password for id 1 : 160305
-
 password for id 2 : 040304
