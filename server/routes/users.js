@@ -59,6 +59,34 @@ router.get('/teachers', (req, res) => {
     });
 });
 
+router.get('/:id/lessons', (req, res) => {
+    const userId = req.params.id;
+    console.log(`Fetching lessons for user with ID: ${userId}`); // Debug log
+
+    const query = `
+        SELECT lessons.*, class_list.class_id
+        FROM lessons
+        INNER JOIN class_list ON lessons.lesson_id = class_list.lesson_id
+        WHERE class_list.student_id = ? OR lessons.teacher_id = ?
+    `;
+
+    database.query(query, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching lessons for user:', err.message);
+            return res.status(500).json({ message: 'Error fetching lessons' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No lessons found for this user' });
+        }
+
+        res.json(results);
+    });
+});
+
+
+
+
 // editing users
 router.put('/:id', async (req, res) => {
     const { id } = req.params;

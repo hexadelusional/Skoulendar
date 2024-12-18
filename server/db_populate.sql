@@ -69,6 +69,16 @@ INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, d
 (23, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
 (24, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
 
+-- Clara Boissier's lessons
+INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
+(25, 'FH601', 'Communication Skills', 26, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(26, 'FH601', 'Communication Skills', 26, '10:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(27, 'FH601', 'Communication Skills', 26, '08:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(28, 'FH601', 'Communication Skills', 26, '10:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(29, 'FH602', 'Essay Writing', 26, '08:00:00', 105, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(30, 'FH602', 'Essay Writing', 26, '10:00:00', 116, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(31, 'FH602', 'Essay Writing', 26, '08:00:00', 203, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(32, 'FH602', 'Essay Writing', 26, '10:00:00', 190, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
 
 
 INSERT INTO classes (lesson_id, name, class_id) VALUES
