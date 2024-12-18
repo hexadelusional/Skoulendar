@@ -1,41 +1,37 @@
 <template>
   <div>
-    <h1>Admin Timetable</h1>
-    <div>
-      <label for="user-id">Enter User ID:</label>
-      <input v-model="inputUserId" type="text" id="user-id" placeholder="Student/Teacher ID" />
-      <select v-model="selectedRole" id="user-role">
-        <option value="">Select Role</option>
-        <option value="Student">Student</option>
-        <option value="Teacher">Teacher</option>
-      </select>
-
-      <button @click="fetchUserTimetable">Get Timetable</button>
-
-    </div>
-    <div class="container" v-if="lessons_as_events.length > 0">
-      <Timetable :events="lessons_as_events" @eventClicked="handleEventClick" />
-    </div>
-    <p v-if="errorMessage">{{ errorMessage }}</p>
-    <!-- Event details modal -->
-    <div v-if="selectedEvent" class="modal-overlay" @click="closeDetails">
-      <div class="modal-content" @click.stop>
-        <h2>{{ formatDate(selectedEvent.start, 'date') }}</h2>
-        <p v-if="selectedEvent.title"><strong>Title:</strong> {{ selectedEvent.title }}</p>
-        <p v-if="selectedEvent.start"><strong>Time:</strong> {{ formatDate(selectedEvent.start, 'time') }} - {{ formatDate(selectedEvent.end, 'time') }}</p>
-        <p v-if="selectedEvent.info1"><strong>Room:</strong> {{ selectedEvent.info1 }}</p>
-        <p v-if="selectedEvent.info2"><strong>Class ID:</strong> {{ selectedEvent.info2 }}</p>
-        <p v-if="selectedEvent.teacher"><strong>Teacher:</strong> {{ selectedEvent.teacher }}</p>
-        <button @click="closeDetails">Close</button>
+      <h1>Admin Timetable</h1>
+      <div>
+          <label for="user-id">Enter User ID:</label>
+          <input v-model="inputUserId" type="text" id="user-id" placeholder="Student/Teacher ID" />
+          <select v-model="selectedRole" id="user-role">
+              <option value="">Select Role</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+          </select>
+          <button @click="fetchUserTimetable">Get Timetable</button>
       </div>
-    </div>
+      <div class="container" v-if="lessons_as_events.length > 0">
+          <Timetable :events="lessons_as_events" @eventClicked="handleEventClick" />
+      </div>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <div v-if="selectedEvent" class="modal-overlay" @click="closeDetails">
+          <div class="modal-content" @click.stop>
+              <h2>{{ formatDate(selectedEvent.start, 'date') }}</h2>
+              <p v-if="selectedEvent.title"><strong>Title:</strong> {{ selectedEvent.title }}</p>
+              <p v-if="selectedEvent.start">
+                  <strong>Time:</strong> {{ formatDate(selectedEvent.start, 'time') }} - {{ formatDate(selectedEvent.end, 'time') }}
+              </p>
+              <p v-if="selectedEvent.info1"><strong>Room:</strong> {{ selectedEvent.info1 }}</p>
+              <p v-if="selectedEvent.info2"><strong>Class ID:</strong> {{ selectedEvent.info2 }}</p>
+              <p v-if="selectedEvent.teacher"><strong>Teacher:</strong> {{ selectedEvent.teacher }}</p>
+              <button @click="closeDetails">Close</button>
+          </div>
+      </div>
   </div>
 </template>
 
-
-
 <script setup>
-
 import Timetable from './Timetable.vue';
 import { ref } from 'vue';
 import axios from 'axios';
@@ -46,37 +42,68 @@ const selectedEvent = ref(null);
 const inputUserId = ref('');
 const selectedRole = ref('');
 
-
 async function fetchUserTimetable() {
-    // Check inputs
-    if (!inputUserId.value || !selectedRole.value) {
-        errorMessage.value = 'Please provide a User ID and select a role.';
-        return;
-    }
-    errorMessage.value = ''; // Reset error message
-    console.log("innput User ID: ${inputUserId.value}, Selected Role: ${selectedRole.value}");
-    console.log("Fetching lessons...");
-    try {
-        const lessonsResponse = await axios.get(`http://localhost:1234/api/users/${inputUserId.value}/lessons`);
-        console.log('Lessons Response:', lessonsResponse.data); // Log the API response
-        const teachersResponse = await axios.get('http://localhost:1234/api/users/teachers');
-        console.log('Teachers Response:', teachersResponse.data); // Log the teachers response
-        const teachers = teachersResponse.data.reduce((acc, teacher) => {
-            acc[teacher.id] = `${teacher.name} ${teacher.surname}`;
-            return acc;
-        }, {});
-        // Process the lessons using processLessonData
-        lessons_as_events.value = lessonsResponse.data.map(lesson => {
-            console.log('Processing Lesson:', lesson); // Log each lesson being processed
-            return processLessonData(lesson, teachers); // Use processLessonData to structure each lesson
-        });
-        console.log('Mapped Events:', lessons_as_events.value); // Check what events are being set
+  // Check inputs
+  if (!inputUserId.value || !selectedRole.value) {
+      errorMessage.value = 'Please provide a User ID and select a role.';
+      return;
+  }
+
+  errorMessage.value = ''; // Reset error message
+
+  try {
+      // Get the relevant lessons based on the role
+      const teachersResponse = await axios.get('http://localhost:1234/api/users/teachers');
+      const teachers = teachersResponse.data.reduce((acc, teacher) => {
+          acc[teacher.id] = `${teacher.name} ${teacher.surname}`;
+          return acc;
+      }, {});
+
+      // Call the appropriate function based on the selected role
+      if (selectedRole.value === 'teacher') {
+          await fetchTeacherLessons(teachers);
+      } else if (selectedRole.value === 'student') {
+          await fetchStudentLessons(teachers);
+      } else {
+          errorMessage.value = 'Invalid role selected.';
+      }
+
+  } catch (error) {
+      console.error('Error fetching timetable:', error);
+      errorMessage.value = error.response ? error.response.data.message : 'Network error or server is unreachable.';
+  }
+}
+
+async function fetchTeacherLessons(teachers) {
+  try {
+      const response = await axios.get('http://localhost:1234/api/lessons', {
+          params: { teacher_id: inputUserId.value },
+      });
+      console.log('Teacher Lessons Response:', response.data);  // Log response
+
+      lessons_as_events.value = response.data.map(lesson => processLessonData(lesson, teachers));
+      console.log('Mapped Events:', lessons_as_events.value);  // Log mapped events 
+
     } catch (error) {
-        console.error('Error fetching timetable:', error); // Log detailed error
-        errorMessage.value = error.response ? error.response.data.message : 'Network error or server is unreachable.';
+      console.error('Error while fetching teacher lessons:', error);
+      errorMessage.value = error.response ? error.response.data.message : 'Network error or server is not reachable.';
+  }
+}
 
-    }
+async function fetchStudentLessons(teachers) {
+  try {
+      const response = await axios.get('http://localhost:1234/api/classList', {
+          params: { student_id: inputUserId.value },
+      });
+      console.log('student Lessons Response:', response.data);  // Log response
 
+      lessons_as_events.value = response.data.map(lesson => processLessonData(lesson, teachers));
+      console.log('Mapped Events:', lessons_as_events.value);  // Log mapped events 
+
+    } catch (error) {
+      console.error('Error while fetching student lessons:', error);
+      errorMessage.value = error.response ? error.response.data.message : 'Network error or server is not reachable.';
+  }
 }
 
 function processLessonData(lesson, teachers) {
@@ -141,6 +168,7 @@ function formatDate(dateString, type) {
 }
 
 </script>
+
 
 <style scoped>
 .modal-overlay {

@@ -10,7 +10,7 @@
     <div v-if="selectedEvent" class="modal-overlay" @click="closeDetails">
       <div class="modal-content" @click.stop>
         <h2>{{ formatDate(selectedEvent.start, 'date') }}</h2>
-        <p v-if="selectedEvent.title"><strong>Title:</strong> {{ selectedEvent.title }}</p>
+        <p v-if="selectedEvent.title"><strong>Lessons:</strong> {{ selectedEvent.title }}</p>
         <p v-if="selectedEvent.start"><strong>Time:</strong> {{ formatDate(selectedEvent.start, 'time') }} - {{ formatDate(selectedEvent.end, 'time') }}</p>
         <p v-if="selectedEvent.info1"><strong>Room:</strong> {{ selectedEvent.info1 }}</p>
         <p v-if="selectedEvent.info2"><strong>Class ID:</strong> {{ selectedEvent.info2 }}</p>
