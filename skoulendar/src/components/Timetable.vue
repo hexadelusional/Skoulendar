@@ -65,16 +65,19 @@ function openDetails(event) {
 
 .vuecal__event {
     background-color: #005da0; /* Normal background color */
-    border: 1px solid #ffffff; /* Normal border color */
-    border-radius: 5px; 
-    color: #fff; 
-    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+    border-radius: 5px;
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.3s; /* Added for smoothness */
+    position: relative; /* Added for stacking context */
+    z-index: 1; /* Ensure this is above anything below */
 }
 
 .vuecal__event:hover {
     background-color: #007bff; /* Color on hover */
     border-color: #0056b3; /* Border color on hover */
     cursor: pointer; /* Change cursor to pointer */
+    transform: scale(1.05); /* Slight scaling effect on hover */
+    z-index: 2; /* On top of other events */
 }
 
 .vuecal__now-line { display: none; }

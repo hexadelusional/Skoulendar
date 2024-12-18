@@ -39,7 +39,7 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (30, 'Ziad', 'Adem', '987530', 'Teacher');
 
 /* Insert data into `lessons` table */
--- Lessons for teacher_id = 29, starting with lesson_id = 1
+-- Zahraa's lessons
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
 (1, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
 (2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
@@ -54,14 +54,21 @@ INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, d
 (11, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
 (12, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
 
--- Lessons for other teachers (example)
+-- Ziad Adem's lessons
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
-(13, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-12-26'),  -- December 16, 2024 (Monday)
-(14, 'TI609', 'From the Atom to the Microchip', 27, '12:00:00', 102, '02:00:00', '2024-12-22'),  -- December 17, 2024 (Tuesday)
-(15, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-31'),  -- December 18, 2024 (Wednesday)
-(16, 'FH601', 'Communication skills', 26, '13:00:00', 103, '02:00:00', '2024-12-29'),  -- December 19, 2024 (Thursday)
-(17, 'TI505', 'Java Programming', 27, '10:00:00', 104, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
-(18, 'TI507', 'Web Programming', 27, '16:00:00', 110, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
+(13, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(14, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(15, 'TI402', 'General Electricity', 30, '09:00:00', 102, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(16, 'TI609', 'From the Atom to the Microchip', 30, '12:00:00', 102, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(17, 'TI609', 'From the Atom to the Microchip', 30, '12:00:00', 102, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(18, 'TI609', 'From the Atom to the Microchip', 30, '12:00:00', 102, '02:00:00', '2024-12-21'),  -- December 21, 2024 (Saturday)
+(19, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(20, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(21, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(22, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(23, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(24, 'TI702', 'Modern Physics', 30, '14:00:00', 102, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
+
 
 
 INSERT INTO classes (lesson_id, name, class_id) VALUES
