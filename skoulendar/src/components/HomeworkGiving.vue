@@ -85,11 +85,22 @@ const uniqueLessons = computed(() => {
     });
     return Array.from(uniqueMap.values());
 });
-
+const uniqueStudents = (students) => {
+    const uniqueMap = new Map();
+    students.forEach(student => {
+        if (!uniqueMap.has(student.student_id)) {
+            uniqueMap.set(student.student_id, student);
+        }
+    });
+    return Array.from(uniqueMap.values());
+};
 
 const filteredHomeworkStatus = (classId) => {
-    return homeworkStatus.value.filter(item => item.class_id === classId);
+    // First filter by class, then get unique students
+    const studentsInClass = homeworkStatus.value.filter(item => item.class_id === classId);
+    return uniqueStudents(studentsInClass);
 };
+
 
 const getCompletionIcon = (completed) => {
     return completed ? '<i class="fa-solid fa-check success"></i>' : '<i class="fa-solid fa-xmark error"></i>';
