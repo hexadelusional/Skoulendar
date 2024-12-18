@@ -88,6 +88,7 @@ router.get('/status', (req, res) => {
     });
 });
 
+
 // Route to post new homework
 router.post('/', (req, res) => {
     const { title, description, deadline, class_id, teacher_id, lesson_id } = req.body;

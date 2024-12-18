@@ -4,7 +4,7 @@
         <div v-if="submitError" class="error">{{ submitError }}</div>
         <label for="class-select">Select a class:</label><br />
         <select v-model="selectedClass" id="class-select" class="input-field">
-            <option v-for="classItem in lessons" :key="classItem.class_id" :value="classItem.class_id">
+            <option v-for="classItem in uniqueLessons" :key="classItem.class_id" :value="classItem.class_id">
                 {{ classItem.class_id }} - {{ classItem.name }}
             </option>
         </select>
@@ -18,7 +18,7 @@
         <div v-if="isSubmitting">Assigning homework...⏳</div>
 
         <h1>Homework Status</h1>
-        <div v-for="classItem in lessons" :key="classItem.class_id" class="class-section">
+        <div v-for="classItem in uniqueClasses" :key="classItem.class_id" class="class-section">
             <h2>{{ classItem.class_id }} - {{ classItem.name }}</h2>
             <div v-if="filteredHomeworkStatus(classItem.class_id).length">
                 <table class="homework-status-table">
@@ -51,10 +51,14 @@
     </div>
 </template>
 
+
+
+
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+
 const lessons = ref([]);
 const selectedClass = ref(null);
 const userId = ref(null);
@@ -62,42 +66,47 @@ const homeworkStatus = ref([]);
 const submitError = ref(null);
 const isSubmitting = ref(false);
 
-// Filter homework statuses by class
+const uniqueClasses = computed(() => {
+    const uniqueMap = new Map();
+    lessons.value.forEach(lesson => {
+        if (!uniqueMap.has(lesson.class_id)) {
+            uniqueMap.set(lesson.class_id, lesson);
+        }
+    });
+    return Array.from(uniqueMap.values());
+});
+
+const uniqueLessons = computed(() => {
+    const uniqueMap = new Map();
+    lessons.value.forEach(lesson => {
+        if (!uniqueMap.has(lesson.class_id)) {
+            uniqueMap.set(lesson.class_id, lesson);
+        }
+    });
+    return Array.from(uniqueMap.values());
+});
+
+
 const filteredHomeworkStatus = (classId) => {
     return homeworkStatus.value.filter(item => item.class_id === classId);
 };
 
-// Get completion icon based on completion status
 const getCompletionIcon = (completed) => {
-    return completed
-        ? '<i class="fa-solid fa-check success"></i>' 
-        : '<i class="fa-solid fa-xmark error"></i>';
+    return completed ? '<i class="fa-solid fa-check success"></i>' : '<i class="fa-solid fa-xmark error"></i>';
 };
 
-// Get today's date in yyyy-mm-dd format
-function getTodayDate() {
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const yyyy = today.getFullYear();
-    return `${yyyy}-${mm}-${dd}`;
-}
-
-// Format date to human-readable format
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, options);
 };
 
-// Homework form
 const homework = ref({
     title: '',
     description: '',
-    deadline: getTodayDate(),
+    deadline: new Date().toISOString().split("T")[0],  // Sets to today
 });
 
-// Fetch lessons
 async function fetchLessons() {
     try {
         const response = await axios.get(`http://localhost:1234/api/lessons?teacher_id=${userId.value}`);
@@ -108,7 +117,6 @@ async function fetchLessons() {
     }
 }
 
-// Fetch homework statuses
 async function fetchHomeworkStatus() {
     try {
         const response = await axios.get(`http://localhost:1234/api/homework/status?teacher_id=${userId.value}`);
@@ -118,13 +126,11 @@ async function fetchHomeworkStatus() {
     }
 }
 
-// Assign homework to a class
 async function submitHomework() {
     submitError.value = null;
     isSubmitting.value = true;
-
     const selectedLesson = lessons.value.find(lesson => lesson.class_id === selectedClass.value);
-
+    
     if (!selectedLesson) {
         submitError.value = 'Selected class does not correspond to a lesson.';
         isSubmitting.value = false;
@@ -144,7 +150,7 @@ async function submitHomework() {
         const response = await axios.post('http://localhost:1234/api/homework', payload);
         alert('Homework assigned successfully! 😃');
         resetForm();
-        fetchHomeworkStatus();
+        await fetchHomeworkStatus(); // Ensure to await
     } catch (error) {
         if (error.response) {
             submitError.value = error.response.data.message || 'Failed to assign homework... 😬';
@@ -156,14 +162,12 @@ async function submitHomework() {
     }
 }
 
-// Reset the form
 function resetForm() {
     homework.value.title = '';
     homework.value.description = '';
-    homework.value.deadline = getTodayDate();
+    homework.value.deadline = new Date().toISOString().split("T")[0];
     selectedClass.value = null;
 }
-
 
 onMounted(async () => {
     userId.value = Cookies.get('userId');
