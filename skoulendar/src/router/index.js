@@ -1,24 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Cookies from 'js-cookie'; 
+import Cookies from 'js-cookie'; // Import cookies for session management
 
 import Home from '../components/Home.vue';
 import LogIn from '../components/LogIn.vue';
 import Users from '../components/Users.vue';
 import HomeworkGiving from '../components/HomeworkGiving.vue';
 import HomeworkViewing from '../components/HomeworkViewing.vue';
-import Lessons from '../components/Lessons.vue';
-import StTeTimetable from "../components/StTeTimetable.vue";
+import Lessons from "../components/Lessons.vue";
+import StudentTeacherTimetable from "../components/StudentTeacherTimetable.vue";
 import AdminTimetable from "../components/AdminTimetable.vue";
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'login', component: LogIn },
-  { path: '/users', name: 'Users', component: Users },
-  { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
-  { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
-  { path: '/lessons', name: 'Lessons', component: Lessons },
-  { path: '/timetable', name: 'Timetable', component: StTeTimetable },
-  { path: '/admin_timetable', name: 'AdminTimetable', component: AdminTimetable },
+    { path: '/', name: 'Home', component: Home },
+    { path: '/login', name: 'login', component: LogIn },
+    { path: '/users', name: 'Users', component: Users },
+    { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
+    { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
+    { path: '/timetable', name: 'Timetable', component: StudentTeacherTimetable },
+    { path: '/adminTimetable', name: 'AdminTimetable', component: AdminTimetable},
+    { path: '/lessons', name: 'Lessons', component: Lessons },
+
 ];
 
 const router = createRouter({
@@ -28,7 +29,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const role = Cookies.get('role');
-    console.log(`Navigating to: ${to.name}, role: ${role}`); 
+    console.log(`Navigating to: ${to.name}, role: ${role}`);
 
     // Allow access to /login for all users (authenticated or not)
     if (to.name === 'login') {

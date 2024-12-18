@@ -161,29 +161,18 @@
 
     // Searching users by name or surname
     async function searchUsers() {
-        if (!searchTerm.value) {
-            filteredUsers.value = users.value;
-            return;
-        }
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:1234/api/users/search`, {
-                headers: { Authorization: `Bearer ${token}` },
-                params: { nameOrSurname: searchTerm.value }
-            });
-
-            filteredUsers.value = Array.isArray(response.data) ? response.data : [];
-
-            if (filteredUsers.value.length === 0) {
-                searchMessage.value = 'No user under that name... 🧐';
-            } else {
-                searchMessage.value = '';
-            }
-        } catch (error) {
-            console.error('Error searching users:', error);
-            errorMessage.value = 'Uh oh... unable to search users. 😬';
-        }
+    const term = searchTerm.value.toLowerCase(); 
+    if (!term) {
+        filteredUsers.value = users.value;
+        searchMessage.value = '';
+        return;
     }
+    filteredUsers.value = users.value.filter(user => 
+        user.name.toLowerCase().includes(term) || user.surname.toLowerCase().includes(term)
+    );
+    searchMessage.value = filteredUsers.value.length ? '' : 'No users found under that name or surname... 🧐';
+}
+
 
     async function addLessonToUser(userId, lessonId, classId) {
         const token = localStorage.getItem('token');
@@ -204,11 +193,8 @@
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            console.log(response.data.message);
         } catch (error) {
             console.error('Error adding lesson:', error);
-            console.log('Response data:', error.response.data);
-            console.log('Response status:', error.response.status);
             errorMessage.value = error.response.data.message || 'Failed to add lesson. 😬';
         }
     }
@@ -296,8 +282,7 @@
 
     // Delete user by id
     async function deleteUser(userId) {
-        console.log(`Attempting to delete user with ID: ${userId}`);
-        
+       
         if (!confirm("Are you sure you want to delete this user? 🤔")) {
             return;
         }

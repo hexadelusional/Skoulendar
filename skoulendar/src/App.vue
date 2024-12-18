@@ -10,9 +10,14 @@
         <strong>Users</strong>
       </router-link>
 
-      <!-- Only show the 'Users' link if the user is an Admin -->
+      <!-- Only show the 'Lessons' link if the user is an Admin -->
       <router-link v-if="isAdmin" class="head" to="/lessons">
         <strong>Lessons</strong>
+      </router-link>
+
+      <!-- Only show the 'admin_timetable' link if the user is an Admin -->
+      <router-link v-if="isAdmin" class="head" to="/adminTimetable" :isStudent="isStudent">
+        <strong>Timetable</strong>
       </router-link>
 
       <!-- Only show the 'HomeworkGiving' link if the user is a Teacher -->
@@ -26,14 +31,7 @@
       </router-link>
 
       <!-- Only show 'Timetable' link if the user is a Student or a Teacher -->
-      <router-link v-if="isStudent || isTeacher" class="head" to="/timetable"
-                   :isStudent="isStudent">
-        <strong>Timetable</strong>
-      </router-link>
-
-      <!-- Only show 'Timetable' link if the user is a Student or a Teacher -->
-      <router-link v-if="isAdmin" class="head" to="/admin_timetable"
-                   :isStudent="isStudent">
+      <router-link v-if="isStudent || isTeacher" class="head" to="/timetable" :isStudent="isStudent">
         <strong>Timetable</strong>
       </router-link>
 
@@ -42,9 +40,9 @@
       </router-link>
     </nav>
 
-
     <router-view></router-view>
   </div>
+  
 </template>
 
 <script setup>
