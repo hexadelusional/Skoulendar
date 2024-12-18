@@ -205,7 +205,7 @@
 
     function getTeacherFullName(teacherId) {
         const teacher = teachers.value.find(t => t.id === teacherId);
-        return teacher ? `${teacher.name} ${teacher.surname}` : 'Unknown Teacher'; // Fallback if not found
+        return teacher ? `${teacher.name} ${teacher.surname}` : 'Unknown Teacher'; 
     }
 
     // Searching for lessons based on input
@@ -269,7 +269,7 @@
         // Continue to process adding the lesson
         try {
             const response = await axios.post('http://localhost:1234/api/lessons', {
-                class_id: newLesson.value.class_id, // Use the radio-selected class_id
+                class_id: newLesson.value.class_id,
                 name: newLesson.value.name.trim(),
                 teacher_id: newLesson.value.teacher_id,
                 time: newLesson.value.time,
@@ -278,7 +278,6 @@
                 duration_time: newLesson.value.duration_time,
             });
             
-            // Assuming fetchLessons is a method that refreshes lessons list
             await fetchLessons(); 
             closeAddWindow();
         } catch (error) {
@@ -286,7 +285,6 @@
             errorMessage.value = 'Error adding lesson.😬';
         }
     }
-
 
     // Opening the edit lesson window and loading data
     async function editLesson(lesson) {
@@ -319,8 +317,6 @@
 
     async function updateLesson() {
         errorMessage.value = ''; 
-        
-        // Validation if a teacher is selected
         if (!editableLesson.value.teacher_id) {
             errorMessage.value = 'You must select a teacher.☝️';
             return;
@@ -368,8 +364,6 @@
         fetchTeachers();
     });
 </script>
-
-
 
 <style scoped>
     table {

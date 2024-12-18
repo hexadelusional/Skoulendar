@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
-// fetching all users with corresponding lesson names
+// Fetching all users with corresponding lesson names
 router.get('/', (req, res) => {
     const query = `
         SELECT users.*, class_list.class_id, lessons.name AS lesson_name 
@@ -12,13 +12,11 @@ router.get('/', (req, res) => {
         LEFT JOIN class_list ON users.id = class_list.student_id
         LEFT JOIN lessons ON class_list.lesson_id = lessons.lesson_id
     `;
-    
     database.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching users:', err.message);
             return res.status(500).json({ message: 'Error fetching users' });
         }
-
         const usersWithClassesAndLessons = results.reduce((acc, result) => {
             const { id, name, surname, password, status, class_id, lesson_name } = result; 
 
@@ -59,9 +57,9 @@ router.get('/teachers', (req, res) => {
     });
 });
 
+// to get lessons based on user id
 router.get('/:id/lessons', (req, res) => {
     const userId = req.params.id;
-    console.log(`Fetching lessons for user with ID: ${userId}`); // Debug log
 
     const query = `
         SELECT lessons.*, class_list.class_id
@@ -84,8 +82,28 @@ router.get('/:id/lessons', (req, res) => {
     });
 });
 
+// Route to get user details by ID
+router.get('/:id', (req, res) => {
+    const userId = req.params.id;
 
+    const query = `
+        SELECT name, surname, id
+        FROM users
+        WHERE id = ?
+    `;
 
+    database.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user details:', err.message);
+            return res.status(500).json({ message: 'Error fetching user details' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(results[0]);
+    });
+});
 
 // editing users
 router.put('/:id', async (req, res) => {
@@ -199,20 +217,17 @@ router.delete('/:id', (req, res) => {
 
 // Searching users by name or surname
 router.get('/search', (req, res) => {
-    const { query } = req; // Extract query parameters from the request
-    const nameOrSurname = query.nameOrSurname; // Use `nameOrSurname` as the search parameter
+    const { query } = req; 
+    const nameOrSurname = query.nameOrSurname; 
 
-    // If no search term is provided, return an error
     if (!nameOrSurname) {
         return res.status(400).json({ message: 'Search term is required' });
     }
 
-    // SQL query to search for users by name or surname
     const sqlQuery = `
         SELECT * FROM users 
         WHERE name LIKE ? OR surname LIKE ?`;
     
-    // Escaping the user input to prevent SQL injection
     const searchTerm = `%${nameOrSurname}%`;
 
     database.query(sqlQuery, [searchTerm, searchTerm], (err, results) => {

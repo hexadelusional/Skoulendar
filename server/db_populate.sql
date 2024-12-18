@@ -38,7 +38,6 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (29, 'Zahraa', 'Mosen', '229900', 'Teacher'),
 (30, 'Ziad', 'Adem', '987530', 'Teacher');
 
-/* Insert data into `lessons` table */
 -- Zahraa's lessons
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
 (1, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
@@ -78,7 +77,33 @@ INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, d
 (29, 'FH602', 'Essay Writing', 26, '08:00:00', 105, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
 (30, 'FH602', 'Essay Writing', 26, '10:00:00', 116, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
 (31, 'FH602', 'Essay Writing', 26, '08:00:00', 203, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
-(32, 'FH602', 'Essay Writing', 26, '10:00:00', 190, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(32, 'FH602', 'Essay Writing', 26, '10:00:00', 190, '02:00:00', '2024-12-19');  -- December 19, 2024 (Thursday)
+
+-- Christina Dias's lessons
+INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
+(33, 'FL102', 'English Second Year', 28, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(34, 'FL101', 'English First Year', 28, '12:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(35, 'FL102', 'English Second Year', 28, '08:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(36, 'FL101', 'English First Year', 28, '10:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(37, 'FL102', 'English Second Year', 28, '12:00:00', 101, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(38, 'FL101', 'English First Year', 28, '08:00:00', 101, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(39, 'FL102', 'English Second Year', 28, '10:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(40, 'FL101', 'English First Year', 28, '12:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(41, 'FL102', 'English Second Year', 28, '08:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(42, 'FL101', 'English First Year', 28, '10:00:00', 101, '02:00:00', '2024-12-20');  -- December 20, 2024 (Friday)
+
+-- Nicolas Flasque's lessons
+INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
+(45, 'TI505', 'Java Programming', 27, '08:00:00', 102, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(46, 'TI507', 'Web Programming', 27, '12:00:00', 102, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
+(47, 'TI505', 'Java Programming', 27, '08:00:00', 102, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(48, 'TI507', 'Web Programming', 27, '10:00:00', 102, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
+(49, 'TI505', 'Java Programming', 27, '12:00:00', 102, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(50, 'TI507', 'Web Programming', 27, '08:00:00', 102, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
+(51, 'TI505', 'Java Programming', 27, '10:00:00', 102, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(52, 'TI507', 'Web Programming', 27, '12:00:00', 102, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
+(53, 'TI505', 'Java Programming', 27, '08:00:00', 102, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
+(54, 'TI507', 'Web Programming', 27, '10:00:00', 102, '02:00:00', '2024-12-20');  -- December 20, 2024 (Friday)
 
 
 INSERT INTO classes (lesson_id, name, class_id) VALUES
