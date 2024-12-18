@@ -45,7 +45,6 @@ function truncate(str, limit) {
 const LIMIT = 20
 
 // Define the openDetails function
-import { defineEmits } from 'vue';
 const emit = defineEmits(['eventClicked']); // Define custom event
 
 function openDetails(event) {
