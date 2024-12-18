@@ -7,7 +7,6 @@
     <p v-if="errorMessage">{{ errorMessage }}</p>
 
     <!-- Event details -->
-    <!-- Event Details Modal -->
     <div v-if="selectedEvent" class="modal-overlay" @click="closeDetails">
       <div class="modal-content" @click.stop>
         <h2>{{ formatDate(selectedEvent.start, 'date') }}</h2>
@@ -32,44 +31,30 @@ import Cookies from 'js-cookie';
 const lessons_as_events = ref([]);
 const errorMessage = ref('');
 const user_id = ref(Cookies.get('userId'));
+const user_role = ref(Cookies.get('role'));
 const selectedEvent = ref(null);
 
-// Fetch lessons function for teachers
 async function fetchLessons() {
   try {
+    // Fetch teacher data only once
     const teachersResponse = await axios.get('http://localhost:1234/api/users');
     const teachers = teachersResponse.data.reduce((acc, teacher) => {
-      acc[teacher.id] = `${teacher.name} ${teacher.surname}`; // Create a key-value pair for easy lookup
+      acc[teacher.id] = `${teacher.name} ${teacher.surname}`;
       return acc;
     }, {});
 
-    const response = await axios.get('http://localhost:1234/api/lessons', {
-      params: { teacher_id: user_id.value },
-    });
+    // Determine user role
+    const role = user_role.value ? user_role.value.trim().toLowerCase() : '';
 
-    lessons_as_events.value = response.data.map(lesson => {
-      const lessonDate = lesson.lesson_date.split('T')[0];
-      const startDateTimeString = `${lessonDate} ${lesson.time.slice(0, 5)}`;
-      const startDateTime = new Date(`${startDateTimeString}:00`);
+    // Call the appropriate function based on user role
+    if (role === 'teacher') {
+      await fetchTeacherLessons(teachers); // Fetch teacher lessons
+    } else if (role === 'student') {
+      await fetchStudentLessons(teachers); // Fetch student lessons
+    } else {
+      errorMessage.value = 'User role is not recognized.';
+    }
 
-      const durationParts = lesson.duration_time.split(":").map(Number);
-      const endDateTime = new Date(startDateTime);
-      endDateTime.setHours(endDateTime.getHours() + durationParts[0]);
-      endDateTime.setMinutes(endDateTime.getMinutes() + durationParts[1]);
-
-      const endDateTimeString = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, '0')}-${String(endDateTime.getDate()).padStart(2, '0')} ${String(endDateTime.getHours()).padStart(2, '0')}:${String(endDateTime.getMinutes()).padStart(2, '0')}`;
-
-      const teacherName = teachers[lesson.teacher_id] || 'Unknown Teacher';
-
-      return {
-        title: lesson.name,
-        start: startDateTimeString,
-        end: endDateTimeString,
-        info1: lesson.room_number,
-        info2: lesson.class_id || 'N/A',
-        teacher: teacherName,
-      };
-    });
   } catch (error) {
     console.error('Error while fetching lessons:', error);
     if (error.response) {
@@ -80,6 +65,73 @@ async function fetchLessons() {
     }
   }
 }
+
+async function fetchTeacherLessons(teachers) {
+  try {
+    const response = await axios.get('http://localhost:1234/api/lessons', {
+      params: { teacher_id: user_id.value },
+    });
+
+    // Process the lessons data from the response
+    lessons_as_events.value = response.data.map(lesson => processLessonData(lesson, teachers));
+
+  } catch (error) {
+    console.error('Error while fetching teacher lessons:', error);
+    if (error.response) {
+      console.error('Response error data:', error.response.data);
+      errorMessage.value = error.response.data.message || 'Unable to fetch teacher lessons...😬';
+    } else {
+      errorMessage.value = 'Network error or server is not reachable...😬';
+    }
+  }
+}
+
+async function fetchStudentLessons(teachers) {
+  try {
+    const response = await axios.get('http://localhost:1234/api/classList', {
+      params: { student_id: user_id.value },
+    });
+
+    // Process the lessons data from the response
+    lessons_as_events.value = response.data.map(lesson => processLessonData(lesson, teachers));
+
+  } catch (error) {
+    console.error('Error while fetching student lessons:', error);
+    if (error.response) {
+      console.error('Response error data:', error.response.data);
+      errorMessage.value = error.response.data.message || 'Unable to fetch student lessons...😬';
+    } else {
+      errorMessage.value = 'Network error or server is not reachable...😬';
+    }
+  }
+}
+
+function processLessonData(lesson, teachers) {
+  // Ensure lesson_date is available and handle potential issues
+  const lessonDate = lesson.lesson_date ? lesson.lesson_date.split('T')[0] : 'unknown date';
+  const startingTime = lesson.time ? lesson.time.slice(0, 5) : '00:00';
+  const startDateTimeString = `${lessonDate} ${startingTime}`;
+  const startDateTime = new Date(`${startDateTimeString}:00`);
+
+  const durationParts = lesson.duration_time ? lesson.duration_time.split(":").map(Number) : [0, 0];
+  const endDateTime = new Date(startDateTime);
+  endDateTime.setHours(endDateTime.getHours() + durationParts[0]);
+  endDateTime.setMinutes(endDateTime.getMinutes() + durationParts[1]);
+
+  const endDateTimeString = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, '0')}-${String(endDateTime.getDate()).padStart(2, '0')} ${String(endDateTime.getHours()).padStart(2, '0')}:${String(endDateTime.getMinutes()).padStart(2, '0')}`;
+
+  const teacherName = teachers[lesson.teacher_id] || 'Unknown Teacher';
+
+  return {
+    title: lesson.lesson_name || lesson.name,
+    start: startDateTimeString,
+    end: endDateTimeString,
+    info1: lesson.room_number || 'N/A',
+    info2: lesson.class_id || 'N/A',
+    teacher: teacherName,
+  };
+}
+
 
 // Handle event click
 function handleEventClick(event) {

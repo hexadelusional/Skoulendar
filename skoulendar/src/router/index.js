@@ -17,8 +17,9 @@ const routes = [
     { path: '/homeworkGiving', name: 'HomeworkGiving', component: HomeworkGiving },
     { path: '/homeworkViewing', name: 'HomeworkViewing', component: HomeworkViewing },
     { path: '/timetable', name: 'Timetable', component: StudentTeacherTimetable },
-    { path: '/timetable_admin', name: 'AdminTimetable', component: AdminTimetable},
+    { path: '/adminTimetable', name: 'AdminTimetable', component: AdminTimetable},
     { path: '/lessons', name: 'Lessons', component: Lessons },
+
 ];
 
 const router = createRouter({

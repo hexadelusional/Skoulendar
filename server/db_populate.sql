@@ -94,6 +94,7 @@ INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 -- Enrollments for Iri Rasoloarivalona
 INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (4, 6, 'TI702'),  -- Modern Physics
+(4, 1, 'SM503'),  -- Calculus
 (4, 8, 'TI505'),  -- Java Programming
 (4, 11, 'FL101'); -- English first years
 

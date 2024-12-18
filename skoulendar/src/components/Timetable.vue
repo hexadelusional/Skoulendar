@@ -30,7 +30,6 @@
 import VueCal from "vue-cal";
 import 'vue-cal/dist/vuecal.css';
 
-
 const props = defineProps({
   events: {
     type: Array,

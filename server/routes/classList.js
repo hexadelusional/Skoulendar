@@ -7,29 +7,44 @@ const router = express.Router();
 router.get('/', (req, res) => {
     const studentId = req.query.student_id;
 
+    // Check if student_id is provided
     if (!studentId) {
-        return res.status(400).json({ message: 'Student ID is required.' }); 
+        return res.status(400).json({ message: 'Student ID is required.' });
     }
 
+    // SQL query to get lessons for the specified student
     const query = `
-        SELECT 
-            cl.class_id, 
-            l.lesson_id, 
-            l.name AS lesson_name 
-        FROM 
+        SELECT
+            cl.class_id,
+            l.lesson_id,
+            l.name AS lesson_name,
+            l.lesson_date, 
+            l.time,  
+            l.duration_time, 
+            l.room_number,
+            l.teacher_id
+        FROM
             class_list cl
-        JOIN 
+        JOIN
             lessons l ON cl.lesson_id = l.lesson_id
-        WHERE 
-            cl.student_id = ?;`; 
+        WHERE
+            cl.student_id = ?;
+    `;
 
+    // Execute the query
     database.query(query, [studentId], (error, results) => {
         if (error) {
             console.error('Error fetching lessons:', error);
-            return res.status(500).json({ message: 'Error fetching lessons.' });
+            return res.status(500).json({ message: 'Error fetching lessons from the database.' });
         }
 
-        res.json(results); 
+        // Check if any lessons were found
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No lessons found for this student.' });
+        }
+
+        // Send lessons back to the client
+        res.json(results);
     });
 });
 
