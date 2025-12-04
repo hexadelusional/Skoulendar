@@ -24,7 +24,7 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 (15, 'Camille', 'Dommergue', '206620', 'Student'),
 (16, 'Samuel', 'Doyen', '206640', 'Student'),
 (17, 'Tiphaine', 'Fournier', '206730', 'Student'),
-(18, 'Alexandre', 'Gobé', '218950', 'Student'),
+(18, 'Alexandre', 'Gobe', '218950', 'Student'),
 (19, 'Ethan', 'Guingand', '211570', 'Student'),
 (20, 'John', 'Jin', '213010', 'Student'),
 (21, 'Josselin', 'Keib', '212190', 'Student'),
@@ -40,18 +40,18 @@ INSERT INTO users (id, name, surname, password, status) VALUES
 
 -- Zahraa's lessons
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
-(1, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
-(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-16'),  -- December 16, 2024 (Monday)
-(3, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-17'),  -- December 17, 2024 (Tuesday)
-(4, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-28'),  -- December 18, 2024 (Wednesday)
-(5, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-18'),  -- December 18, 2024 (Wednesday)
-(6, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
-(7, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-27'),  -- December 19, 2024 (Thursday)
-(8, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-19'),  -- December 19, 2024 (Thursday)
-(9, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
-(10, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
-(11, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-20'),  -- December 20, 2024 (Friday)
-(12, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-21');  -- December 21, 2024 (Saturday)
+(1, 'SM503', 'Calculus', 29, '08:00:00', 116, '02:00:00', '2024-12-16'), 
+(2, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-16'), 
+(3, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-17'), 
+(4, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-28'), 
+(5, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-18'), 
+(6, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-19'),
+(7, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-27'), 
+(8, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-19'),
+(9, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-20'), 
+(10, 'SM503', 'Calculus', 29, '08:00:00', 101, '02:00:00', '2024-12-20'),  
+(11, 'SM402', 'Multivariate Analysis', 29, '10:00:00', 101, '02:00:00', '2024-12-20'), 
+(12, 'SM601', 'Graph Theory', 29, '12:00:00', 101, '02:00:00', '2024-12-21'); 
 
 -- Ziad Adem's lessons
 INSERT INTO lessons (lesson_id, class_id, name, teacher_id, time, room_number, duration_time, lesson_date) VALUES
@@ -128,15 +128,15 @@ INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 
 -- Enrollments for Iri Rasoloarivalona
 INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
-(4, 6, 'TI702'),  -- Modern Physics
+(4, 6, 'TI702'),  -- Graph Theory
 (4, 1, 'SM503'),  -- Calculus
-(4, 8, 'TI505'),  -- Java Programming
+(4, 8, 'TI505'),  -- Multivariate analysis
 (4, 11, 'FL101'); -- English first years
 
 -- Enrollments for Paul Leflon
 INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (5, 4, 'TI402'),  -- General Electricity
-(5, 10, 'FL102'), -- English second years
+(5, 35, 'FL102'), -- English second years
 (5, 8, 'TI505');  -- Java Programming
 
 -- Enrollments for Matteo Launay
@@ -261,3 +261,4 @@ INSERT INTO class_list (student_id, lesson_id, class_id) VALUES
 (25, 3, 'SM601'), -- Graph Theory
 (25, 8, 'TI505'), -- Java Programming
 (25, 7, 'FH601'); -- Communication skills
+
